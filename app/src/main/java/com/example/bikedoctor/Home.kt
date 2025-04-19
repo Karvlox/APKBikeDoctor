@@ -18,6 +18,7 @@ class Home : Fragment() {
         // Referencias a los CardView
         val cardAddClient = view.findViewById<CardView>(R.id.card_add_client)
         val cardAddMotorcycle = view.findViewById<CardView>(R.id.card_add_motorcycle)
+        val cardNewRepair = view.findViewById<CardView>(R.id.new_repair)
 
         // Navegar a AddClient
         cardAddClient.setOnClickListener {
@@ -31,6 +32,14 @@ class Home : Fragment() {
         cardAddMotorcycle.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, AddMotorcycle())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        // Navegar a AddService
+        cardNewRepair.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, AddService())
             transaction.addToBackStack(null)
             transaction.commit()
         }

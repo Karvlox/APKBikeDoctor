@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".AddClient">
+    tools:context=".AddMotorcycle">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -15,12 +15,13 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         app:cardBackgroundColor="#2E2E2E"
-        app:cardCornerRadius="15dp" >
+        app:cardCornerRadius="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@+id/textView"
@@ -37,7 +38,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -45,18 +46,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:fontFamily="@font/roboto"
                     android:text="Cédula de Identidad del Propietario"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ciInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -66,6 +69,7 @@
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/roboto"
                         android:hint="Cédula de Identidad"
+                        android:inputType="number"
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -73,7 +77,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -81,18 +85,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:fontFamily="@font/roboto"
                     android:text="Marca del Motorizado"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/brandInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -102,6 +108,7 @@
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/roboto"
                         android:hint="Marca de la Motocicleta"
+                        android:inputType="text"
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +116,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -117,18 +124,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:fontFamily="@font/roboto"
                     android:text="Modelo del Motorizado"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/modelInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -138,6 +147,7 @@
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/roboto"
                         android:hint="Modelo de la Motocicleta"
+                        android:inputType="text"
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -145,7 +155,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -153,18 +163,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:fontFamily="@font/roboto"
-                    android:text="Matricula"
+                    android:text="Matrícula"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/licensePlateInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -173,7 +185,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/roboto"
-                        android:hint="Matricula"
+                        android:hint="1234ABC"
+                        android:inputType="textCapCharacters"
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -181,7 +194,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -189,18 +202,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
                     android:fontFamily="@font/roboto"
                     android:text="Color del Motorizado"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/colorInputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -210,6 +225,7 @@
                         android:background="@drawable/edit_text_background"
                         android:fontFamily="@font/roboto"
                         android:hint="Color del Motorizado"
+                        android:inputType="text"
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -217,14 +233,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
@@ -234,7 +250,6 @@
                         android:id="@+id/button_cancel"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:background="#E6B5BC"
                         android:fontFamily="@font/roboto"
                         android:gravity="center"
@@ -243,11 +258,12 @@
                         android:textColor="#000000"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:clickable="true"/>
+                        android:clickable="true"
+                        android:focusable="true" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="10dp"
                     android:layout_weight="1"
@@ -257,7 +273,6 @@
                         android:id="@+id/buttomRegisterMotocicleta"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
                         android:background="#E88B61"
                         android:fontFamily="@font/roboto"
                         android:gravity="center"
@@ -266,12 +281,10 @@
                         android:textColor="#000000"
                         android:textSize="16sp"
                         android:textStyle="bold"
-                        android:clickable="true"/>
+                        android:clickable="true"
+                        android:focusable="true" />
                 </androidx.cardview.widget.CardView>
-
             </LinearLayout>
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 </FrameLayout>
