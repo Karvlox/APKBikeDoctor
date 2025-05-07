@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2E2E2E"
-    tools:context=".Home">
+    tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,6 @@
         android:padding="16dp">
 
         <!-- Encabezado Bienvenida -->
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="180dp"
@@ -32,6 +31,7 @@
                 android:translationY="20dp" />
 
             <TextView
+                android:id="@+id/welcome_text"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginBottom="24dp"
@@ -93,7 +93,6 @@
                     android:layout_width="35dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
-
                     android:src="@drawable/calendary_icon" />
 
                 <LinearLayout
@@ -125,11 +124,9 @@
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:src="@drawable/continue_icon" />
 
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -156,7 +153,6 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="-5dp"
                     android:layout_marginEnd="10dp"
-
                     android:src="@drawable/customer_icon_" />
 
                 <TextView
@@ -177,7 +173,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Card Agregar Motocicleta -->
         <androidx.cardview.widget.CardView
             android:id="@+id/card_add_motorcycle"
             android:layout_width="match_parent"

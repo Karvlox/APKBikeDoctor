@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".AddService">
+    tools:context=".ui.service.AddServiceFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -76,14 +76,17 @@
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/date_time_input_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginEnd="10dp"
                                 android:background="@drawable/edit_text_background"
                                 android:fontFamily="@font/roboto"
                                 android:hint="28-03-2025  08:00 AM"
@@ -92,7 +95,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
@@ -131,7 +134,7 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="10dp"
                             android:orientation="horizontal">
@@ -183,7 +186,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="#858585"
                     android:orientation="vertical">
 
@@ -201,7 +204,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="#4D4848"
                         android:orientation="vertical">
 
@@ -218,14 +221,17 @@
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/reason_input_layout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginEnd="10dp"
                                 android:background="@drawable/edit_text_background"
                                 android:fontFamily="@font/roboto"
                                 android:hint="Describe el motivo de ingreso"
@@ -239,7 +245,6 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="15dp"
                             android:layout_marginBottom="10dp"
-                            android:background="#E88B61"
                             app:cardCornerRadius="5dp">
 
                             <TextView
@@ -268,7 +273,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="#858585"
                     android:orientation="vertical">
 
@@ -286,7 +291,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="#4D4848"
                         android:orientation="horizontal"
                         android:paddingBottom="20dp">
@@ -313,14 +318,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
                                 android:fontFamily="@font/roboto"
-                                android:text="Maximo 5 fotografias"
+                                android:text="Máximo 5 fotografías"
                                 android:textColor="#FFFF"
                                 android:textSize="10sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
                             android:gravity="end"
                             android:orientation="horizontal">
@@ -343,7 +348,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-
 
             </androidx.cardview.widget.CardView>
 
@@ -386,7 +390,7 @@
                     app:cardCornerRadius="5dp">
 
                     <TextView
-                        android:id="@+id/button_register_client"
+                        android:id="@+id/button_register_service"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#E88B61"
