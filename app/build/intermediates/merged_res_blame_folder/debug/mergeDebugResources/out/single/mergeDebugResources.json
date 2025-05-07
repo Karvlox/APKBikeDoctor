@@ -1,0 +1,310 @@
+[
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-mdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_home.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_home.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-debug-41:/drawable_reparacion_icon.png.flat",
+        "source": "com.example.bikedoctor.app-main-43:/drawable/reparacion_icon.png"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-debug-41:/drawable_diagnostico_icon.png.flat",
+        "source": "com.example.bikedoctor.app-main-43:/drawable/diagnostico_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_edittext_background.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\edittext_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_entrega_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\entrega_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_cost_approval.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_cost_approval.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_continue_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\continue_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable-mdpi_motorcycle_gif.gif.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable-mdpi\\motorcycle_gif.gif"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_list_item_service.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\list_item_service.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_diagnostic.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_diagnostic.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_clients_list.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_clients_list.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_profile.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_motorcycles_list.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_motorcycles_list.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\menu_top_bar.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\menu\\top_bar.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_calendary_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\calendary_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_bike_doctor_logo.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\bike_doctor_logo.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_create_service_background.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\create_service_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_activity_sign_in.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\activity_sign_in.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-debug-41:/drawable_control_icon.png.flat",
+        "source": "com.example.bikedoctor.app-main-43:/drawable/control_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_rounded_background_service.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\rounded_background_service.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_aprobacion_costos_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\aprobacion_costos_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_repair.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_repair.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_list_item_motorcycle.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\list_item_motorcycle.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_control.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_control.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_recepcion_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\recepcion_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-hdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_rounded_background.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\rounded_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_repuestos_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\repuestos_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_edit_text_background.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\edit_text_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_activity_sign_up.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\activity_sign_up.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_reception.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_reception.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_spare_parts.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_spare_parts.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\font_roboto.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\font\\roboto.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_baseline_table_chart_24.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\baseline_table_chart_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_activity_loarding_page.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\activity_loarding_page.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_edit_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\edit_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_reparacion_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\reparacion_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_baseline_home_24.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\baseline_home_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_motorcycle_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\motorcycle_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_camera_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\camera_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_background_photo.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\background_photo.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_galery_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\galery_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_back_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\back_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_list_item_client.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\list_item_client.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_control_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\control_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_customer_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\customer_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_delivery.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_delivery.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_activity_sign_in_up.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\activity_sign_in_up.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_add_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\add_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-mdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-debug-41:/drawable_aprobacion_costos_icon.png.flat",
+        "source": "com.example.bikedoctor.app-main-43:/drawable/aprobacion_costos_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\font_roboto_thin.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\font\\roboto_thin.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_table_work.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_table_work.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_baseline_person_24.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\baseline_person_24.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-anydpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-anydpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_add_client.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_add_client.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_customer_icon_.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\customer_icon_.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\menu_bottom_nav.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\menu\\bottom_nav.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_diagnostico_icon.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\diagnostico_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\mipmap-anydpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\mipmap-anydpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_add_motorcycle.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_add_motorcycle.xml"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\drawable_icon_logo.png.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\drawable\\icon_logo.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\layout_fragment_add_service.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\layout\\fragment_add_service.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-debug-41:/drawable_recepcion_icon.png.flat",
+        "source": "com.example.bikedoctor.app-main-43:/drawable/recepcion_icon.png"
+    },
+    {
+        "merged": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-debug-41:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\Karvlox\\.gradle\\daemon\\8.11.1\\com.example.bikedoctor.app-main-43:\\xml\\backup_rules.xml"
+    }
+]

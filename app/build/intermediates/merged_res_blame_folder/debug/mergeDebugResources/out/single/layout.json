@@ -1,0 +1,94 @@
+[
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/activity_loarding_page.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/activity_loarding_page.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/activity_main.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_diagnostic.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_diagnostic.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_home.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/activity_sign_up.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/activity_sign_up.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_delivery.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_delivery.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_motorcycles_list.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_motorcycles_list.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/activity_sign_in.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/activity_sign_in.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_clients_list.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_clients_list.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_add_motorcycle.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_add_motorcycle.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/list_item_motorcycle.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/list_item_motorcycle.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_table_work.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_table_work.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/list_item_service.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/list_item_service.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_add_service.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_add_service.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_spare_parts.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_spare_parts.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/activity_sign_in_up.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/activity_sign_in_up.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_profile.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_repair.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_repair.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_reception.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_reception.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/list_item_client.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/list_item_client.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_add_client.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_add_client.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_control.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_control.xml"
+    },
+    {
+        "merged": "com.example.bikedoctor.app-mergeDebugResources-40:/layout/fragment_cost_approval.xml",
+        "source": "com.example.bikedoctor.app-main-43:/layout/fragment_cost_approval.xml"
+    }
+]
