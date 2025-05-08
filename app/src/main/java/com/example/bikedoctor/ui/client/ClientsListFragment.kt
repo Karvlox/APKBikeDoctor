@@ -1,6 +1,7 @@
 package com.example.bikedoctor.ui.client
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.example.bikedoctor.R
 class ClientsListFragment : Fragment() {
 
     private val viewModel: ClientsListViewModel by viewModels()
+    private val tag = "ClientsListFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,12 +59,14 @@ class ClientsListFragment : Fragment() {
             listView.adapter = adapter
             listView.setOnItemClickListener { _, _, position, _ ->
                 val selectedClient = clients[position]
-                // Devolver el cliente seleccionado a AddServiceFragment
+                val clientId = selectedClient.ci?.toString() ?: ""
+                val clientName = "${selectedClient.name} ${selectedClient.lastName}"
+                Log.d(tag, "Sending client selection: client_id=$clientId, client_name=$clientName")
                 setFragmentResult(
                     "client_selection",
                     bundleOf(
-                        "client_id" to selectedClient.ci,
-                        "client_name" to "${selectedClient.name} ${selectedClient.lastName}"
+                        "client_id" to clientId,
+                        "client_name" to clientName
                     )
                 )
                 parentFragmentManager.popBackStack()

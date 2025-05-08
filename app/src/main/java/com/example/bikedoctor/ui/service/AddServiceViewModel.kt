@@ -49,23 +49,23 @@ class AddServiceViewModel : ViewModel() {
     private val _selectedMotorcycle = MutableLiveData<Pair<String?, String?>>()
     val selectedMotorcycle: LiveData<Pair<String?, String?>> = _selectedMotorcycle
 
-    fun setClient(clientId: String?, clientName: String?) {
-        _selectedClient.value = Pair(clientId, clientName)
-        Log.d(tag, "Client selected: id=$clientId, name=$clientName")
+    fun setClient(clientCI: String?, clientName: String?) {
+        _selectedClient.value = Pair(clientCI, clientName)
+        Log.d(tag, "Client selected: CI=$clientCI, name=$clientName")
     }
 
-    fun setMotorcycle(motorcycleId: String?, motorcycleDetails: String?) {
-        _selectedMotorcycle.value = Pair(motorcycleId, motorcycleDetails)
-        Log.d(tag, "Motorcycle selected: id=$motorcycleId, details=$motorcycleDetails")
+    fun setMotorcycle(motorcycleLicensePlate: String?, motorcycleDetails: String?) {
+        _selectedMotorcycle.value = Pair(motorcycleLicensePlate, motorcycleDetails)
+        Log.d(tag, "Motorcycle selected: licensePlate=$motorcycleLicensePlate, details=$motorcycleDetails")
     }
 
     fun validateAndRegister(
-        dateTime: String,
-        clientId: String,
-        motorcycleId: String,
+        date: String,
+        clientCI: String,
+        motorcycleLicensePlate: String,
         reason: String
     ) {
-        Log.d(tag, "Validating: dateTime=$dateTime, clientId=$clientId, motorcycleId=$motorcycleId, reason=$reason")
+        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate, reason=$reason")
         // Limpiar errores previos
         _dateTimeError.value = null
         _clientError.value = null
@@ -73,17 +73,19 @@ class AddServiceViewModel : ViewModel() {
         _reasonError.value = null
 
         // Validar campos
-        if (dateTime.isEmpty()) {
+        if (date.isEmpty()) {
             _dateTimeError.value = "La fecha y hora no pueden estar vacías"
-        } else if (!dateTime.matches(Regex("^\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2} (AM|PM)$"))) {
+        } else if (!date.matches(Regex("^\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2} (AM|PM)$"))) {
             _dateTimeError.value = "Formato inválido (ej. 28-03-2025 08:00 AM)"
         }
 
-        if (clientId.isEmpty()) {
+        if (clientCI.isEmpty()) {
             _clientError.value = "Debe seleccionar un cliente"
+        } else if (!clientCI.matches(Regex("^\\d+$"))) {
+            _clientError.value = "El CI del cliente debe contener solo números"
         }
 
-        if (motorcycleId.isEmpty()) {
+        if (motorcycleLicensePlate.isEmpty()) {
             _motorcycleError.value = "Debe seleccionar una motocicleta"
         }
 
@@ -100,17 +102,17 @@ class AddServiceViewModel : ViewModel() {
             try {
                 val reception = Reception(
                     id = "",
-                    date = dateTime,
-                    clientCI = clientId.toInt(),
-                    motorcycleLicensePlate = motorcycleId,
-                    employeeCI = 2,
+                    date = date,
+                    clientCI = clientCI.toInt(),
+                    motorcycleLicensePlate = motorcycleLicensePlate,
+                    employeeCI = 2, // Hardcode
                     reasons = reasons.toList(),
                     images = photos.toList()
                 )
                 registerReception(reception)
             } catch (e: NumberFormatException) {
-                _clientError.value = "El ID del cliente debe ser un número válido"
-                Log.e(tag, "Invalid clientId format: $clientId", e)
+                _clientError.value = "El CI del cliente debe ser un número válido"
+                Log.e(tag, "Invalid clientCI format: $clientCI", e)
             }
         }
     }
@@ -120,6 +122,22 @@ class AddServiceViewModel : ViewModel() {
             reasons.add(reason)
             _reasonsList.value = reasons.toList()
             Log.d(tag, "Reason added: $reason, total: ${reasons.size}")
+        }
+    }
+
+    fun editReason(index: Int, newReason: String) {
+        if (index in reasons.indices && newReason.isNotEmpty()) {
+            reasons[index] = newReason
+            _reasonsList.value = reasons.toList()
+            Log.d(tag, "Reason edited at index $index: $newReason")
+        }
+    }
+
+    fun deleteReason(index: Int) {
+        if (index in reasons.indices) {
+            val removed = reasons.removeAt(index)
+            _reasonsList.value = reasons.toList()
+            Log.d(tag, "Reason deleted at index $index: $removed")
         }
     }
 
@@ -135,7 +153,14 @@ class AddServiceViewModel : ViewModel() {
     }
 
     private fun registerReception(reception: Reception) {
-        Log.d(tag, "Registering reception: $reception")
+        Log.d(tag, "Registering reception with data: " +
+                "id=${reception.id}, " +
+                "date=${reception.date}, " +
+                "clientCI=${reception.clientCI}, " +
+                "motorcycleLicensePlate=${reception.motorcycleLicensePlate}, " +
+                "employeeCI=${reception.employeeCI}, " +
+                "reasons=${reception.reasons?.joinToString()}, " +
+                "images=${reception.images?.joinToString()}")
         repository.createReception(reception).enqueue(object : Callback<Reception> {
             override fun onResponse(call: Call<Reception>, response: Response<Reception>) {
                 if (response.isSuccessful) {
