@@ -51,7 +51,6 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/roboto"
                         android:text="Datos del Servicio"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
@@ -69,7 +68,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="5dp"
-                            android:fontFamily="@font/roboto"
                             android:text="Fecha y Hora"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
@@ -88,7 +86,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:fontFamily="@font/roboto"
                                 android:hint="28-03-2025  08:00 AM"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -106,7 +103,6 @@
                                 android:layout_gravity="center"
                                 android:layout_marginStart="10dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/roboto"
                                 android:text="* Cliente"
                                 android:textColor="#FFFF"
                                 android:textStyle="bold" />
@@ -118,7 +114,6 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/roboto"
                                 android:text="SELECCIONAR"
                                 android:textAlignment="textEnd"
                                 android:textColor="#FFFF"
@@ -146,7 +141,6 @@
                                 android:layout_gravity="center"
                                 android:layout_marginStart="10dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/roboto"
                                 android:text="* Motorizado"
                                 android:textColor="#FFFF"
                                 android:textStyle="bold" />
@@ -158,7 +152,6 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/roboto"
                                 android:text="SELECCIONAR"
                                 android:textAlignment="textEnd"
                                 android:textColor="#FFFF"
@@ -196,7 +189,6 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/roboto"
                         android:text="Motivos de Ingreso"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
@@ -214,7 +206,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="5dp"
-                            android:fontFamily="@font/roboto"
                             android:text="* Motivo de Ingreso"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
@@ -233,7 +224,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:fontFamily="@font/roboto"
                                 android:hint="Describe el motivo de ingreso"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -252,7 +242,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="#E88B61"
-                                android:fontFamily="@font/roboto"
                                 android:gravity="center"
                                 android:text="Agregar Motivo"
                                 android:textColor="#000000"
@@ -283,7 +272,6 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/roboto"
                         android:text="Evidencia de Ingreso"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
@@ -307,7 +295,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
-                                android:fontFamily="@font/roboto"
                                 android:text="Fotos Adjuntadas (0)"
                                 android:textColor="#FFFF"
                                 android:textStyle="bold" />
@@ -317,7 +304,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="12dp"
-                                android:fontFamily="@font/roboto"
                                 android:text="Máximo 5 fotografías"
                                 android:textColor="#FFFF"
                                 android:textSize="10sp" />
@@ -348,7 +334,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -373,7 +358,6 @@
                         android:background="#E6B5BC"
                         android:clickable="true"
                         android:focusable="true"
-                        android:fontFamily="@font/roboto"
                         android:gravity="center"
                         android:text="CANCELAR"
                         android:textAlignment="center"
@@ -396,7 +380,6 @@
                         android:background="#E88B61"
                         android:clickable="true"
                         android:focusable="true"
-                        android:fontFamily="@font/roboto"
                         android:gravity="center"
                         android:text="GUARDAR"
                         android:textAlignment="center"
@@ -404,9 +387,7 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </androidx.cardview.widget.CardView>
-
             </LinearLayout>
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

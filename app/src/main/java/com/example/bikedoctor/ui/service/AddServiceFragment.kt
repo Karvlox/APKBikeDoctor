@@ -3,6 +3,7 @@ package com.example.bikedoctor.ui.service
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import java.util.Locale
 class AddServiceFragment : Fragment() {
 
     private val viewModel: AddServiceViewModel by viewModels()
+    private val tag = "AddServiceFragment"
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -36,10 +38,12 @@ class AddServiceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(tag, "Inflating fragment_add_service layout")
         val view: View
         try {
             view = inflater.inflate(R.layout.fragment_add_service, container, false)
         } catch (e: Exception) {
+            Log.e(tag, "Error inflating layout: ${e.message}", e)
             Toast.makeText(context, "Error al inflar el layout: ${e.message}", Toast.LENGTH_LONG).show()
             return null
         }
@@ -58,6 +62,7 @@ class AddServiceFragment : Fragment() {
             photosCountText = view.findViewById(R.id.textView19)
                 ?: throw IllegalStateException("textView19 no encontrado")
         } catch (e: Exception) {
+            Log.e(tag, "Error initializing views: ${e.message}", e)
             Toast.makeText(context, "Error al inicializar vistas: ${e.message}", Toast.LENGTH_LONG).show()
             return view
         }
@@ -71,12 +76,14 @@ class AddServiceFragment : Fragment() {
 
         // Botón de retroceso
         view.findViewById<ImageView>(R.id.imageView3)?.setOnClickListener {
+            viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
         // Botón Cancelar
         view.findViewById<TextView>(R.id.button_cancel)?.setOnClickListener {
             clearFields()
+            viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
@@ -111,8 +118,7 @@ class AddServiceFragment : Fragment() {
         setFragmentResultListener("client_selection") { _, bundle ->
             val clientId = bundle.getString("client_id") ?: ""
             val clientName = bundle.getString("client_name") ?: "Cliente Seleccionado"
-            clientSelectText.text = clientName
-            clientSelectText.tag = clientId
+            viewModel.setClient(clientId, clientName)
         }
 
         // Selección de motocicleta (TextView)
@@ -129,8 +135,7 @@ class AddServiceFragment : Fragment() {
         setFragmentResultListener("motorcycle_selection") { _, bundle ->
             val motorcycleId = bundle.getString("motorcycle_id") ?: ""
             val motorcycleDetails = bundle.getString("motorcycle_details") ?: "Motocicleta Seleccionada"
-            motorcycleSelectText.text = motorcycleDetails
-            motorcycleSelectText.tag = motorcycleId
+            viewModel.setMotorcycle(motorcycleId, motorcycleDetails)
         }
 
         // Botón de cámara (simulado)
@@ -162,7 +167,6 @@ class AddServiceFragment : Fragment() {
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
             if (status.startsWith("Servicio registrado")) {
                 clearFields()
-                parentFragmentManager.popBackStack()
             }
         }
         viewModel.reasonsList.observe(viewLifecycleOwner) { reasons ->
@@ -171,6 +175,26 @@ class AddServiceFragment : Fragment() {
         }
         viewModel.photosCount.observe(viewLifecycleOwner) { count ->
             photosCountText.text = "Fotos Adjuntadas ($count)"
+        }
+
+        // Observar selecciones de cliente y motocicleta
+        viewModel.selectedClient.observe(viewLifecycleOwner) { (clientId, clientName) ->
+            if (clientId != null && clientName != null) {
+                clientSelectText.text = clientName
+                clientSelectText.tag = clientId
+            } else {
+                clientSelectText.text = "SELECCIONAR"
+                clientSelectText.tag = null
+            }
+        }
+        viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { (motorcycleId, motorcycleDetails) ->
+            if (motorcycleId != null && motorcycleDetails != null) {
+                motorcycleSelectText.text = motorcycleDetails
+                motorcycleSelectText.tag = motorcycleId
+            } else {
+                motorcycleSelectText.text = "SELECCIONAR"
+                motorcycleSelectText.tag = null
+            }
         }
 
         return view
