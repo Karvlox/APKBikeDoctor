@@ -227,6 +227,11 @@ class AddServiceFragment : Fragment() {
             }
         }
 
+        // Observar fecha seleccionada
+        viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
+            dateTimeEditText.setText(dateTime ?: "")
+        }
+
         return view
     }
 
@@ -287,7 +292,9 @@ class AddServiceFragment : Fragment() {
 
                         // Formatear la fecha y hora seleccionadas
                         val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
-                        dateTimeEditText.setText(dateFormat.format(calendar.time))
+                        val formattedDate = dateFormat.format(calendar.time)
+                        dateTimeEditText.setText(formattedDate)
+                        viewModel.setDateTime(formattedDate)
                     },
                     hour,
                     minute,
@@ -309,5 +316,6 @@ class AddServiceFragment : Fragment() {
         clientSelectText.tag = null
         motorcycleSelectText.text = "SELECCIONAR"
         motorcycleSelectText.tag = null
+        viewModel.setDateTime(null)
     }
 }

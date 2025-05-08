@@ -87,6 +87,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
                                 android:hint="28-03-2025  08:00 AM"
+                                android:textColor="#050505"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -225,6 +226,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
                                 android:hint="Describe el motivo de ingreso"
+                                android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
