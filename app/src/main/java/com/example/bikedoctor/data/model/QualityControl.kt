@@ -7,6 +7,7 @@ data class QualityControl(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listControls: List<Control>?,
+    val reviewed: Boolean?
 )
 
 data class Control(

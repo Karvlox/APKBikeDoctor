@@ -7,7 +7,8 @@ data class Reception(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val reasons: List<String>?,
-    val images: List<String>?
+    val images: List<String>?,
+    val reviewed: Boolean?
 )
 
 data class ReceptionSend(
@@ -16,5 +17,6 @@ data class ReceptionSend(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val reasons: List<String>?,
-    val images: List<String>?
+    val images: List<String>?,
+    val reviewed: Boolean?
 )

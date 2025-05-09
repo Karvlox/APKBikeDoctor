@@ -36,9 +36,10 @@ class CostApprovalViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val costApproval = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${costApproval.size}")
-                    _costApproval.value = costApproval
-                    if (costApproval.isEmpty()) {
+                    val filteredCostAprroval = costApproval.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredCostAprroval.size}")
+                    _costApproval.value = filteredCostAprroval
+                    if (filteredCostAprroval.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }

@@ -7,6 +7,7 @@ data class CostApproval(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listLaborCosts: List<LaborCost>?,
+    val reviewed: Boolean?
 )
 
 data class LaborCost(

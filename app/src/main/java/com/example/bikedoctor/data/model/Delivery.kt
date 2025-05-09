@@ -6,5 +6,6 @@ data class Delivery(
     val clientCI: Int?,
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
-    val surveyCompleted: Boolean?
+    val surveyCompleted: Boolean?,
+    val reviewed: Boolean?
 )

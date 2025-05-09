@@ -107,7 +107,6 @@ class AddServiceViewModel : ViewModel() {
             _reasonError.value == null
         ) {
             try {
-                // Convertir fecha a formato ISO 8601
                 val inputFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
                 val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                 outputFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -120,7 +119,8 @@ class AddServiceViewModel : ViewModel() {
                     motorcycleLicensePlate = motorcycleLicensePlate,
                     employeeCI = 10387210, // Hardcode
                     reasons = reasons.toList(),
-                    images = photos.toList()
+                    images = photos.toList(),
+                    reviewed = false
                 )
                 registerReception(reception)
             } catch (e: NumberFormatException) {

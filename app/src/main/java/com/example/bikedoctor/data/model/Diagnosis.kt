@@ -7,6 +7,7 @@ data class Diagnosis(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listDiagnostic: List<Diagnostic>?,
+    val reviewed: Boolean?
 )
 
 data class Diagnostic(

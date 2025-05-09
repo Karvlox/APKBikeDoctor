@@ -36,11 +36,12 @@ class ReceptionViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val receptions = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${receptions.size}")
-                    _receptions.value = receptions
-                    if (receptions.isEmpty()) {
-                        _error.value = "No hay servicios de recepción registrados"
-                        Log.d(tag, "No receptions found")
+                    val filteredReceptions = receptions.filter { it.reviewed == false }
+                    Log.d(tag, "Filtered receptions: ${filteredReceptions.size}")
+                    _receptions.value = filteredReceptions
+                    if (filteredReceptions.isEmpty()) {
+                        _error.value = "No hay servicios de recepción pendientes"
+                        Log.d(tag, "No pending receptions found")
                     }
                 } else {
                     val errorMsg = "Error al obtener servicios: ${response.code()} ${response.message()}"

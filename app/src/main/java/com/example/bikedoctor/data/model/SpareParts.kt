@@ -8,6 +8,7 @@ data class SpareParts(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listSpareParts: List<SparePart>?,
+    val reviewed: Boolean?
 )
 
 data class SparePart(

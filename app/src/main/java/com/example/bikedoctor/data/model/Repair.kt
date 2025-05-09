@@ -7,6 +7,7 @@ data class Repair(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listReparations: List<Reparation>?,
+    val reviewed: Boolean?
 )
 
 data class Reparation(

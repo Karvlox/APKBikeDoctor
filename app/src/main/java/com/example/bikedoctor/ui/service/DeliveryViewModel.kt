@@ -36,9 +36,10 @@ class DeliveryViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val delivery = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${delivery.size}")
-                    _delivery.value = delivery
-                    if (delivery.isEmpty()) {
+                    val filteredDelivery = delivery.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredDelivery.size}")
+                    _delivery.value = filteredDelivery
+                    if (filteredDelivery.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }

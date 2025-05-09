@@ -36,9 +36,10 @@ class RepairViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val repairs = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${repairs.size}")
-                    _repairs.value = repairs
-                    if (repairs.isEmpty()) {
+                    val filteredRepairs = repairs.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredRepairs.size}")
+                    _repairs.value = filteredRepairs
+                    if (filteredRepairs.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }
