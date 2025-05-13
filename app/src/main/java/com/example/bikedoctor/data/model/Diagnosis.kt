@@ -15,3 +15,12 @@ data class Diagnostic(
     val detailOfError: String?,
     val timeSpent: Int?
 )
+
+data class DiagnosisPost(
+    val date: String?,
+    val clientCI: Int?,
+    val motorcycleLicensePlate: String?,
+    val employeeCI: Int?,
+    val listDiagnostic: List<Diagnostic>?,
+    val reviewed: Boolean?
+)

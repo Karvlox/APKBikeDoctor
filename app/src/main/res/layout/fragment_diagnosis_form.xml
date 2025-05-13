@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".ui.service.AddServiceFragment">
+    tools:context=".ui.service.ReceptionFormFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -107,25 +107,6 @@
                                 android:text="* Cliente"
                                 android:textColor="#FFFF"
                                 android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/textView11"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginEnd="20dp"
-                                android:layout_weight="1"
-                                android:text="SELECCIONAR"
-                                android:textAlignment="textEnd"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:id="@+id/imageView5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/add_icon" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -146,24 +127,7 @@
                                 android:textColor="#FFFF"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/textView13"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginEnd="20dp"
-                                android:layout_weight="1"
-                                android:text="SELECCIONAR"
-                                android:textAlignment="textEnd"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
 
-                            <ImageView
-                                android:id="@+id/imageView7"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/add_icon" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -190,7 +154,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Motivos de Ingreso"
+                        android:text="Diagnostico"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -202,18 +166,18 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView15"
+                            android:id="@+id/textView1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="5dp"
-                            android:text="* Motivo de Ingreso"
+                            android:text="* Error"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/reason_input_layout"
+                            android:id="@+id/reason_input_layou"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -225,7 +189,65 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Describe el motivo de ingreso"
+                                android:hint="Error"
+                                android:textColor="#000000"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/textVie"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"
+                            android:text="* Descripcion del Error"
+                            android:textColor="#FFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/reason_input_laut"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/edit_text_background"
+                                android:hint="Describe el error"
+                                android:textColor="#000000"
+                                android:textStyle="bold" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/textViedd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"
+                            android:text="* Tiempo invertido"
+                            android:textColor="#FFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/reason_input_lasutd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/edit_text_background"
+                                android:hint="Tiempo invertido en minutos"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>

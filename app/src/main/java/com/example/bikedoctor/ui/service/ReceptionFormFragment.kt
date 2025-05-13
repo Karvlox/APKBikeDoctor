@@ -26,9 +26,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddServiceFragment : Fragment() {
+class ReceptionFormFragment : Fragment() {
 
-    private val viewModel: AddServiceViewModel by viewModels()
+    private val viewModel: ReceptionFormViewModel by viewModels()
     private val tag = "AddServiceFragment"
 
     private lateinit var dateTimeInputLayout: TextInputLayout
@@ -38,6 +38,7 @@ class AddServiceFragment : Fragment() {
     private lateinit var motorcycleSelectText: TextView
     private lateinit var photosCountText: TextView
     private lateinit var reasonsRecyclerView: RecyclerView
+    private lateinit var titleTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +47,7 @@ class AddServiceFragment : Fragment() {
         Log.d(tag, "Inflating fragment_add_service layout")
         val view: View
         try {
-            view = inflater.inflate(R.layout.fragment_add_service, container, false)
+            view = inflater.inflate(R.layout.fragment_reception_form, container, false)
         } catch (e: Exception) {
             Log.e(tag, "Error inflating layout: ${e.message}", e)
             Toast.makeText(context, "Error al inflar el layout: ${e.message}", Toast.LENGTH_LONG).show()
@@ -68,10 +69,40 @@ class AddServiceFragment : Fragment() {
                 ?: throw IllegalStateException("textView19 no encontrado")
             reasonsRecyclerView = view.findViewById(R.id.reasons_recycler_view)
                 ?: throw IllegalStateException("reasons_recycler_view no encontrado")
+            titleTextView = view.findViewById(R.id.textView3)
+                ?: throw IllegalStateException("textView3 no encontrado")
         } catch (e: Exception) {
             Log.e(tag, "Error initializing views: ${e.message}", e)
             Toast.makeText(context, "Error al inicializar vistas: ${e.message}", Toast.LENGTH_LONG).show()
             return view
+        }
+
+        // Verificar argumentos para modo edición
+        arguments?.let { args ->
+            val receptionId = args.getString("reception_id")
+            val date = args.getString("reception_date")
+            val clientCI = args.getString("reception_clientCI")
+            val motorcycleLicensePlate = args.getString("reception_motorcycleLicensePlate")
+            val employeeCI = args.getString("reception_employeeCI")
+            val reasons = args.getStringArray("reception_reasons")?.toList()
+            val images = args.getStringArray("reception_images")?.toList()
+            val reviewed = args.getBoolean("reception_reviewed", false)
+
+            if (receptionId != null) {
+                titleTextView.text = "Editar Servicio"
+                viewModel.initializeReception(
+                    id = receptionId,
+                    date = date,
+                    clientCI = clientCI,
+                    clientName = "Cliente $clientCI", // TODO: Obtener nombre real del cliente
+                    motorcycleLicensePlate = motorcycleLicensePlate,
+                    motorcycleDetails = motorcycleLicensePlate, // TODO: Obtener detalles reales
+                    employeeCI = employeeCI,
+                    reasons = reasons,
+                    images = images,
+                    reviewed = reviewed
+                )
+            }
         }
 
         // Hacer el campo de fecha y hora no editable manualmente
@@ -187,8 +218,9 @@ class AddServiceFragment : Fragment() {
         }
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Servicio registrado")) {
+            if (status.startsWith("Servicio registrado") || status.startsWith("Servicio actualizado")) {
                 clearFields()
+                parentFragmentManager.popBackStack()
             }
         }
         viewModel.reasonsList.observe(viewLifecycleOwner) { reasons ->

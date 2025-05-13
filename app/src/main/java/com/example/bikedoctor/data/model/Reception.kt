@@ -11,8 +11,8 @@ data class Reception(
     val reviewed: Boolean?
 )
 
-data class ReceptionSend(
-    val date: String?, // Formato esperado por el backend: "2025-05-08T03:30:56.278Z"
+data class ReceptionPost(
+    val date: String?,
     val clientCI: Int?,
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
