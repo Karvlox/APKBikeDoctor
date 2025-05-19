@@ -14,3 +14,12 @@ data class Reparation(
     val nameReparation: String?,
     val descriptionReparation: String?
 )
+
+data class RepairPost(
+    val date: String?,
+    val clientCI: Int?,
+    val motorcycleLicensePlate: String?,
+    val employeeCI: Int?,
+    val listReparations: List<Reparation>?,
+    val reviewed: Boolean?
+)

@@ -22,5 +22,5 @@ data class DiagnosisPost(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listDiagnostic: List<Diagnostic>?,
-    val reviewed: Boolean?
+    val reviewed: Boolean? = false
 )

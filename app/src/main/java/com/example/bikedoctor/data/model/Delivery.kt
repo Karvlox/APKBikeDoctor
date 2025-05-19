@@ -9,3 +9,13 @@ data class Delivery(
     val surveyCompleted: Boolean?,
     val reviewed: Boolean?
 )
+
+data class DeliveryPost(
+    val id: String?,
+    val date: String?,
+    val clientCI: Int?,
+    val motorcycleLicensePlate: String?,
+    val employeeCI: Int?,
+    val surveyCompleted: Boolean?,
+    val reviewed: Boolean?
+)

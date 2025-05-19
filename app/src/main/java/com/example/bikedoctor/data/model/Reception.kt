@@ -20,3 +20,7 @@ data class ReceptionPost(
     val images: List<String>?,
     val reviewed: Boolean?
 )
+
+data class ReceptionChangeStatus(
+    val reviewed: Boolean
+)

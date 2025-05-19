@@ -15,3 +15,12 @@ data class LaborCost(
     val descriptionProduct: String?,
     val price: String?
 )
+
+data class CostApprovalPost(
+    val date: String?,
+    val clientCI: Int?,
+    val motorcycleLicensePlate: String?,
+    val employeeCI: Int?,
+    val listLaborCosts: List<LaborCost>?,
+    val reviewed: Boolean?
+)

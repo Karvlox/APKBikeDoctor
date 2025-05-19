@@ -16,3 +16,13 @@ data class SparePart(
     val detailSparePart: String?,
     val price: Int?
 )
+
+data class SparePartsPost(
+    val date: String?,
+    val clientCI: Int?,
+    val clientName: String?,
+    val motorcycleLicensePlate: String?,
+    val employeeCI: Int?,
+    val listSpareParts: List<SparePart>?,
+    val reviewed: Boolean?
+)

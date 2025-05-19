@@ -17,4 +17,8 @@ class ReceptionRepository {
     fun updateReception(id: String, reception: ReceptionPost): Call<ReceptionPost> {
         return RetrofitClient.receptionApi.updateReception(id, reception)
     }
+
+    fun updateReviewedStatus(id: String, reviewed: Boolean): Call<Void> {
+        return RetrofitClient.receptionApi.updateReviewedStatus(id, reviewed)
+    }
 }

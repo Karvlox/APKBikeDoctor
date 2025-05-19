@@ -79,4 +79,12 @@ object RetrofitClient {
             .build()
             .create(DeliveryAPI::class.java)
     }
+
+    val messageNotificationAPI: MessageNotificationAPI by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MessageNotificationAPI::class.java)
+    }
 }

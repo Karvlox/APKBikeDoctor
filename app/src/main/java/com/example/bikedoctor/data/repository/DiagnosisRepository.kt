@@ -14,4 +14,12 @@ class DiagnosisRepository {
     fun createDiagnosis(diagnosis: DiagnosisPost): Call<DiagnosisPost> {
         return RetrofitClient.diagnosisAPI.createDiagnosis(diagnosis)
     }
+
+    fun updateDiagnosis(id: String, diagnosis: DiagnosisPost): Call<DiagnosisPost> {
+        return RetrofitClient.diagnosisAPI.updateDiagnosis(id, diagnosis)
+    }
+
+    fun updateReviewedStatus(id: String, reviewed: Boolean): Call<Void> {
+        return RetrofitClient.diagnosisAPI.updateReviewedStatus(id, reviewed)
+    }
 }

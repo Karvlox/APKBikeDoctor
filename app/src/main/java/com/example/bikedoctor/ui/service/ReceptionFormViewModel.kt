@@ -141,10 +141,11 @@ class ReceptionFormViewModel : ViewModel() {
             _motorcycleError.value = "Debe seleccionar una motocicleta"
         }
 
+        /*
         if (reason.isEmpty()) {
             _reasonError.value = "El motivo no puede estar vacío"
         }
-
+        */
         // Verificar si todos los campos son válidos
         if (_dateTimeError.value == null &&
             _clientError.value == null &&

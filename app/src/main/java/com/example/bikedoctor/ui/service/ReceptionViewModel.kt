@@ -28,7 +28,7 @@ class ReceptionViewModel : ViewModel() {
         fetchReceptions(1, 10)
     }
 
-    private fun fetchReceptions(pageNumber: Int, pageSize: Int) {
+    fun fetchReceptions(pageNumber: Int, pageSize: Int) {
         Log.d(tag, "Fetching receptions: pageNumber=$pageNumber, pageSize=$pageSize")
         _isLoading.value = true
         repository.getReceptions(pageNumber, pageSize).enqueue(object : Callback<List<Reception>> {
