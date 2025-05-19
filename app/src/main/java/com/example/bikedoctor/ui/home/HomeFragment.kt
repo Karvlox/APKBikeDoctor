@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
 import com.example.bikedoctor.ui.client.AddClientFragment
 import com.example.bikedoctor.ui.motorcycle.AddMotorcycleFragment
-import com.example.bikedoctor.ui.service.AddServiceFragment
+import com.example.bikedoctor.ui.service.ReceptionFormFragment
 
 class HomeFragment : Fragment() {
 
@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         // Navegar a AddService (asumimos que será reestructurado como AddServiceFragment)
         cardNewRepair.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, AddServiceFragment())
+            transaction.replace(R.id.frame_layout, ReceptionFormFragment())
             transaction.addToBackStack(null)
             transaction.commit()
         }

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bikedoctor.data.model.ReceptionSend
+import com.example.bikedoctor.data.model.ReceptionPost
 import com.example.bikedoctor.data.repository.ReceptionRepository
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,12 +12,13 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddServiceViewModel : ViewModel() {
+class ReceptionFormViewModel : ViewModel() {
 
     private val repository = ReceptionRepository()
     private val reasons = mutableListOf<String>()
     private val photos = mutableListOf<String>()
     private val tag = "AddServiceViewModel"
+    private var receptionId: String? = null
 
     // LiveData para los errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
@@ -44,16 +45,21 @@ class AddServiceViewModel : ViewModel() {
     private val _photosCount = MutableLiveData<Int>()
     val photosCount: LiveData<Int> = _photosCount
 
-    // LiveData para las selecciones de cliente y motocicleta
+    // LiveData para las selecciones de cliente
     private val _selectedClient = MutableLiveData<Pair<String?, String?>>()
     val selectedClient: LiveData<Pair<String?, String?>> = _selectedClient
 
+    // LiveData para las selecciones de motocicleta
     private val _selectedMotorcycle = MutableLiveData<Pair<String?, String?>>()
     val selectedMotorcycle: LiveData<Pair<String?, String?>> = _selectedMotorcycle
 
     // LiveData para la fecha seleccionada
     private val _selectedDateTime = MutableLiveData<String?>()
     val selectedDateTime: LiveData<String?> = _selectedDateTime
+
+    // LiveData para reviewed
+    private val _reviewed = MutableLiveData<Boolean?>()
+    val reviewed: LiveData<Boolean?> = _reviewed
 
     fun setDateTime(dateTime: String?) {
         _selectedDateTime.value = dateTime
@@ -68,6 +74,41 @@ class AddServiceViewModel : ViewModel() {
     fun setMotorcycle(motorcycleLicensePlate: String?, motorcycleDetails: String?) {
         _selectedMotorcycle.value = Pair(motorcycleLicensePlate, motorcycleDetails)
         Log.d(tag, "Motorcycle selected: licensePlate=$motorcycleLicensePlate, details=$motorcycleDetails")
+    }
+
+    fun setReviewed(reviewed: Boolean?) {
+        _reviewed.value = reviewed
+        Log.d(tag, "Reviewed set: $reviewed")
+    }
+
+    fun initializeReception(
+        id: String?,
+        date: String?,
+        clientCI: String?,
+        clientName: String?,
+        motorcycleLicensePlate: String?,
+        motorcycleDetails: String?,
+        employeeCI: String?,
+        reasons: List<String>?,
+        images: List<String>?,
+        reviewed: Boolean?
+    ) {
+        receptionId = id
+        _selectedDateTime.value = date
+        _selectedClient.value = Pair(clientCI, clientName ?: "Cliente $clientCI")
+        _selectedMotorcycle.value = Pair(motorcycleLicensePlate, motorcycleDetails ?: motorcycleLicensePlate)
+        this.reasons.clear()
+        if (reasons != null) {
+            this.reasons.addAll(reasons)
+        }
+        _reasonsList.value = this.reasons.toList()
+        this.photos.clear()
+        if (images != null) {
+            this.photos.addAll(images)
+        }
+        _photosCount.value = this.photos.size
+        _reviewed.value = reviewed
+        Log.d(tag, "Initialized reception: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
     }
 
     fun validateAndRegister(
@@ -100,6 +141,11 @@ class AddServiceViewModel : ViewModel() {
             _motorcycleError.value = "Debe seleccionar una motocicleta"
         }
 
+        /*
+        if (reason.isEmpty()) {
+            _reasonError.value = "El motivo no puede estar vacío"
+        }
+        */
         // Verificar si todos los campos son válidos
         if (_dateTimeError.value == null &&
             _clientError.value == null &&
@@ -114,15 +160,21 @@ class AddServiceViewModel : ViewModel() {
                 val parsedDate = inputFormat.parse(date)
                 val isoDate = outputFormat.format(parsedDate)
 
-                val reception = ReceptionSend(
+                val reception = ReceptionPost(
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
                     employeeCI = 10387210, // Hardcode
                     reasons = reasons.toList(),
-                    images = photos.toList()
+                    images = photos.toList(),
+                    reviewed = _reviewed.value ?: false
                 )
-                registerReception(reception)
+
+                if (receptionId == null) {
+                    createReception(reception)
+                } else {
+                    updateReception(receptionId!!, reception)
+                }
             } catch (e: NumberFormatException) {
                 _clientError.value = "El CI del cliente debe ser un número válido"
                 Log.e(tag, "Invalid clientCI format: $clientCI", e)
@@ -168,25 +220,21 @@ class AddServiceViewModel : ViewModel() {
         }
     }
 
-    private fun registerReception(reception: ReceptionSend) {
-        Log.d(tag, "Registering reception with data: " +
+    private fun createReception(reception: ReceptionPost) {
+        Log.d(tag, "Creating reception with data: " +
                 "date=${reception.date}, " +
                 "clientCI=${reception.clientCI}, " +
                 "motorcycleLicensePlate=${reception.motorcycleLicensePlate}, " +
                 "employeeCI=${reception.employeeCI}, " +
                 "reasons=${reception.reasons?.joinToString()}, " +
-                "images=${reception.images?.joinToString()}")
-        repository.createReception(reception).enqueue(object : Callback<ReceptionSend> {
-            override fun onResponse(call: Call<ReceptionSend>, response: Response<ReceptionSend>) {
+                "images=${reception.images?.joinToString()}, " +
+                "reviewed=${reception.reviewed}")
+        repository.createReception(reception).enqueue(object : Callback<ReceptionPost> {
+            override fun onResponse(call: Call<ReceptionPost>, response: Response<ReceptionPost>) {
                 if (response.isSuccessful) {
                     _registerStatus.value = "Servicio registrado exitosamente"
-                    Log.d(tag, "Reception registered successfully")
-                    // Limpiar listas después de un registro exitoso
-                    reasons.clear()
-                    photos.clear()
-                    _reasonsList.value = emptyList()
-                    _photosCount.value = 0
-                    _selectedDateTime.value = null
+                    Log.d(tag, "Reception created successfully")
+                    clearSelections()
                 } else {
                     val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
                     _registerStatus.value = errorMsg
@@ -194,7 +242,37 @@ class AddServiceViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<ReceptionSend>, t: Throwable) {
+            override fun onFailure(call: Call<ReceptionPost>, t: Throwable) {
+                val errorMsg = "Error de conexión: ${t.message}"
+                _registerStatus.value = errorMsg
+                Log.e(tag, errorMsg, t)
+            }
+        })
+    }
+
+    private fun updateReception(id: String, reception: ReceptionPost) {
+        Log.d(tag, "Updating reception with id=$id, data: " +
+                "date=${reception.date}, " +
+                "clientCI=${reception.clientCI}, " +
+                "motorcycleLicensePlate=${reception.motorcycleLicensePlate}, " +
+                "employeeCI=${reception.employeeCI}, " +
+                "reasons=${reception.reasons?.joinToString()}, " +
+                "images=${reception.images?.joinToString()}, " +
+                "reviewed=${reception.reviewed}")
+        repository.updateReception(id, reception).enqueue(object : Callback<ReceptionPost> {
+            override fun onResponse(call: Call<ReceptionPost>, response: Response<ReceptionPost>) {
+                if (response.isSuccessful) {
+                    _registerStatus.value = "Servicio actualizado exitosamente"
+                    Log.d(tag, "Reception updated successfully")
+                    clearSelections()
+                } else {
+                    val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
+                    _registerStatus.value = errorMsg
+                    Log.e(tag, errorMsg)
+                }
+            }
+
+            override fun onFailure(call: Call<ReceptionPost>, t: Throwable) {
                 val errorMsg = "Error de conexión: ${t.message}"
                 _registerStatus.value = errorMsg
                 Log.e(tag, errorMsg, t)
@@ -203,9 +281,11 @@ class AddServiceViewModel : ViewModel() {
     }
 
     fun clearSelections() {
+        receptionId = null
         _selectedClient.value = Pair(null, null)
         _selectedMotorcycle.value = Pair(null, null)
         _selectedDateTime.value = null
+        _reviewed.value = null
         reasons.clear()
         photos.clear()
         _reasonsList.value = emptyList()

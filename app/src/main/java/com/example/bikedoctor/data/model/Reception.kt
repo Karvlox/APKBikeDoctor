@@ -7,14 +7,20 @@ data class Reception(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val reasons: List<String>?,
-    val images: List<String>?
+    val images: List<String>?,
+    val reviewed: Boolean?
 )
 
-data class ReceptionSend(
-    val date: String?, // Formato esperado por el backend: "2025-05-08T03:30:56.278Z"
+data class ReceptionPost(
+    val date: String?,
     val clientCI: Int?,
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val reasons: List<String>?,
-    val images: List<String>?
+    val images: List<String>?,
+    val reviewed: Boolean?
+)
+
+data class ReceptionChangeStatus(
+    val reviewed: Boolean
 )

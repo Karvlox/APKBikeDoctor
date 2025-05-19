@@ -41,11 +41,11 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
         firstReasonText.text = "Formulario llenado?: ${delivery.surveyCompleted?: "Sin confirmación"}"
 
         // Configurar botones (placeholders)
-        view.findViewById<ImageView>(R.id.imageView14)?.setOnClickListener {
+        view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${delivery.id}")
             // TODO: Implementar acción de edición
         }
-        view.findViewById<ImageView>(R.id.imageView16)?.setOnClickListener {
+        view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for reception: ${delivery.id}")
             // TODO: Implementar acción de continuación
         }

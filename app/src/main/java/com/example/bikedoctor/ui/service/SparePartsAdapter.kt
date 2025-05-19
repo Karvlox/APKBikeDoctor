@@ -41,11 +41,11 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         firstReasonText.text = "Lista de Repuestos: ${spareParts.listSpareParts?.firstOrNull() ?: "Sin motivos especificados"}"
 
         // Configurar botones (placeholders)
-        view.findViewById<ImageView>(R.id.imageView14)?.setOnClickListener {
+        view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${spareParts.id}")
             // TODO: Implementar acción de edición
         }
-        view.findViewById<ImageView>(R.id.imageView16)?.setOnClickListener {
+        view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for reception: ${spareParts.id}")
             // TODO: Implementar acción de continuación
         }

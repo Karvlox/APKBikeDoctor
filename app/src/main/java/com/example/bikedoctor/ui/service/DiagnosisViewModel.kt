@@ -36,9 +36,10 @@ class DiagnosisViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val diagnosis = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${diagnosis.size}")
-                    _diagnosis.value = diagnosis
-                    if (diagnosis.isEmpty()) {
+                    val filteredDiagnosis = diagnosis.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredDiagnosis.size}")
+                    _diagnosis.value = filteredDiagnosis
+                    if (filteredDiagnosis.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }

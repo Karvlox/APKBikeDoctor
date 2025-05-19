@@ -36,9 +36,10 @@ class ControlViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     val controls = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${controls.size}")
-                    _control.value = controls
-                    if (controls.isEmpty()) {
+                    val filteredControls = controls.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredControls.size}")
+                    _control.value = filteredControls
+                    if (filteredControls.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }

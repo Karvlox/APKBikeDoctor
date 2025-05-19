@@ -24,14 +24,6 @@ object RetrofitClient {
             .create(MotorcycleApi::class.java)
     }
 
-    val serviceApi: ServiceApi by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ServiceApi::class.java)
-    }
-
     val receptionApi: ReceptionApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -86,5 +78,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(DeliveryAPI::class.java)
+    }
+
+    val messageNotificationAPI: MessageNotificationAPI by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MessageNotificationAPI::class.java)
     }
 }

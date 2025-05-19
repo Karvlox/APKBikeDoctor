@@ -35,10 +35,11 @@ class SparePartsViewModel : ViewModel() {
             override fun onResponse(call: Call<List<SpareParts>>, response: Response<List<SpareParts>>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    val diagnosis = response.body() ?: emptyList()
-                    Log.d(tag, "Receptions received: ${diagnosis.size}")
-                    _spareParts.value = diagnosis
-                    if (diagnosis.isEmpty()) {
+                    val spareParts = response.body() ?: emptyList()
+                    val filteredSpareParts = spareParts.filter { it.reviewed == false }
+                    Log.d(tag, "Receptions received: ${filteredSpareParts.size}")
+                    _spareParts.value = filteredSpareParts
+                    if (filteredSpareParts.isEmpty()) {
                         _error.value = "No hay servicios de recepción registrados"
                         Log.d(tag, "No receptions found")
                     }
