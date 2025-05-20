@@ -13,7 +13,7 @@ import retrofit2.Response
 class DiagnosisViewModel : ViewModel() {
 
     private val repository = DiagnosisRepository()
-    private val tag = "ReceptionViewModel"
+    private val tag = "DiagnosisViewModel"
 
     private val _diagnosis = MutableLiveData<List<Diagnosis>>()
     val diagnosis: LiveData<List<Diagnosis>> = _diagnosis
@@ -25,11 +25,11 @@ class DiagnosisViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     init {
-        fetchReceptions(1, 10)
+        fetchDiagnosis(1, 10)
     }
 
-    private fun fetchReceptions(pageNumber: Int, pageSize: Int) {
-        Log.d(tag, "Fetching receptions: pageNumber=$pageNumber, pageSize=$pageSize")
+    fun fetchDiagnosis(pageNumber: Int, pageSize: Int) {
+        Log.d(tag, "Fetching diagnosis: pageNumber=$pageNumber, pageSize=$pageSize")
         _isLoading.value = true
         repository.getDiagnosis(pageNumber, pageSize).enqueue(object : Callback<List<Diagnosis>> {
             override fun onResponse(call: Call<List<Diagnosis>>, response: Response<List<Diagnosis>>) {
@@ -37,14 +37,14 @@ class DiagnosisViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     val diagnosis = response.body() ?: emptyList()
                     val filteredDiagnosis = diagnosis.filter { it.reviewed == false }
-                    Log.d(tag, "Receptions received: ${filteredDiagnosis.size}")
+                    Log.d(tag, "Diagnosis received: ${filteredDiagnosis.size}")
                     _diagnosis.value = filteredDiagnosis
                     if (filteredDiagnosis.isEmpty()) {
-                        _error.value = "No hay servicios de recepción registrados"
-                        Log.d(tag, "No receptions found")
+                        _error.value = "No hay diagnósticos pendientes"
+                        Log.d(tag, "No pending diagnosis found")
                     }
                 } else {
-                    val errorMsg = "Error al obtener servicios: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al obtener diagnósticos: ${response.code()} ${response.message()}"
                     _error.value = errorMsg
                     Log.e(tag, errorMsg)
                 }

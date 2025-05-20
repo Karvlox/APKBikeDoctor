@@ -131,8 +131,8 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
             date = currentDate,
             clientCI = reception.clientCI,
             motorcycleLicensePlate = reception.motorcycleLicensePlate,
-            listDiagnostic = null,
-            employeeCI = reception.employeeCI
+            employeeCI = reception.employeeCI,
+            listDiagnostic = null
         )
 
         // Make POST request for diagnosis

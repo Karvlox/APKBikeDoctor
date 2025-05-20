@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".ui.service.ReceptionFormFragment">
+    tools:context=".ui.service.CostApprovalFormFra  gment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -46,12 +46,12 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/title_text"
                         android:layout_width="match_parent"
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Datos del Servicio"
+                        android:text="Datos del Diagnóstico"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -63,7 +63,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView9"
+                            android:id="@+id/date_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -83,52 +83,59 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/date_time_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="28-03-2025  08:00 AM"
+                                android:hint="28-03-2025 08:00 AM"
                                 android:textColor="#050505"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/client_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
+                            android:text="* Cliente"
+                            android:textColor="#FFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/textView10"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginStart="10dp"
-                                android:layout_weight="1"
-                                android:text="* Cliente"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/client_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:padding="2dp"
+                            android:text="Cliente no seleccionado"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/motorcycle_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="5dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
+                            android:text="* Motocicleta"
+                            android:textColor="#FFFF"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/textView12"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginStart="10dp"
-                                android:layout_weight="1"
-                                android:text="* Motorizado"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
-
-
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/motorcycle_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="2dp"
+                            android:padding="2dp"
+                            android:text="Motocicleta no seleccionada"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -149,12 +156,12 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView14"
+                        android:id="@+id/diagnostic_section_title"
                         android:layout_width="match_parent"
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Diagnostico"
+                        android:text="Diagnóstico"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -166,18 +173,18 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView1"
+                            android:id="@+id/error_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="5dp"
-                            android:text="* Error"
+                            android:layout_marginTop="1dp"
+                            android:text="* Producto"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/reason_input_layou"
+                            android:id="@+id/product_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -186,27 +193,28 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/product_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Error"
+                                android:hint="Nombre del producto"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
-                            android:id="@+id/textVie"
+                            android:id="@+id/error_detail_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:layout_marginTop="5dp"
-                            android:text="* Descripcion del Error"
+                            android:layout_marginTop="1dp"
+                            android:text="* Descripción del Producto"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/reason_input_laut"
+                            android:id="@+id/product_detail_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -215,27 +223,28 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/product_detail_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Describe el error"
+                                android:hint="Describe el producto"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
-                            android:id="@+id/textViedd"
+                            android:id="@+id/price_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="5dp"
-                            android:text="* Tiempo invertido"
+                            android:text="* Precio (bs)"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/reason_input_lasutd"
+                            android:id="@+id/price_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -244,10 +253,12 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/price_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Tiempo invertido en minutos"
+                                android:hint="Precio del Producto"
+                                android:inputType="number"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -262,108 +273,25 @@
                             app:cardCornerRadius="5dp">
 
                             <TextView
-                                android:id="@+id/textView16"
+                                android:id="@+id/add_diagnostic_button"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="#E88B61"
                                 android:gravity="center"
-                                android:text="Agregar Motivo"
+                                android:text="Agregar Diagnóstico"
                                 android:textColor="#000000"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
                         </androidx.cardview.widget.CardView>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/reasons_recycler_view"
+                            android:id="@+id/costApproval_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="10dp"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:cardCornerRadius="15dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#858585"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView18"
-                        android:layout_width="match_parent"
-                        android:layout_height="29dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="5dp"
-                        android:text="Evidencia de Ingreso"
-                        android:textColor="#FFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#4D4848"
-                        android:orientation="horizontal"
-                        android:paddingBottom="20dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/textView19"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:text="Fotos Adjuntadas (0)"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/textView20"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:text="Máximo 5 fotografías"
-                                android:textColor="#FFFF"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:gravity="end"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/imageView8"
-                                android:layout_width="35dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/camera_icon" />
-
-                            <ImageView
-                                android:id="@+id/imageView9"
-                                android:layout_width="35dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="12dp"
-                                android:src="@drawable/galery_icon" />
-
-                        </LinearLayout>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -385,7 +313,7 @@
                     app:cardCornerRadius="5dp">
 
                     <TextView
-                        android:id="@+id/button_cancel"
+                        android:id="@+id/cancel_button"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#E6B5BC"
@@ -407,7 +335,7 @@
                     app:cardCornerRadius="5dp">
 
                     <TextView
-                        android:id="@+id/button_register_service"
+                        android:id="@+id/save_button"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#E88B61"
