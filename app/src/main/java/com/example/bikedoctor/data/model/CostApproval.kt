@@ -22,5 +22,5 @@ data class CostApprovalPost(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listLaborCosts: List<LaborCost>?,
-    val reviewed: Boolean?
+    val reviewed: Boolean? = false
 )

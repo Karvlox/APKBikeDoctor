@@ -65,9 +65,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                 "diagnosis_id" to diagnosis.id,
                 "diagnosis_date" to diagnosis.date,
                 "diagnosis_clientCI" to diagnosis.clientCI?.toString(),
-                "diagnosis_clientName" to "Cliente ${diagnosis.clientCI}", // TODO: Obtener nombre real
                 "diagnosis_motorcycleLicensePlate" to diagnosis.motorcycleLicensePlate,
-                "diagnosis_motorcycleDetails" to diagnosis.motorcycleLicensePlate, // TODO: Obtener detalles reales
                 "diagnosis_employeeCI" to diagnosis.employeeCI?.toString(),
                 "diagnosis_listDiagnostic" to diagnosis.listDiagnostic?.toTypedArray(),
                 "diagnosis_images" to diagnosis.listDiagnostic?.map { it.detailOfError ?: "" }?.toTypedArray(), // Ajustar según imágenes reales
@@ -107,7 +105,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
                 .setTitle("Continuar con Repuestos")
-                .setMessage("¿Desea notificar al cliente sobre los Repuestos?")
+                .setMessage("¿Desea notificar al cliente sobre el Diagnostico?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
                     proceedWithSpareParts(diagnosis, notifyClient = true)
                 }

@@ -17,37 +17,36 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
-import com.example.bikedoctor.data.model.Diagnostic
+import com.example.bikedoctor.data.model.SparePart
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class DiagnosisFormFragment : Fragment() {
+class SparePartsFormFragment : Fragment() {
 
-    private val viewModel: DiagnosisFormViewModel by viewModels()
-    private val tag = "DiagnosisFormFragment"
+    private val viewModel: SparePartsFormViewModel by viewModels()
+    private val tag = "SparePartsFormFragment"
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
     private lateinit var clientText: TextView
     private lateinit var motorcycleText: TextView
-    private lateinit var errorInputLayout: TextInputLayout
-    private lateinit var errorDetailInputLayout: TextInputLayout
-    private lateinit var timeSpentInputLayout: TextInputLayout
-    private lateinit var photosCountText: TextView
-    private lateinit var diagnosticsRecyclerView: RecyclerView
+    private lateinit var sparePartInputLayout: TextInputLayout
+    private lateinit var sparePartDetailInputLayout: TextInputLayout
+    private lateinit var priceInputLayout: TextInputLayout
+    private lateinit var sparePartsRecyclerView: RecyclerView
     private lateinit var titleTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(tag, "Inflating fragment_diagnosis_form layout")
+        Log.d(tag, "Inflating fragment_spare_parts_form layout")
         val view: View
         try {
-            view = inflater.inflate(R.layout.fragment_diagnosis_form, container, false)
+            view = inflater.inflate(R.layout.fragment_spare_parts_form, container, false)
         } catch (e: Exception) {
             Log.e(tag, "Error inflating layout: ${e.message}", e)
             Toast.makeText(context, "Error al inflar el layout: ${e.message}", Toast.LENGTH_LONG).show()
@@ -63,16 +62,14 @@ class DiagnosisFormFragment : Fragment() {
                 ?: throw IllegalStateException("client_text no encontrado")
             motorcycleText = view.findViewById(R.id.motorcycle_text)
                 ?: throw IllegalStateException("motorcycle_text no encontrado")
-            errorInputLayout = view.findViewById(R.id.error_input_layout)
-                ?: throw IllegalStateException("error_input_layout no encontrado")
-            errorDetailInputLayout = view.findViewById(R.id.error_detail_input_layout)
-                ?: throw IllegalStateException("error_detail_input_layout no encontrado")
-            timeSpentInputLayout = view.findViewById(R.id.time_spent_input_layout)
-                ?: throw IllegalStateException("time_spent_input_layout no encontrado")
-            photosCountText = view.findViewById(R.id.photos_count_text)
-                ?: throw IllegalStateException("photos_count_text no encontrado")
-            diagnosticsRecyclerView = view.findViewById(R.id.diagnostics_recycler_view)
-                ?: throw IllegalStateException("diagnostics_recycler_view no encontrado")
+            sparePartInputLayout = view.findViewById(R.id.sparePart_input_layout)
+                ?: throw IllegalStateException("sparePart_input_layout no encontrado")
+            sparePartDetailInputLayout = view.findViewById(R.id.spare_part_detail_input_layout)
+                ?: throw IllegalStateException("spare_part_detail_input_layout no encontrado")
+            priceInputLayout = view.findViewById(R.id.price_input_layout)
+                ?: throw IllegalStateException("price_input_layout no encontrado")
+            sparePartsRecyclerView = view.findViewById(R.id.spare_part_recycler_view)
+                ?: throw IllegalStateException("spare_part_recycler_view no encontrado")
             titleTextView = view.findViewById(R.id.title_text)
                 ?: throw IllegalStateException("title_text no encontrado")
         } catch (e: Exception) {
@@ -83,29 +80,23 @@ class DiagnosisFormFragment : Fragment() {
 
         // Verificar argumentos para modo edición
         arguments?.let { args ->
-            val diagnosisId = args.getString("diagnosis_id")
-            val date = args.getString("diagnosis_date")
-            val clientCI = args.getString("diagnosis_clientCI")
-            val clientName = args.getString("diagnosis_clientName")
-            val motorcycleLicensePlate = args.getString("diagnosis_motorcycleLicensePlate")
-            val motorcycleDetails = args.getString("diagnosis_motorcycleDetails")
-            val employeeCI = args.getString("diagnosis_employeeCI")
-            val diagnostics = args.getParcelableArray("diagnosis_listDiagnostic")?.map { it as Diagnostic }?.toList()
-            val images = args.getStringArray("diagnosis_images")?.toList()
-            val reviewed = args.getBoolean("diagnosis_reviewed", false)
+            val sparePartId = args.getString("spare_part_id")
+            val date = args.getString("spare_part_date")
+            val clientCI = args.getString("spare_part_clientCI")
+            val motorcycleLicensePlate = args.getString("spare_part_motorcycleLicensePlate")
+            val employeeCI = args.getString("spare_part_employeeCI")
+            val spareParts = args.getParcelableArray("spare_part_listDiagnostic")?.map { it as SparePart }?.toList()
+            val reviewed = args.getBoolean("spare_part_reviewed", false)
 
-            if (diagnosisId != null) {
-                titleTextView.text = "Editar Diagnóstico"
+            if (sparePartId != null) {
+                titleTextView.text = "Editar Repuesto"
                 viewModel.initializeDiagnosis(
-                    id = diagnosisId,
+                    id = sparePartId,
                     date = date,
                     clientCI = clientCI,
-                    clientName = clientName ?: "Cliente $clientCI",
                     motorcycleLicensePlate = motorcycleLicensePlate,
-                    motorcycleDetails = motorcycleDetails ?: motorcycleLicensePlate,
                     employeeCI = employeeCI,
-                    diagnostics = diagnostics,
-                    images = images,
+                    spareParts = spareParts,
                     reviewed = reviewed
                 )
             }
@@ -119,17 +110,17 @@ class DiagnosisFormFragment : Fragment() {
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
         // Configurar RecyclerView para diagnósticos
-        diagnosticsRecyclerView.layoutManager = LinearLayoutManager(context)
-        val diagnosticsAdapter = DiagnosticsAdapter(
-            diagnosis = emptyList(),
-            onEdit = { index, diagnostic ->
-                showEditDiagnosticDialog(index, diagnostic)
+        sparePartsRecyclerView.layoutManager = LinearLayoutManager(context)
+        val sparePartsAdapter = SparePartsAdapterList(
+            spareParts = emptyList(),
+            onEdit = { index, sparePart ->
+                showEditSparePartDialog(index, sparePart)
             },
             onDelete = { index ->
-                viewModel.deleteDiagnostic(index)
+                viewModel.deleteSparePart(index)
             }
         )
-        diagnosticsRecyclerView.adapter = diagnosticsAdapter
+        sparePartsRecyclerView.adapter = sparePartsAdapter
 
         // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
@@ -149,32 +140,22 @@ class DiagnosisFormFragment : Fragment() {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleText.tag?.toString() ?: ""
-            val error = errorInputLayout.editText?.text.toString().trim()
-            val errorDetail = errorDetailInputLayout.editText?.text.toString().trim()
-            val timeSpent = timeSpentInputLayout.editText?.text.toString().trim()
-            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$error")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, error, errorDetail, timeSpent)
+            val sparePart = sparePartInputLayout.editText?.text.toString().trim()
+            val sparePartDetail = sparePartDetailInputLayout.editText?.text.toString().trim()
+            val price = priceInputLayout.editText?.text.toString().trim()
+            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, sparePart=$sparePart")
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, sparePart, sparePartDetail, price)
         }
 
-        // Botón Agregar Diagnóstico
+        // Botón Agregar Repuesto
         view.findViewById<TextView>(R.id.add_diagnostic_button)?.setOnClickListener {
-            val error = errorInputLayout.editText?.text.toString().trim()
-            val errorDetail = errorDetailInputLayout.editText?.text.toString().trim()
-            val timeSpent = timeSpentInputLayout.editText?.text.toString().trim()
-            viewModel.addDiagnostic(error, errorDetail, timeSpent)
-            errorInputLayout.editText?.text?.clear()
-            errorDetailInputLayout.editText?.text?.clear()
-            timeSpentInputLayout.editText?.text?.clear()
-        }
-
-        // Botón de cámara (simulado)
-        view.findViewById<ImageView>(R.id.camera_button)?.setOnClickListener {
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
-        }
-
-        // Botón de galería (simulado)
-        view.findViewById<ImageView>(R.id.gallery_button)?.setOnClickListener {
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
+            val sparePart = sparePartInputLayout.editText?.text.toString().trim()
+            val sparePartDetail = sparePartDetailInputLayout.editText?.text.toString().trim()
+            val price = priceInputLayout.editText?.text.toString().trim()
+            viewModel.addSparePart(sparePart, sparePartDetail, price)
+            sparePartInputLayout.editText?.text?.clear()
+            sparePartDetailInputLayout.editText?.text?.clear()
+            priceInputLayout.editText?.text?.clear()
         }
 
         // Observar errores y estado
@@ -188,79 +169,77 @@ class DiagnosisFormFragment : Fragment() {
             if (error != null) Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
         viewModel.errorDiagnosticError.observe(viewLifecycleOwner) { error ->
-            errorInputLayout.error = error
+            sparePartInputLayout.error = error
         }
         viewModel.errorDetailError.observe(viewLifecycleOwner) { error ->
-            errorDetailInputLayout.error = error
+            sparePartDetailInputLayout.error = error
         }
         viewModel.timeSpentError.observe(viewLifecycleOwner) { error ->
-            timeSpentInputLayout.error = error
+            priceInputLayout.error = error
         }
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Diagnóstico registrado") || status.startsWith("Diagnóstico actualizado")) {
+            if (status.startsWith("Repuesto registrado") || status.startsWith("Repuesto actualizado")) {
                 clearFields()
                 parentFragmentManager.popBackStack()
             }
         }
-        viewModel.diagnosticsList.observe(viewLifecycleOwner) { diagnostics ->
-            diagnosticsAdapter.notifyDataSetChanged()
-            diagnosticsRecyclerView.adapter = DiagnosticsAdapter(
-                diagnosis = diagnostics,
-                onEdit = { index, diagnostic ->
-                    showEditDiagnosticDialog(index, diagnostic)
+        viewModel.sparePartsList.observe(viewLifecycleOwner) { spareParts ->
+            sparePartsAdapter.notifyDataSetChanged()
+            sparePartsRecyclerView.adapter = SparePartsAdapterList(
+                spareParts = spareParts,
+                onEdit = { index, sparePart ->
+                    showEditSparePartDialog(index, sparePart)
                 },
                 onDelete = { index ->
-                    viewModel.deleteDiagnostic(index)
+                    viewModel.deleteSparePart(index)
                 }
             )
         }
-        viewModel.photosCount.observe(viewLifecycleOwner) { count ->
-            photosCountText.text = "Fotos Adjuntadas ($count)"
+        viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
+            dateTimeEditText.setText(dateTime ?: "")
         }
-        viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
-            if (clientCI != null && clientName != null) {
-                clientText.text = clientName
+
+        viewModel.selectedClient.observe(viewLifecycleOwner) { clientCI ->
+            if (clientCI != null) {
+                clientText.text = "Cliente $clientCI" // Puedes personalizar cómo mostrar el CI
                 clientText.tag = clientCI
             } else {
                 clientText.text = "Cliente no seleccionado"
                 clientText.tag = null
             }
         }
-        viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { (licensePlate, details) ->
-            if (licensePlate != null && details != null) {
-                motorcycleText.text = details
-                motorcycleText.tag = licensePlate
+        viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { motorcycleLicensePlate ->
+            if (motorcycleLicensePlate != null) {
+                motorcycleText.text = motorcycleLicensePlate // Muestra la matrícula directamente
+                motorcycleText.tag = motorcycleLicensePlate
             } else {
                 motorcycleText.text = "Motocicleta no seleccionada"
                 motorcycleText.tag = null
             }
         }
-        viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
-            dateTimeEditText.setText(dateTime ?: "")
-        }
 
         return view
     }
 
-    private fun showEditDiagnosticDialog(index: Int, currentDiagnostic: Diagnostic) {
+    private fun showEditSparePartDialog(index: Int, currentSparePart: SparePart) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_diagnostic, null)
-        val errorEditText = view.findViewById<EditText>(R.id.edit_error)
-        val errorDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
-        val timeSpentEditText = view.findViewById<EditText>(R.id.edit_time_spent)
+        val sparePartEditText = view.findViewById<EditText>(R.id.edit_error)
+        val sparePartDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
+        val priceEditText = view.findViewById<EditText>(R.id.edit_time_spent)
 
-        errorEditText.setText(currentDiagnostic.error)
-        errorDetailEditText.setText(currentDiagnostic.detailOfError)
-        timeSpentEditText.setText(currentDiagnostic.timeSpent?.toString() ?: "")
+        sparePartEditText.setText(currentSparePart.nameSparePart)
+        sparePartDetailEditText.setText(currentSparePart.detailSparePart)
+        priceEditText.setText(currentSparePart.price?.toString() ?: "")
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Editar Diagnóstico")
+            .setTitle("Editar Repuesto")
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
-                val newError = errorEditText.text.toString().trim()
-                val newErrorDetail = errorDetailEditText.text.toString().trim()
-                val newTimeSpent = timeSpentEditText.text.toString().trim()
-                viewModel.editDiagnostic(index, newError, newErrorDetail, newTimeSpent)
+                val newSparePart = sparePartEditText.text.toString().trim()
+                val newSparePartDetail = sparePartDetailEditText.text.toString().trim()
+                val newPrice = priceEditText.text.toString().trim()
+                viewModel.editSparePart(index, newSparePart, newSparePartDetail, newPrice)
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -303,9 +282,9 @@ class DiagnosisFormFragment : Fragment() {
 
     private fun clearFields() {
         dateTimeEditText.text?.clear()
-        errorInputLayout.editText?.text?.clear()
-        errorDetailInputLayout.editText?.text?.clear()
-        timeSpentInputLayout.editText?.text?.clear()
+        sparePartInputLayout.editText?.text?.clear()
+        sparePartDetailInputLayout.editText?.text?.clear()
+        priceInputLayout.editText?.text?.clear()
         clientText.text = "Cliente no seleccionado"
         clientText.tag = null
         motorcycleText.text = "Motocicleta no seleccionada"
