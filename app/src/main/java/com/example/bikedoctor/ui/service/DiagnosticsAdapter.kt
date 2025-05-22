@@ -25,7 +25,7 @@ class DiagnosticsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiagnosticViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_diagnostic, parent, false)
+            .inflate(R.layout.item_list_details, parent, false)
         return DiagnosticViewHolder(view)
     }
 

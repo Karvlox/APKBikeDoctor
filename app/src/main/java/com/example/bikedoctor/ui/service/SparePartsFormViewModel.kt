@@ -75,7 +75,7 @@ class SparePartsFormViewModel : ViewModel() {
         Log.d(tag, "MotorcycleLicensePlate set: $motorcycleLicensePlate")
     }
 
-    fun initializeDiagnosis(
+    fun initializeSpareParts(
         id: String?,
         date: String?,
         clientCI: String?,

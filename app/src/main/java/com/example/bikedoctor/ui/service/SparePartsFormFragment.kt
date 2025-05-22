@@ -58,7 +58,7 @@ class SparePartsFormFragment : Fragment() {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
             dateTimeEditText = dateTimeInputLayout.editText as TextInputEditText
-            clientText = view.findViewById(R.id.client_text)
+            clientText = view.findViewById(R.id.client_ci_text)
                 ?: throw IllegalStateException("client_text no encontrado")
             motorcycleText = view.findViewById(R.id.motorcycle_text)
                 ?: throw IllegalStateException("motorcycle_text no encontrado")
@@ -80,17 +80,19 @@ class SparePartsFormFragment : Fragment() {
 
         // Verificar argumentos para modo edición
         arguments?.let { args ->
-            val sparePartId = args.getString("spare_part_id")
-            val date = args.getString("spare_part_date")
-            val clientCI = args.getString("spare_part_clientCI")
-            val motorcycleLicensePlate = args.getString("spare_part_motorcycleLicensePlate")
-            val employeeCI = args.getString("spare_part_employeeCI")
-            val spareParts = args.getParcelableArray("spare_part_listDiagnostic")?.map { it as SparePart }?.toList()
-            val reviewed = args.getBoolean("spare_part_reviewed", false)
+            val sparePartId = args.getString("spareParts_id")
+            val date = args.getString("spareParts_date")
+            val clientCI = args.getString("spareParts_clientCI")
+            val motorcycleLicensePlate = args.getString("spareParts_motorcycleLicensePlate")
+            val employeeCI = args.getString("spareParts_employeeCI")
+            val spareParts = args.getParcelableArray("spareParts_listDiagnostic")?.map { it as SparePart }?.toList()
+            val reviewed = args.getBoolean("spareParts_reviewed", false)
+
+            Log.d(tag, "Arguments received - sparePartId: $sparePartId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
 
             if (sparePartId != null) {
                 titleTextView.text = "Editar Repuesto"
-                viewModel.initializeDiagnosis(
+                viewModel.initializeSpareParts(
                     id = sparePartId,
                     date = date,
                     clientCI = clientCI,
@@ -201,18 +203,23 @@ class SparePartsFormFragment : Fragment() {
         }
 
         viewModel.selectedClient.observe(viewLifecycleOwner) { clientCI ->
+            Log.d(tag, "Observing selectedClient: $clientCI")
             if (clientCI != null) {
-                clientText.text = "Cliente $clientCI" // Puedes personalizar cómo mostrar el CI
+                clientText.text = clientCI
                 clientText.tag = clientCI
+                Log.d(tag, "clientText set to: ${clientText.text}")
             } else {
-                clientText.text = "Cliente no seleccionado"
+                clientText.text = "Cliente no"
                 clientText.tag = null
+                Log.d(tag, "clientText set to: Cliente no (clientCI is null)")
             }
         }
         viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { motorcycleLicensePlate ->
+            Log.d(tag, "Observing selectedMotorcycle: $motorcycleLicensePlate")
             if (motorcycleLicensePlate != null) {
-                motorcycleText.text = motorcycleLicensePlate // Muestra la matrícula directamente
+                motorcycleText.text = motorcycleLicensePlate
                 motorcycleText.tag = motorcycleLicensePlate
+                Log.d(tag, "clientText set to: ${motorcycleText.text}")
             } else {
                 motorcycleText.text = "Motocicleta no seleccionada"
                 motorcycleText.tag = null
@@ -285,7 +292,7 @@ class SparePartsFormFragment : Fragment() {
         sparePartInputLayout.editText?.text?.clear()
         sparePartDetailInputLayout.editText?.text?.clear()
         priceInputLayout.editText?.text?.clear()
-        clientText.text = "Cliente no seleccionado"
+        clientText.text = "Cliente no..."
         clientText.tag = null
         motorcycleText.text = "Motocicleta no seleccionada"
         motorcycleText.tag = null

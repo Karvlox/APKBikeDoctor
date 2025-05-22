@@ -68,7 +68,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                 "diagnosis_motorcycleLicensePlate" to diagnosis.motorcycleLicensePlate,
                 "diagnosis_employeeCI" to diagnosis.employeeCI?.toString(),
                 "diagnosis_listDiagnostic" to diagnosis.listDiagnostic?.toTypedArray(),
-                "diagnosis_images" to diagnosis.listDiagnostic?.map { it.detailOfError ?: "" }?.toTypedArray(), // Ajustar según imágenes reales
+                "diagnosis_images" to diagnosis.listDiagnostic?.map { it.detailOfError ?: "" }?.toTypedArray(),
                 "diagnosis_reviewed" to diagnosis.reviewed
             )
             val diagnosisFormFragment = DiagnosisFormFragment().apply {

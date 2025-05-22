@@ -16,7 +16,6 @@ import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.CostApprovalPost
 import com.example.bikedoctor.data.model.MessageNotification
 import com.example.bikedoctor.data.model.SpareParts
-import com.example.bikedoctor.data.model.SparePartsPost
 import com.example.bikedoctor.data.repository.CostApprovalRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.SparePartsRepository
@@ -63,23 +62,24 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
             Log.d(tag, "Edit button clicked for reception: ${spareParts.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
-                "diagnosis_id" to spareParts.id,
-                "diagnosis_date" to spareParts.date,
-                "diagnosis_clientCI" to spareParts.clientCI?.toString(),
-                "diagnosis_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
-                "diagnosis_employeeCI" to spareParts.employeeCI?.toString(),
-                "diagnosis_listDiagnostic" to spareParts.listSpareParts?.toTypedArray(),
-                "diagnosis_images" to spareParts.listSpareParts?.map { it.detailSparePart ?: "" }?.toTypedArray(),
-                "diagnosis_reviewed" to spareParts.reviewed
+                "spareParts_id" to spareParts.id,
+                "spareParts_date" to spareParts.date,
+                "spareParts_clientCI" to spareParts.clientCI?.toString(),
+                "spareParts_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
+                "spareParts_employeeCI" to spareParts.employeeCI?.toString(),
+                "spareParts_listDiagnostic" to spareParts.listSpareParts?.toTypedArray(),
+                "spareParts_images" to spareParts.listSpareParts?.map { it.detailSparePart ?: "" }?.toTypedArray(),
+                "spareParts_reviewed" to spareParts.reviewed
             )
-            val diagnosisFormFragment = SparePartsFormFragment().apply {
+            val sparePartsFormFragment = SparePartsFormFragment().apply {
                 arguments = bundle
             }
             fragmentManager.beginTransaction()
-                .replace(R.id.frame_layout, diagnosisFormFragment)
+                .replace(R.id.frame_layout, sparePartsFormFragment)
                 .addToBackStack(null)
                 .commit()
         }
+        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for spare parts: ${spareParts.id}")
             createSparePartsFromDiagnosis(spareParts)

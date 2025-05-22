@@ -220,7 +220,7 @@ class DiagnosisFormFragment : Fragment() {
         }
         viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
             if (clientCI != null && clientName != null) {
-                clientText.text = clientName
+                clientText.text = clientCI
                 clientText.tag = clientCI
             } else {
                 clientText.text = "Cliente no seleccionado"

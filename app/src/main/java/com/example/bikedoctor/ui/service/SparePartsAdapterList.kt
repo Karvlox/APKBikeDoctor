@@ -25,13 +25,13 @@ class SparePartsAdapterList(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SparePartsViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_diagnostic, parent, false)
+            .inflate(R.layout.item_list_details, parent, false)
         return SparePartsViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SparePartsViewHolder, position: Int) {
         val sparePart = spareParts[position]
-        holder.errorText.text = sparePart.nameSparePart ?: "Sin error"
+        holder.errorText.text = sparePart.nameSparePart ?: "Sin Repuesto"
         holder.errorDetailText.text = sparePart.detailSparePart ?: "Sin descripción"
         holder.timeSpentText.text = "Tiempo: ${sparePart.price ?: 0} minutos"
 
