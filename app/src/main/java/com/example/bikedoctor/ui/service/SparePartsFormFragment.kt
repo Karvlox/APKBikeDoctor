@@ -34,8 +34,11 @@ class SparePartsFormFragment : Fragment() {
     private lateinit var clientText: TextView
     private lateinit var motorcycleText: TextView
     private lateinit var sparePartInputLayout: TextInputLayout
+    private lateinit var sparePartEditText: TextInputEditText
     private lateinit var sparePartDetailInputLayout: TextInputLayout
+    private lateinit var sparePartDetailEditText: TextInputEditText
     private lateinit var priceInputLayout: TextInputLayout
+    private lateinit var priceEditText: TextInputEditText
     private lateinit var sparePartsRecyclerView: RecyclerView
     private lateinit var titleTextView: TextView
 
@@ -57,17 +60,24 @@ class SparePartsFormFragment : Fragment() {
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
-            dateTimeEditText = dateTimeInputLayout.editText as TextInputEditText
+            dateTimeEditText = view.findViewById(R.id.date_time_edit_text)
+                ?: throw IllegalStateException("date_time_edit_text no encontrado")
             clientText = view.findViewById(R.id.client_ci_text)
                 ?: throw IllegalStateException("client_text no encontrado")
             motorcycleText = view.findViewById(R.id.motorcycle_text)
                 ?: throw IllegalStateException("motorcycle_text no encontrado")
             sparePartInputLayout = view.findViewById(R.id.sparePart_input_layout)
                 ?: throw IllegalStateException("sparePart_input_layout no encontrado")
+            sparePartEditText = view.findViewById(R.id.sparePart_edit_text)
+                ?: throw IllegalStateException("sparePart_edit_text no encontrado")
             sparePartDetailInputLayout = view.findViewById(R.id.spare_part_detail_input_layout)
                 ?: throw IllegalStateException("spare_part_detail_input_layout no encontrado")
-            priceInputLayout = view.findViewById(R.id.price_input_layout)
-                ?: throw IllegalStateException("price_input_layout no encontrado")
+            sparePartDetailEditText = view.findViewById(R.id.spare_part_detail_edit_text)
+                ?: throw IllegalStateException("spare_part_detail_edit_text no encontrado")
+            priceInputLayout = view.findViewById(R.id.time_spent_input_layout)
+                ?: throw IllegalStateException("time_spent_input_layout no encontrado")
+            priceEditText = view.findViewById(R.id.price_edit_text)
+                ?: throw IllegalStateException("price_edit_text no encontrado")
             sparePartsRecyclerView = view.findViewById(R.id.spare_part_recycler_view)
                 ?: throw IllegalStateException("spare_part_recycler_view no encontrado")
             titleTextView = view.findViewById(R.id.title_text)

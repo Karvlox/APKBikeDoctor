@@ -21,5 +21,5 @@ data class RepairPost(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listReparations: List<Reparation>?,
-    val reviewed: Boolean?
+    val reviewed: Boolean? = false
 )

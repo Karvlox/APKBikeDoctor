@@ -30,7 +30,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
 
     private val tag = "SparePartsAdapter"
     private val costApprovalRepository = CostApprovalRepository()
-    private val diagnosisRepository = SparePartsRepository()
+    private val sparePartsRepository = SparePartsRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -68,7 +68,6 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                 "spareParts_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
                 "spareParts_employeeCI" to spareParts.employeeCI?.toString(),
                 "spareParts_listDiagnostic" to spareParts.listSpareParts?.toTypedArray(),
-                "spareParts_images" to spareParts.listSpareParts?.map { it.detailSparePart ?: "" }?.toTypedArray(),
                 "spareParts_reviewed" to spareParts.reviewed
             )
             val sparePartsFormFragment = SparePartsFormFragment().apply {
@@ -82,13 +81,13 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for spare parts: ${spareParts.id}")
-            createSparePartsFromDiagnosis(spareParts)
+            createCostApprovalFromSpareParts(spareParts)
         }
 
         return view
     }
 
-    private fun createSparePartsFromDiagnosis(spareParts: SpareParts) {
+    private fun createCostApprovalFromSpareParts(spareParts: SpareParts) {
         if (spareParts.clientCI == null || spareParts.motorcycleLicensePlate == null || spareParts.employeeCI == null) {
             Log.e(tag, "Cannot create spareParts: Missing required fields")
             (context as? FragmentActivity)?.run {
@@ -190,7 +189,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                         })
                     }
                 } else {
-                    val errorMsg = "Error al crear diagnóstico: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al crear Aprobacion de costos: ${response.code()} ${response.message()}"
                     Log.e(tag, errorMsg)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -217,10 +216,10 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
     }
 
     private fun updateSparePartReviewedStatus(id: String, reviewed: Boolean) {
-        diagnosisRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
+        sparePartsRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Spare Part $id marked as reviewed=$reviewed")
+                    Log.d(tag, "Cost Approval $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(SparePartsViewModel::class.java)

@@ -4,21 +4,22 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bikedoctor.data.model.SparePart
-import com.example.bikedoctor.data.model.SparePartsPost
-import com.example.bikedoctor.data.repository.SparePartsRepository
+import com.example.bikedoctor.data.model.CostApprovalPost
+import com.example.bikedoctor.data.model.LaborCost
+import com.example.bikedoctor.data.repository.CostApprovalRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
-class SparePartsFormViewModel : ViewModel() {
+class CostApprovalFormViewModel : ViewModel() {
 
-    private val repository = SparePartsRepository()
-    private val spareParts = mutableListOf<SparePart>()
+    private val repository = CostApprovalRepository()
+    private val costApprovals = mutableListOf<LaborCost>()
     private val tag = "SparePartsFormViewModel"
-    private var sparePartId: String? = null
+    private var costApprovalId: String? = null
 
     // LiveData para errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
@@ -44,8 +45,8 @@ class SparePartsFormViewModel : ViewModel() {
     val registerStatus: LiveData<String> = _registerStatus
 
     // LiveData para la lista de Repuestos
-    private val _sparePartsList = MutableLiveData<List<SparePart>>()
-    val sparePartsList: LiveData<List<SparePart>> = _sparePartsList
+    private val _costApprovalList = MutableLiveData<List<LaborCost>>()
+    val costApprovalList: LiveData<List<LaborCost>> = _costApprovalList
 
     private val _selectedDateTime = MutableLiveData<String?>()
     val selectedDateTime: LiveData<String?> = _selectedDateTime
@@ -65,24 +66,24 @@ class SparePartsFormViewModel : ViewModel() {
         Log.d(tag, "DateTime set: $dateTime")
     }
 
-    fun initializeSpareParts(
+    fun initializeCostApproval(
         id: String?,
         date: String?,
         clientCI: String?,
         motorcycleLicensePlate: String?,
         employeeCI: String?,
-        spareParts: List<SparePart>?,
+        costApprovals: List<LaborCost>?,
         reviewed: Boolean?
     ) {
-        sparePartId = id
+        costApprovalId = id
         _selectedDateTime.value = date
         _selectedClient.value = clientCI
         _selectedMotorcycle.value = motorcycleLicensePlate
-        this.spareParts.clear()
-        if (spareParts != null) {
-            this.spareParts.addAll(spareParts)
+        this.costApprovals.clear()
+        if (costApprovals != null) {
+            this.costApprovals.addAll(costApprovals)
         }
-        _sparePartsList.value = this.spareParts.toList()
+        _costApprovalList.value = this.costApprovals.toList()
 
         _reviewed.value = reviewed
         Log.d(tag, "Initialized diagnosis: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
@@ -92,11 +93,11 @@ class SparePartsFormViewModel : ViewModel() {
         date: String,
         clientCI: String,
         motorcycleLicensePlate: String,
-        nameSparePart: String,
-        detailSparePart: String,
+        nameCostApproval: String,
+        detailCostApproval: String,
         price: String
     ) {
-        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$nameSparePart, errorDetail=$detailSparePart, timeSpent=$price")
+        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$nameCostApproval, errorDetail=$detailCostApproval, timeSpent=$price")
         // Limpiar errores previos
         _dateTimeError.value = null
         _clientError.value = null
@@ -122,17 +123,17 @@ class SparePartsFormViewModel : ViewModel() {
             _motorcycleError.value = "La motocicleta no puede estar vacía"
         }
 
-        if (spareParts.isEmpty() && nameSparePart.isEmpty()) {
-            _errorDiagnosticError.value = "Debe agregar al menos un repuesto"
+        if (costApprovals.isEmpty() && nameCostApproval.isEmpty()) {
+            _errorDiagnosticError.value = "Debe agregar al menos una aprobacion de costo"
         }
 
         // Validar diagnóstico si se intenta agregar uno
-        if (nameSparePart.isNotEmpty() || detailSparePart.isNotEmpty() || price.isNotEmpty()) {
-            if (nameSparePart.isEmpty()) {
-                _errorDiagnosticError.value = "El nombre del repuesto no puede estar vacío"
+        if (nameCostApproval.isNotEmpty() || detailCostApproval.isNotEmpty() || price.isNotEmpty()) {
+            if (nameCostApproval.isEmpty()) {
+                _errorDiagnosticError.value = "El nombre no puede estar vacío"
             }
-            if (detailSparePart.isEmpty()) {
-                _errorDetailError.value = "La descripción del repuesto no puede estar vacía"
+            if (detailCostApproval.isEmpty()) {
+                _errorDetailError.value = "La descripción no puede estar vacía"
             }
             if (price.isEmpty()) {
                 _timeSpentError.value = "El precio no puede estar vacío"
@@ -158,24 +159,24 @@ class SparePartsFormViewModel : ViewModel() {
                 val isoDate = outputFormat.format(parsedDate)
 
                 // Agregar repuesto si los campos no están vacíos
-                if (nameSparePart.isNotEmpty() && detailSparePart.isNotEmpty() && price.isNotEmpty()) {
-                    spareParts.add(SparePart(nameSparePart, detailSparePart, price.toInt()))
-                    _sparePartsList.value = spareParts.toList()
+                if (nameCostApproval.isNotEmpty() && detailCostApproval.isNotEmpty() && price.isNotEmpty()) {
+                    costApprovals.add(LaborCost(nameCostApproval, detailCostApproval, price))
+                    _costApprovalList.value = costApprovals.toList()
                 }
 
-                val sparePart = SparePartsPost(
+                val costApproval = CostApprovalPost(
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
                     employeeCI = 10387210, // Hardcode
-                    listSpareParts = spareParts.toList(),
+                    listLaborCosts = costApprovals.toList(),
                     reviewed = _reviewed.value ?: false
                 )
 
-                if (sparePartId == null) {
-                    createSparePart(sparePart)
+                if (costApprovalId == null) {
+                    createCostApproval(costApproval)
                 } else {
-                    updateSparePart(sparePartId!!, sparePart)
+                    updateCostApproval(costApprovalId!!, costApproval)
                 }
             } catch (e: NumberFormatException) {
                 _clientError.value = "El CI del cliente debe ser un número válido"
@@ -187,31 +188,32 @@ class SparePartsFormViewModel : ViewModel() {
         }
     }
 
-    fun addSparePart(nameSparePart: String, detailSparePart: String, price: String) {
-        if (nameSparePart.isNotEmpty() && detailSparePart.isNotEmpty() && price.isNotEmpty()) {
+    fun addSparePart(nameCostApproval: String, detailCostApproval: String, price: String) {
+        if (nameCostApproval.isNotEmpty() && detailCostApproval.isNotEmpty() && price.isNotEmpty()) {
             try {
-                val priceInt = price.toInt()
-                spareParts.add(SparePart(nameSparePart, detailSparePart, priceInt))
-                _sparePartsList.value = spareParts.toList()
-                Log.d(tag, "SparePart added: title=$nameSparePart, detail=$detailSparePart, time=$priceInt")
+                costApprovals.add(LaborCost(nameCostApproval, detailCostApproval, price))
+                _costApprovalList.value = costApprovals.toList()
+                Log.d(tag, "CostApproval added: title=$nameCostApproval, detail=$detailCostApproval, time=$price")
             } catch (e: NumberFormatException) {
                 _timeSpentError.value = "El tiempo debe ser un número entero"
                 Log.e(tag, "Invalid timeSpent format: $price", e)
             }
         } else {
-            if (nameSparePart.isEmpty()) _errorDiagnosticError.value = "El nombre no puede estar vacío"
-            if (detailSparePart.isEmpty()) _errorDetailError.value = "La descripción no puede estar vacía"
-            if (price.isEmpty()) _timeSpentError.value = "El precio nopuede estar vacío"
+            if (nameCostApproval.isEmpty()) _errorDiagnosticError.value = "El nombre no puede estar vacío"
+            if (detailCostApproval.isEmpty()) _errorDetailError.value = "La descripción no puede estar vacía"
+            if (price.isEmpty()) _timeSpentError.value = "El precio no puede estar vacío"
         }
     }
 
-    fun editSparePart(index: Int, newSparePart: String, newdetailSparePart: String, newPrice: String) {
-        if (index in spareParts.indices && newSparePart.isNotEmpty() && newdetailSparePart.isNotEmpty() && newPrice.isNotEmpty()) {
+    fun editSparePart(index: Int, newCostApproval: String, newdetailCostApproval: String, newPrice: String) {
+        if (index in costApprovals.indices && newCostApproval.isNotEmpty() && newdetailCostApproval.isNotEmpty() && newPrice.isNotEmpty()) {
             try {
-                val time = newPrice.toInt()
-                spareParts[index] = SparePart(newSparePart, newdetailSparePart, time)
-                _sparePartsList.value = spareParts.toList()
-                Log.d(tag, "Spare Part edited at index $index: title=$newSparePart, detail=$newdetailSparePart, time=$time")
+                costApprovals[index] = LaborCost(newCostApproval, newdetailCostApproval, newPrice)
+                _costApprovalList.value = costApprovals.toList()
+                Log.d(
+                    tag,
+                    "Cost Approval edited at index $index: title=$newCostApproval, detail=$newdetailCostApproval, time=$newPrice"
+                )
             } catch (e: NumberFormatException) {
                 _timeSpentError.value = "El precio debe ser un número entero"
                 Log.e(tag, "Invalid timeSpent format: $newPrice", e)
@@ -221,68 +223,71 @@ class SparePartsFormViewModel : ViewModel() {
         }
     }
 
-    fun deleteSparePart(index: Int) {
-        if (index in spareParts.indices) {
-            val removed = spareParts.removeAt(index)
-            _sparePartsList.value = spareParts.toList()
+    fun deleteCostApproval(index: Int) {
+        if (index in costApprovals.indices) {
+            val removed = costApprovals.removeAt(index)
+            _costApprovalList.value = costApprovals.toList()
             Log.d(tag, "Spare Part deleted at index $index: $removed")
         }
     }
 
-    private fun createSparePart(spareParts: SparePartsPost) {
-        Log.d(tag, "Creating Spare Parts: $spareParts")
-        repository.createSpareParts(spareParts).enqueue(object : Callback<SparePartsPost> {
-            override fun onResponse(call: Call<SparePartsPost>, response: Response<SparePartsPost>) {
-                if (response.isSuccessful) {
-                    _registerStatus.value = "Repuesto registrado exitosamente"
-                    Log.d(tag, "Spare Part created successfully")
-                    clearSelections()
-                } else {
-                    val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
-                    _registerStatus.value = errorMsg
-                    Log.e(tag, errorMsg)
-                }
-            }
 
-            override fun onFailure(call: Call<SparePartsPost>, t: Throwable) {
-                val errorMsg = "Error de conexión: ${t.message}"
+    private fun createCostApproval(costApproval: CostApprovalPost) {
+        Log.d(tag, "Creating Cost Approval: $costApproval")
+        repository.createCostApprovals(costApproval).enqueue(object : Callback<CostApprovalPost> {
+        override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
+            if (response.isSuccessful) {
+                _registerStatus.value = "Aprobacion de costo registrado exitosamente"
+                Log.d(tag, "Spare Part created successfully")
+                clearSelections()
+            } else {
+                val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
                 _registerStatus.value = errorMsg
-                Log.e(tag, errorMsg, t)
+                Log.e(tag, errorMsg)
+            }
+        }
+
+        override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
+            val errorMsg = "Error de conexión: ${t.message}"
+            _registerStatus.value = errorMsg
+            Log.e(tag, errorMsg, t)
             }
         })
     }
 
-    private fun updateSparePart(id: String, sparePart: SparePartsPost) {
-        Log.d(tag, "Updating spare part with id=$id: $sparePart")
-        repository.updateSpareParts(id, sparePart).enqueue(object : Callback<SparePartsPost> {
-            override fun onResponse(call: Call<SparePartsPost>, response: Response<SparePartsPost>) {
-                if (response.isSuccessful) {
-                    _registerStatus.value = "Repuesto actualizado exitosamente"
-                    Log.d(tag, "Spare Part updated successfully")
-                    clearSelections()
-                } else {
-                    val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
-                    _registerStatus.value = errorMsg
-                    Log.e(tag, errorMsg)
-                }
+    private fun updateCostApproval(id: String, costAppoval: CostApprovalPost) {
+        Log.d(tag, "Updating cost approval with id=$id: $costAppoval")
+        repository.updateCostApprovals(id, costAppoval).enqueue(object : Callback<CostApprovalPost> {
+        override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
+        if (response.isSuccessful) {
+            _registerStatus.value = "Repuesto actualizado exitosamente"
+            Log.d(tag, "Cost Approval updated successfully")
+            clearSelections()
+        } else {
+            val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
+            _registerStatus.value = errorMsg
+            Log.e(tag, errorMsg)
             }
+        }
 
-            override fun onFailure(call: Call<SparePartsPost>, t: Throwable) {
-                val errorMsg = "Error de conexión: ${t.message}"
-                _registerStatus.value = errorMsg
-                Log.e(tag, errorMsg, t)
+        override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
+            val errorMsg = "Error de conexión: ${t.message}"
+            _registerStatus.value = errorMsg
+            Log.e(tag, errorMsg, t)
             }
         })
     }
 
     fun clearSelections() {
-        sparePartId = null
+        costApprovalId = null
         _selectedClient.value = null
         _selectedMotorcycle.value = null
         _selectedDateTime.value = null
         _reviewed.value = null
-        spareParts.clear()
-        _sparePartsList.value = emptyList()
+        costApprovals.clear()
+        _costApprovalList.value = emptyList()
         Log.d(tag, "Selections cleared")
     }
+
 }
+
