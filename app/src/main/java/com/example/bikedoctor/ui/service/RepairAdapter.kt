@@ -16,7 +16,6 @@ import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.MessageNotification
 import com.example.bikedoctor.data.model.QualityControlPost
 import com.example.bikedoctor.data.model.Repair
-import com.example.bikedoctor.data.model.RepairPost
 import com.example.bikedoctor.data.repository.ControlRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.RepairRepository
@@ -32,8 +31,8 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
     ArrayAdapter<Repair>(context, 0, repair) {
 
     private val tag = "RepairAdapter"
-    private val repairRepository = ControlRepository()
-    private val costApprovalRepository = RepairRepository()
+    private val controlRepository = ControlRepository()
+    private val repairRepository = RepairRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -73,11 +72,11 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                 "repair_listDiagnostic" to repair.listReparations?.toTypedArray(),
                 "repair_reviewed" to repair.reviewed
             )
-            val sparePartsFormFragment = RepairFormFragment().apply {
+            val repairFormFragment = RepairFormFragment().apply {
                 arguments = bundle
             }
             fragmentManager.beginTransaction()
-                .replace(R.id.frame_layout, sparePartsFormFragment)
+                .replace(R.id.frame_layout, repairFormFragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -132,7 +131,7 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
             listControls = null
         )
 
-        repairRepository.createControls(control).enqueue(object : Callback<QualityControlPost> {
+        controlRepository.createControls(control).enqueue(object : Callback<QualityControlPost> {
             override fun onResponse(call: Call<QualityControlPost>, response: Response<QualityControlPost>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Repair created successfully for reception: ${repair.id}")
@@ -217,7 +216,7 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
     }
 
     private fun updateSparePartReviewedStatus(id: String, reviewed: Boolean) {
-        costApprovalRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
+        repairRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Repair $id marked as reviewed=$reviewed")

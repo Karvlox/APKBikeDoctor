@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".ui.service.RepairFormFragment">
+    tools:context=".ui.service.ControlFormFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Reparación"
+                        android:text="Control"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -161,7 +161,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Detalles de Reparaión"
+                        android:text="Detalles de Control"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -178,13 +178,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="1dp"
-                            android:text="* Reparación"
+                            android:text="* Control"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/repair_input_layout"
+                            android:id="@+id/control_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -193,7 +193,7 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/repair_title"
+                                android:id="@+id/control_title"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
@@ -214,7 +214,7 @@
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/repair_detail_input_layout"
+                            android:id="@+id/control_detail_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -223,7 +223,7 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/repair_detail_edit_text"
+                                android:id="@+id/control_detail_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
@@ -248,14 +248,14 @@
                                 android:layout_height="match_parent"
                                 android:background="#E88B61"
                                 android:gravity="center"
-                                android:text="Agregar Reparación"
+                                android:text="Agregar Control"
                                 android:textColor="#000000"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
                         </androidx.cardview.widget.CardView>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/repair_recycler_view"
+                            android:id="@+id/control_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
