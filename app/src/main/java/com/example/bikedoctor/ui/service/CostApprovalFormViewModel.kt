@@ -18,7 +18,7 @@ class CostApprovalFormViewModel : ViewModel() {
 
     private val repository = CostApprovalRepository()
     private val costApprovals = mutableListOf<LaborCost>()
-    private val tag = "SparePartsFormViewModel"
+    private val tag = "CostApprovalFormViewModel"
     private var costApprovalId: String? = null
 
     // LiveData para errores de validación
@@ -127,7 +127,7 @@ class CostApprovalFormViewModel : ViewModel() {
             _errorDiagnosticError.value = "Debe agregar al menos una aprobacion de costo"
         }
 
-        // Validar diagnóstico si se intenta agregar uno
+        // Validar Aprobacion de costos si se intenta agregar uno
         if (nameCostApproval.isNotEmpty() || detailCostApproval.isNotEmpty() || price.isNotEmpty()) {
             if (nameCostApproval.isEmpty()) {
                 _errorDiagnosticError.value = "El nombre no puede estar vacío"
@@ -205,14 +205,14 @@ class CostApprovalFormViewModel : ViewModel() {
         }
     }
 
-    fun editSparePart(index: Int, newCostApproval: String, newdetailCostApproval: String, newPrice: String) {
-        if (index in costApprovals.indices && newCostApproval.isNotEmpty() && newdetailCostApproval.isNotEmpty() && newPrice.isNotEmpty()) {
+    fun editSparePart(index: Int, newCostApproval: String, newDetailCostApproval: String, newPrice: String) {
+        if (index in costApprovals.indices && newCostApproval.isNotEmpty() && newDetailCostApproval.isNotEmpty() && newPrice.isNotEmpty()) {
             try {
-                costApprovals[index] = LaborCost(newCostApproval, newdetailCostApproval, newPrice)
+                costApprovals[index] = LaborCost(newCostApproval, newDetailCostApproval, newPrice)
                 _costApprovalList.value = costApprovals.toList()
                 Log.d(
                     tag,
-                    "Cost Approval edited at index $index: title=$newCostApproval, detail=$newdetailCostApproval, time=$newPrice"
+                    "Cost Approval edited at index $index: title=$newCostApproval, detail=$newDetailCostApproval, time=$newPrice"
                 )
             } catch (e: NumberFormatException) {
                 _timeSpentError.value = "El precio debe ser un número entero"

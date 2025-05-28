@@ -24,6 +24,6 @@
         android:id="@+id/edit_time_spent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tiempo invertido (minutos)"
+        android:hint=""
         android:inputType="number" />
 </LinearLayout>

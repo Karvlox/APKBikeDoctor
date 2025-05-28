@@ -17,39 +17,38 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
-import com.example.bikedoctor.data.model.LaborCost
+import com.example.bikedoctor.data.model.Reparation
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.getValue
 
-class CostApprovalFormFragment : Fragment() {
+class RepairFormFragment : Fragment() {
 
-    private val viewModel: CostApprovalFormViewModel by viewModels()
-    private val tag = "CostApprovalFormFragment"
+    private val viewModel: RepairFormViewModel by viewModels()
+    private val tag = "RepairFormFragment"
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
     private lateinit var clientText: TextView
     private lateinit var motorcycleText: TextView
-    private lateinit var costApprovalInputLayout: TextInputLayout
-    private lateinit var costApprovalEditText: TextInputEditText
-    private lateinit var costApprovalDetailInputLayout: TextInputLayout
-    private lateinit var costApprovalDetailEditText: TextInputEditText
-    private lateinit var priceInputLayout: TextInputLayout
-    private lateinit var priceEditText: TextInputEditText
-    private lateinit var costApprovalRecyclerView: RecyclerView
+    private lateinit var repairInputLayout: TextInputLayout
+    private lateinit var repairEditText: TextInputEditText
+    private lateinit var repairDetailInputLayout: TextInputLayout
+    private lateinit var repairDetailEditText: TextInputEditText
+    private lateinit var repairRecyclerView: RecyclerView
     private lateinit var titleTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(tag, "Inflating fragment_cost_approval_form layout")
+        Log.d(tag, "Inflating fragment_repair_form layout")
         val view: View
         try {
-            view = inflater.inflate(R.layout.fragment_cost_approval_form, container, false)
+            view = inflater.inflate(R.layout.fragment_repair_form, container, false)
         } catch (e: Exception) {
             Log.e(tag, "Error inflating layout: ${e.message}", e)
             Toast.makeText(context, "Error al inflar el layout: ${e.message}", Toast.LENGTH_LONG).show()
@@ -66,20 +65,16 @@ class CostApprovalFormFragment : Fragment() {
                 ?: throw IllegalStateException("client_text no encontrado")
             motorcycleText = view.findViewById(R.id.motorcycle_text)
                 ?: throw IllegalStateException("motorcycle_text no encontrado")
-            costApprovalInputLayout = view.findViewById(R.id.costApproval_input_layout)
-                ?: throw IllegalStateException("costApproval_input_layout no encontrado")
-            costApprovalEditText = view.findViewById(R.id.sparePart_edit_text)
-                ?: throw IllegalStateException("sparePart_edit_text no encontrado")
-            costApprovalDetailInputLayout = view.findViewById(R.id.costApproval_detail_input_layout)
-                ?: throw IllegalStateException("costApproval_detail_input_layout no encontrado")
-            costApprovalDetailEditText = view.findViewById(R.id.spare_part_detail_edit_text)
-                ?: throw IllegalStateException("spare_part_detail_edit_text no encontrado")
-            priceInputLayout = view.findViewById(R.id.price_input_layout)
-                ?: throw IllegalStateException("price_input_layout no encontrado")
-            priceEditText = view.findViewById(R.id.price_edit_text)
-                ?: throw IllegalStateException("price_edit_text no encontrado")
-            costApprovalRecyclerView = view.findViewById(R.id.costApproval_recycler_view)
-                ?: throw IllegalStateException("costApproval_recycler_view no encontrado")
+            repairInputLayout = view.findViewById(R.id.repair_input_layout)
+                ?: throw IllegalStateException("repair_input_layout no encontrado")
+            repairEditText = view.findViewById(R.id.repair_title)
+                ?: throw IllegalStateException("repair_edit_text no encontrado")
+            repairDetailInputLayout = view.findViewById(R.id.repair_detail_input_layout)
+                ?: throw IllegalStateException("repair_detail_input_layout no encontrado")
+            repairDetailEditText = view.findViewById(R.id.repair_detail_edit_text)
+                ?: throw IllegalStateException("repair_detail_edit_text no encontrado")
+            repairRecyclerView = view.findViewById(R.id.repair_recycler_view)
+                ?: throw IllegalStateException("repair_recycler_view no encontrado")
             titleTextView = view.findViewById(R.id.title_text)
                 ?: throw IllegalStateException("title_text no encontrado")
         } catch (e: Exception) {
@@ -90,25 +85,25 @@ class CostApprovalFormFragment : Fragment() {
 
         // Verificar argumentos para modo edición
         arguments?.let { args ->
-            val costApproval = args.getString("costApproval_id")
-            val date = args.getString("costApproval_date")
-            val clientCI = args.getString("costApproval_clientCI")
-            val motorcycleLicensePlate = args.getString("costApproval_motorcycleLicensePlate")
-            val employeeCI = args.getString("costApproval_employeeCI")
-            val costApprovals = args.getParcelableArray("costApproval_listDiagnostic")?.map { it as LaborCost }?.toList()
-            val reviewed = args.getBoolean("costApproval_reviewed", false)
+            val repair = args.getString("repair_id")
+            val date = args.getString("repair_date")
+            val clientCI = args.getString("repair_clientCI")
+            val motorcycleLicensePlate = args.getString("repair_motorcycleLicensePlate")
+            val employeeCI = args.getString("repair_employeeCI")
+            val repairs = args.getParcelableArray("repair_listDiagnostic")?.map { it as Reparation }?.toList()
+            val reviewed = args.getBoolean("repair_reviewed", false)
 
-            Log.d(tag, "Arguments received - costApprovalId: $costApproval, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
+            Log.d(tag, "Arguments received - repairId: $repair, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
 
-            if (costApproval != null) {
-                titleTextView.text = "Editar Aprobación de Costos"
-                viewModel.initializeCostApproval(
-                    id = costApproval,
+            if (repair != null) {
+                titleTextView.text = "Editar Reparaciones"
+                viewModel.initializeRepair(
+                    id = repair,
                     date = date,
                     clientCI = clientCI,
                     motorcycleLicensePlate = motorcycleLicensePlate,
                     employeeCI = employeeCI,
-                    costApprovals = costApprovals,
+                    reparations = repairs,
                     reviewed = reviewed
                 )
             }
@@ -122,17 +117,17 @@ class CostApprovalFormFragment : Fragment() {
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
         // Configurar RecyclerView
-        costApprovalRecyclerView.layoutManager = LinearLayoutManager(context)
-        val costApprovalAdapter = CostApprovalAdapterList(
-            costApproval = emptyList(),
-            onEdit = { index, costApproval ->
-                showEditSparePartDialog(index, costApproval)
+        repairRecyclerView.layoutManager = LinearLayoutManager(context)
+        val repairAdapter = RepairAdapterList(
+            control = emptyList(),
+            onEdit = { index, control ->
+                showEditSparePartDialog(index, control)
             },
             onDelete = { index ->
-                viewModel.deleteCostApproval(index)
+                viewModel.deleteRepair(index)
             }
         )
-        costApprovalRecyclerView.adapter = costApprovalAdapter
+        repairRecyclerView.adapter = repairAdapter
 
         // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
@@ -152,22 +147,19 @@ class CostApprovalFormFragment : Fragment() {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleText.tag?.toString() ?: ""
-            val costApproval = costApprovalEditText.text.toString().trim()
-            val costApprovalDetail = costApprovalDetailEditText.text.toString().trim()
-            val price = priceEditText.text.toString().trim()
-            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, costApproval=$costApproval")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, costApproval, costApprovalDetail, price)
+            val repairTitle = repairEditText.text.toString().trim()
+            val repairDetail = repairDetailEditText.text.toString().trim()
+            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, repair=$repairTitle")
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, repairTitle, repairDetail)
         }
 
         // Botón Agregar
         view.findViewById<TextView>(R.id.add_button)?.setOnClickListener {
-            val costApproval = costApprovalEditText.text.toString().trim()
-            val costApprovalDetail = costApprovalDetailEditText.text.toString().trim()
-            val price = priceEditText.text.toString().trim()
-            viewModel.addSparePart(costApproval, costApprovalDetail, price)
-            costApprovalEditText.text?.clear()
-            costApprovalDetailEditText.text?.clear()
-            priceEditText.text?.clear()
+            val repairTitle = repairEditText.text.toString().trim()
+            val repairDetail = repairDetailEditText.text.toString().trim()
+            viewModel.addSparePart(repairTitle, repairDetail)
+            repairEditText.text?.clear()
+            repairDetailEditText.text?.clear()
         }
 
         // Observar errores y estado
@@ -181,30 +173,27 @@ class CostApprovalFormFragment : Fragment() {
             if (error != null) Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
         viewModel.errorDiagnosticError.observe(viewLifecycleOwner) { error ->
-            costApprovalInputLayout.error = error
+            repairInputLayout.error = error
         }
         viewModel.errorDetailError.observe(viewLifecycleOwner) { error ->
-            costApprovalDetailInputLayout.error = error
-        }
-        viewModel.timeSpentError.observe(viewLifecycleOwner) { error ->
-            priceInputLayout.error = error
+            repairDetailInputLayout.error = error
         }
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Aprobación de costos registrada") || status.startsWith("Aprobación de costos actualizada")) {
+            if (status.startsWith("Reparación registrada") || status.startsWith("Reparación actualizada")) {
                 clearFields()
                 parentFragmentManager.popBackStack()
             }
         }
-        viewModel.costApprovalList.observe(viewLifecycleOwner) { costApprovals ->
-            costApprovalAdapter.notifyDataSetChanged()
-            costApprovalRecyclerView.adapter = CostApprovalAdapterList(
-                costApproval = costApprovals,
-                onEdit = { index, costApproval ->
-                    showEditSparePartDialog(index, costApproval)
+        viewModel.repairsList.observe(viewLifecycleOwner) { repairs ->
+            repairAdapter.notifyDataSetChanged()
+            repairRecyclerView.adapter = RepairAdapterList(
+                control = repairs,
+                onEdit = { index, control ->
+                    showEditSparePartDialog(index, control)
                 },
                 onDelete = { index ->
-                    viewModel.deleteCostApproval(index)
+                    viewModel.deleteRepair(index)
                 }
             )
         }
@@ -233,28 +222,24 @@ class CostApprovalFormFragment : Fragment() {
                 motorcycleText.tag = null
             }
         }
-
         return view
     }
 
-    private fun showEditSparePartDialog(index: Int, currentSparePart: LaborCost) {
+    private fun showEditSparePartDialog(index: Int, currentRepair: Reparation) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_diagnostic, null)
-        val costApprovalEditText = view.findViewById<EditText>(R.id.edit_error)
-        val costApprovalDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
-        val priceEditText = view.findViewById<EditText>(R.id.edit_time_spent)
+        val repairEditText = view.findViewById<EditText>(R.id.edit_error)
+        val repairDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
 
-        costApprovalEditText.setText(currentSparePart.nameProduct)
-        costApprovalDetailEditText.setText(currentSparePart.descriptionProduct)
-        priceEditText.setText(currentSparePart.price)
+        repairEditText.setText(currentRepair.nameReparation)
+        repairDetailEditText.setText(currentRepair.descriptionReparation)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Editar Aprobación de Costos")
+            .setTitle("Editar Reparación")
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
-                val newSparePart = costApprovalEditText.text.toString().trim()
-                val newSparePartDetail = costApprovalDetailEditText.text.toString().trim()
-                val newPrice = priceEditText.text.toString().trim()
-                viewModel.editSparePart(index, newSparePart, newSparePartDetail, newPrice)
+                val newSparePart = repairEditText.text.toString().trim()
+                val newSparePartDetail = repairDetailEditText.text.toString().trim()
+                viewModel.editSparePart(index, newSparePart, newSparePartDetail)
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -297,9 +282,8 @@ class CostApprovalFormFragment : Fragment() {
 
     private fun clearFields() {
         dateTimeEditText.text?.clear()
-        costApprovalEditText.text?.clear()
-        costApprovalDetailEditText.text?.clear()
-        priceEditText.text?.clear()
+        repairEditText.text?.clear()
+        repairDetailEditText.text?.clear()
         clientText.text = "Cliente no seleccionado"
         clientText.tag = null
         motorcycleText.text = "Motocicleta no seleccionada"
