@@ -9,7 +9,6 @@ object RetrofitClient {
     private const val BASE_URL = "https://bikedoctor.onrender.com/"
     //https://bikedoctor.onrender.com/
     //https://bikedoctor-production-665a.up.railway.app/
-
     val clientApi: ClientApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)

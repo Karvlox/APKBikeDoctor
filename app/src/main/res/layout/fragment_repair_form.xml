@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F3F3F3"
-    tools:context=".ui.service.SparePartsFormFragment">
+    tools:context=".ui.service.RepairFormFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Datos de los Repuestos"
+                        android:text="Reparación"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -173,18 +173,18 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/sparePart_label"
+                            android:id="@+id/repair_label"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="1dp"
-                            android:text="* Repuesto"
+                            android:text="* Reparación"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/costApproval_input_layout"
+                            android:id="@+id/repair_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -193,11 +193,11 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/sparePart_edit_text"
+                                android:id="@+id/repair_title"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Nombre del Repuesto"
+                                android:hint="Reparación"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -208,13 +208,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="1dp"
-                            android:text="* Descripción del Repuesto"
+                            android:text="* Descripción"
                             android:textColor="#FFFF"
                             android:textSize="10sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/costApproval_detail_input_layout"
+                            android:id="@+id/repair_detail_input_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -223,45 +223,14 @@
                             app:hintEnabled="false">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/spare_part_detail_edit_text"
+                                android:id="@+id/repair_detail_edit_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
-                                android:hint="Describe el Repuesto"
+                                android:hint="Descripción"
                                 android:textColor="#000000"
                                 android:textStyle="bold" />po
 
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView
-                            android:id="@+id/price_label"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="5dp"
-                            android:text="* Precio (bs)"
-                            android:textColor="#FFFF"
-                            android:textSize="10sp"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/price_input_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            app:errorEnabled="true"
-                            app:hintEnabled="false">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/price_edit_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/edit_text_background"
-                                android:hint="Precio del Producto"
-                                android:inputType="number"
-                                android:textColor="#000000"
-                                android:textStyle="bold" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <androidx.cardview.widget.CardView
@@ -286,7 +255,7 @@
                         </androidx.cardview.widget.CardView>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/costApproval_recycler_view"
+                            android:id="@+id/repair_recycler_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"

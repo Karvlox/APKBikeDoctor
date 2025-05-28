@@ -21,5 +21,5 @@ data class QualityControlPost(
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
     val listControls: List<Control>?,
-    val reviewed: Boolean?
+    val reviewed: Boolean? = false
 )

@@ -243,7 +243,7 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
