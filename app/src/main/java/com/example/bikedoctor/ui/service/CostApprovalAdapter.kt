@@ -20,6 +20,7 @@ import com.example.bikedoctor.data.model.RepairPost
 import com.example.bikedoctor.data.repository.CostApprovalRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.RepairRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +36,7 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
     private val repairRepository = RepairRepository()
     private val costApprovalRepository = CostApprovalRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -66,7 +68,7 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "costApproval_id" to costApproval.id,
-                "costApproval_date" to costApproval.date,
+                "costApproval_date" to parseHour.parserHourService(costApproval.date.toString()),
                 "costApproval_clientCI" to costApproval.clientCI?.toString(),
                 "costApproval_motorcycleLicensePlate" to costApproval.motorcycleLicensePlate,
                 "costApproval_employeeCI" to costApproval.employeeCI?.toString(),

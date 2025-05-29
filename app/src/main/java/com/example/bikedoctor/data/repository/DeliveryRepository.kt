@@ -23,7 +23,7 @@ class DeliveryRepository {
         return RetrofitClient.deliveryAPI.updateReviewedStatus(id, reviewed)
     }
 
-    fun updateSurveyCompletedStatus(id: String, reviewed: Boolean): Call<Void> {
-        return RetrofitClient.deliveryAPI.updateSurveyCompletedStatus(id, reviewed)
+    fun updateSurveyCompletedStatus(id: String, surveyCompleted: Boolean): Call<Void> {
+        return RetrofitClient.deliveryAPI.updateSurveyCompletedStatus(id, surveyCompleted)
     }
 }

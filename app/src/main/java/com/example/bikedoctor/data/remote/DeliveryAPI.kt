@@ -37,6 +37,6 @@ interface DeliveryAPI {
     @PATCH("api/Delivery/{id}/surveyCompleted")
     fun updateSurveyCompletedStatus(
         @Path("id") id: String,
-        @Query("reviewed") reviewed: Boolean
+        @Query("surveyCompleted") surveyCompleted: Boolean
     ): Call<Void>
 }

@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.QualityControl
 import com.example.bikedoctor.data.repository.ControlRepository
 import com.example.bikedoctor.data.repository.DeliveryRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
     private val deliveryRepository = DeliveryRepository()
     private val costApprovalRepository = ControlRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -65,7 +67,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "control_id" to control.id,
-                "control_date" to control.date,
+                "control_date" to parseHour.parserHourService(control.date.toString()),
                 "control_clientCI" to control.clientCI?.toString(),
                 "control_motorcycleLicensePlate" to control.motorcycleLicensePlate,
                 "control_employeeCI" to control.employeeCI?.toString(),

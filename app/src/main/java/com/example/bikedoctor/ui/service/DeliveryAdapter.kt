@@ -106,8 +106,8 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
         val currentDate = outputFormat.format(calendar.time)
 
         delivery.id?.let { id ->
-            updateDeliveryReviewedStatus(id, true)
             updateDeliverySurveyCompletedStatus(id, true)
+            updateDeliveryReviewedStatus(id, true)
         }
 
         // If notifyClient is true, send notification
@@ -122,7 +122,7 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                         (context as? FragmentActivity)?.run {
                             android.widget.Toast.makeText(
                                 this,
-                                "Notificación enviada al cliente",
+                                "Se termino el proceso y encuesta enviada.",
                                 android.widget.Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -151,6 +151,14 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                     }
                 }
             })
+        } else {
+            (context as? FragmentActivity)?.run {
+                android.widget.Toast.makeText(
+                    this,
+                    "Proceso terminado.",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -189,18 +197,18 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
         })
     }
 
-    private fun updateDeliverySurveyCompletedStatus(id: String, reviewed: Boolean) {
-        deliveryRepository.updateSurveyCompletedStatus(id, reviewed).enqueue(object : Callback<Void> {
+    private fun updateDeliverySurveyCompletedStatus(id: String, surveyCompleted: Boolean) {
+        deliveryRepository.updateSurveyCompletedStatus(id, surveyCompleted).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Control $id marked as reviewed=$reviewed")
+                    Log.d(tag, "Control $id marked as Survey Completed=$surveyCompleted")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(SparePartsViewModel::class.java)
                         viewModel.fetchReceptions(1, 10)
                     }
                 } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    Log.e(tag, "Failed to update Survey Completed status: ${response.code()} ${response.message()}")
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,

@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.SpareParts
 import com.example.bikedoctor.data.repository.CostApprovalRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.SparePartsRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
     private val costApprovalRepository = CostApprovalRepository()
     private val sparePartsRepository = SparePartsRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -63,7 +65,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "spareParts_id" to spareParts.id,
-                "spareParts_date" to spareParts.date,
+                "spareParts_date" to parseHour.parserHourService(spareParts.date.toString()),
                 "spareParts_clientCI" to spareParts.clientCI?.toString(),
                 "spareParts_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
                 "spareParts_employeeCI" to spareParts.employeeCI?.toString(),
