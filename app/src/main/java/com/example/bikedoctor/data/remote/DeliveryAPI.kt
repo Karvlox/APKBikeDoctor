@@ -33,4 +33,10 @@ interface DeliveryAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @PATCH("api/Delivery/{id}/surveyCompleted")
+    fun updateSurveyCompletedStatus(
+        @Path("id") id: String,
+        @Query("reviewed") reviewed: Boolean
+    ): Call<Void>
 }
