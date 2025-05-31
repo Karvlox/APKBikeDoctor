@@ -170,7 +170,7 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                        viewModel.fetchCards(1, 10)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
@@ -204,8 +204,8 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                     Log.d(tag, "Control $id marked as Survey Completed=$surveyCompleted")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(DeliveryViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update Survey Completed status: ${response.code()} ${response.message()}")

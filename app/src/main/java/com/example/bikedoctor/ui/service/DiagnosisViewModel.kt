@@ -25,7 +25,7 @@ class DiagnosisViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     init {
-        fetchDiagnosis(1, 10)
+        fetchDiagnosis(1, 100)
     }
 
     fun fetchDiagnosis(pageNumber: Int, pageSize: Int) {

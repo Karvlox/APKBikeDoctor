@@ -54,12 +54,18 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val reparationList = repair.listReparations ?: emptyList()
+        val firstReparation = reparationList.firstOrNull()
 
         idServiceText.text = repair.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${repair.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${repair.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${repair.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Reparaciones: ${repair.listReparations?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstReparation != null) {
+            "Lista de Reparacion: ${firstReparation.nameReparation}"
+        } else {
+            "Sin reparacion especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -224,8 +230,8 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                     Log.d(tag, "Repair $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(RepairViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

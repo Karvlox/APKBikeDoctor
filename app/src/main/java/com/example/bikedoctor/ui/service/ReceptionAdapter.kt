@@ -232,7 +232,7 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(ReceptionViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                        viewModel.fetchReceptions(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

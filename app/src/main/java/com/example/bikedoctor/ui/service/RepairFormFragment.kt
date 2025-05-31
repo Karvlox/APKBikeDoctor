@@ -90,7 +90,7 @@ class RepairFormFragment : Fragment() {
             val clientCI = args.getString("repair_clientCI")
             val motorcycleLicensePlate = args.getString("repair_motorcycleLicensePlate")
             val employeeCI = args.getString("repair_employeeCI")
-            val repairs = args.getParcelableArray("repair_listDiagnostic")?.map { it as Reparation }?.toList()
+            val repairs = args.getParcelableArray("repair_listDiagnostic")?.map { it as Reparation } ?.toList() ?: emptyList()
             val reviewed = args.getBoolean("repair_reviewed", false)
 
             Log.d(tag, "Arguments received - repairId: $repair, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")

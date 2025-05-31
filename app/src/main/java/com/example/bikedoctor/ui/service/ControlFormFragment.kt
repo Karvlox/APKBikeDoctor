@@ -90,7 +90,7 @@ class ControlFormFragment : Fragment() {
             val clientCI = args.getString("control_clientCI")
             val motorcycleLicensePlate = args.getString("control_motorcycleLicensePlate")
             val employeeCI = args.getString("control_employeeCI")
-            val controls = args.getParcelableArray("control_listDiagnostic")?.map { it as Control }?.toList()
+            val controls = args.getParcelableArray("control_listDiagnostic")?.map { it as Control } ?.toList() ?: emptyList()
             val reviewed = args.getBoolean("control_reviewed", false)
 
             Log.d(tag, "Arguments received - controId: $control, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")

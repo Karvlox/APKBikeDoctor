@@ -95,7 +95,7 @@ class CostApprovalFormFragment : Fragment() {
             val clientCI = args.getString("costApproval_clientCI")
             val motorcycleLicensePlate = args.getString("costApproval_motorcycleLicensePlate")
             val employeeCI = args.getString("costApproval_employeeCI")
-            val costApprovals = args.getParcelableArray("costApproval_listDiagnostic")?.map { it as LaborCost }?.toList()
+            val costApprovals = args.getParcelableArray("costApproval_listDiagnostic")?.map { it as LaborCost } ?.toList() ?: emptyList()
             val reviewed = args.getBoolean("costApproval_reviewed", false)
 
             Log.d(tag, "Arguments received - costApprovalId: $costApproval, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")

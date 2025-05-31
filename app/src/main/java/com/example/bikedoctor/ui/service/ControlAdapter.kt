@@ -54,12 +54,18 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val sparePartsList = control.listControls ?: emptyList()
+        val firstSparePart = sparePartsList.firstOrNull()
 
         idServiceText.text = control.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${control.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${control.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${control.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Controles: ${control.listControls?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstSparePart != null) {
+            "Lista de Controles: ${firstSparePart.controlName}"
+        } else {
+            "Sin controles especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -221,8 +227,8 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
                     Log.d(tag, "Control $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(ControlViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

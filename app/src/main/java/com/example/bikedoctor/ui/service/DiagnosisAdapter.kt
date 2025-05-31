@@ -52,12 +52,18 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val diagnosisList = diagnosis.listDiagnostic ?: emptyList()
+        val firstDiagnosis = diagnosisList.firstOrNull()
 
         idServiceText.text = diagnosis.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${diagnosis.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${diagnosis.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${diagnosis.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Diagnóstico: ${diagnosis.listDiagnostic?.firstOrNull()?.error ?: "Sin diagnóstico especificado"}"
+        firstReasonText.text = if (firstDiagnosis != null) {
+            "Lista de Diagnosticos: ${firstDiagnosis.error}"
+        } else {
+            "Sin diagnosticos especificados"
+        }
 
         // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -226,8 +232,8 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                     Log.d(tag, "Reception $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(ReceptionViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(DiagnosisViewModel::class.java)
+                        viewModel.fetchDiagnosis(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

@@ -166,7 +166,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Detalles de Control"
+                        android:text="Lista de Detalles de Control"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />

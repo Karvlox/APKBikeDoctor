@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.CostApproval
-import com.example.bikedoctor.data.model.CostApprovalPost
 import com.example.bikedoctor.data.model.MessageNotification
 import com.example.bikedoctor.data.model.RepairPost
 import com.example.bikedoctor.data.repository.CostApprovalRepository
@@ -55,12 +54,18 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val costApprovalList = costApproval.listLaborCosts ?: emptyList()
+        val firstCostApproval = costApprovalList.firstOrNull()
 
         idServiceText.text = costApproval.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${costApproval.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${costApproval.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${costApproval.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Aprobacion de Costos: ${costApproval.listLaborCosts?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstCostApproval != null) {
+            "Lista de aprobacion de costos: ${firstCostApproval.nameProduct}"
+        } else {
+            "Sin aprobacion de costos especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -225,8 +230,8 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
                     Log.d(tag, "Repair $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(CostApprovalViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
