@@ -9,7 +9,7 @@ data class Diagnosis(
     val clientCI: Int?,
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
-    val listDiagnostic: List<Diagnostic>?,
+    val listDiagnostic: List<Diagnostic>? = emptyList(),
     val reviewed: Boolean?
 )
 
@@ -18,7 +18,7 @@ data class DiagnosisPost(
     val clientCI: Int?,
     val motorcycleLicensePlate: String?,
     val employeeCI: Int?,
-    val listDiagnostic: List<Diagnostic>? = emptyList(),
+    val listDiagnostic: List<Diagnostic>?,
     val reviewed: Boolean? = false
 )
 
