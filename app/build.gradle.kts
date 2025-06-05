@@ -49,15 +49,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("com.android.volley:volley:1.2.1")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
-    // Dependencias para ViewModel y LiveData
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("com.android.volley:volley:1.2.1")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.android.material:material:1.9.0")
+    implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.28")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
-    // Opcional: Si usas Fragments, asegúrate de tener esta dependencia
     implementation ("androidx.fragment:fragment-ktx:1.8.0")
 }
