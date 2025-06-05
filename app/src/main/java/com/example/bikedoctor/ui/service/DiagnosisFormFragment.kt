@@ -90,7 +90,7 @@ class DiagnosisFormFragment : Fragment() {
             val motorcycleLicensePlate = args.getString("diagnosis_motorcycleLicensePlate")
             val motorcycleDetails = args.getString("diagnosis_motorcycleDetails")
             val employeeCI = args.getString("diagnosis_employeeCI")
-            val diagnostics = args.getParcelableArray("diagnosis_listDiagnostic")?.map { it as Diagnostic }?.toList()
+            val diagnostics = args.getParcelableArray("diagnosis_listDiagnostic")?.map { it as Diagnostic } ?.toList() ?: emptyList()
             val images = args.getStringArray("diagnosis_images")?.toList()
             val reviewed = args.getBoolean("diagnosis_reviewed", false)
 

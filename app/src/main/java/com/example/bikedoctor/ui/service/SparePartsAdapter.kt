@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.SpareParts
 import com.example.bikedoctor.data.repository.CostApprovalRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.SparePartsRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
     private val costApprovalRepository = CostApprovalRepository()
     private val sparePartsRepository = SparePartsRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -50,12 +52,18 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val sparePartsList = spareParts.listSpareParts ?: emptyList()
+        val firstSparePart = sparePartsList.firstOrNull()
 
         idServiceText.text = spareParts.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${spareParts.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${spareParts.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${spareParts.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Repuestos: ${spareParts.listSpareParts?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstSparePart != null) {
+            "Lista de Repuestos: ${firstSparePart.nameSparePart}"
+        } else {
+            "Sin repuestos especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -63,7 +71,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "spareParts_id" to spareParts.id,
-                "spareParts_date" to spareParts.date,
+                "spareParts_date" to parseHour.parserHourService(spareParts.date.toString()),
                 "spareParts_clientCI" to spareParts.clientCI?.toString(),
                 "spareParts_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
                 "spareParts_employeeCI" to spareParts.employeeCI?.toString(),
@@ -223,7 +231,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

@@ -25,10 +25,10 @@ class SparePartsViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     init {
-        fetchReceptions(1, 10)
+        fetchCards(1, 100)
     }
 
-    public fun fetchReceptions(pageNumber: Int, pageSize: Int) {
+    public fun fetchCards(pageNumber: Int, pageSize: Int) {
         Log.d(tag, "Fetching receptions: pageNumber=$pageNumber, pageSize=$pageSize")
         _isLoading.value = true
         repository.getSpareParts(pageNumber, pageSize).enqueue(object : Callback<List<SpareParts>> {

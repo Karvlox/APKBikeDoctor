@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.SparePartsPost
 import com.example.bikedoctor.data.repository.DiagnosisRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.SparePartsRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
     private val sparePartsRepository = SparePartsRepository()
     private val diagnosisRepository = DiagnosisRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -50,12 +52,18 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val diagnosisList = diagnosis.listDiagnostic ?: emptyList()
+        val firstDiagnosis = diagnosisList.firstOrNull()
 
         idServiceText.text = diagnosis.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${diagnosis.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${diagnosis.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${diagnosis.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Diagnóstico: ${diagnosis.listDiagnostic?.firstOrNull()?.error ?: "Sin diagnóstico especificado"}"
+        firstReasonText.text = if (firstDiagnosis != null) {
+            "Lista de Diagnosticos: ${firstDiagnosis.error}"
+        } else {
+            "Sin diagnosticos especificados"
+        }
 
         // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -63,7 +71,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "diagnosis_id" to diagnosis.id,
-                "diagnosis_date" to diagnosis.date,
+                "diagnosis_date" to parseHour.parserHourService(diagnosis.date.toString()),
                 "diagnosis_clientCI" to diagnosis.clientCI?.toString(),
                 "diagnosis_motorcycleLicensePlate" to diagnosis.motorcycleLicensePlate,
                 "diagnosis_employeeCI" to diagnosis.employeeCI?.toString(),
@@ -224,8 +232,8 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                     Log.d(tag, "Reception $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(ReceptionViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(DiagnosisViewModel::class.java)
+                        viewModel.fetchDiagnosis(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

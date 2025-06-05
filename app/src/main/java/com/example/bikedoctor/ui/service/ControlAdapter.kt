@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.QualityControl
 import com.example.bikedoctor.data.repository.ControlRepository
 import com.example.bikedoctor.data.repository.DeliveryRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
     private val deliveryRepository = DeliveryRepository()
     private val costApprovalRepository = ControlRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -52,12 +54,18 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val sparePartsList = control.listControls ?: emptyList()
+        val firstSparePart = sparePartsList.firstOrNull()
 
         idServiceText.text = control.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${control.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${control.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${control.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Controles: ${control.listControls?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstSparePart != null) {
+            "Lista de Controles: ${firstSparePart.controlName}"
+        } else {
+            "Sin controles especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -65,7 +73,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "control_id" to control.id,
-                "control_date" to control.date,
+                "control_date" to parseHour.parserHourService(control.date.toString()),
                 "control_clientCI" to control.clientCI?.toString(),
                 "control_motorcycleLicensePlate" to control.motorcycleLicensePlate,
                 "control_employeeCI" to control.employeeCI?.toString(),
@@ -219,8 +227,8 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
                     Log.d(tag, "Control $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(ControlViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

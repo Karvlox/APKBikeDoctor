@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.Reception
 import com.example.bikedoctor.data.repository.DiagnosisRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.ReceptionRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +33,7 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
     private val diagnosisRepository = DiagnosisRepository()
     private val receptionRepository = ReceptionRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -61,9 +63,10 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${reception.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
+
             val bundle = bundleOf(
                 "reception_id" to reception.id,
-                "reception_date" to reception.date,
+                "reception_date" to parseHour.parserHourService(reception.date.toString()),
                 "reception_clientCI" to reception.clientCI?.toString(),
                 "reception_motorcycleLicensePlate" to reception.motorcycleLicensePlate,
                 "reception_employeeCI" to reception.employeeCI?.toString(),
@@ -229,7 +232,7 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
                             .get(ReceptionViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                        viewModel.fetchReceptions(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

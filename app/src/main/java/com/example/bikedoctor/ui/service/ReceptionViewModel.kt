@@ -25,7 +25,7 @@ class ReceptionViewModel : ViewModel() {
     val error: LiveData<String?> = _error
 
     init {
-        fetchReceptions(1, 10)
+        fetchReceptions(1, 100)
     }
 
     fun fetchReceptions(pageNumber: Int, pageSize: Int) {
