@@ -69,7 +69,6 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="C:\Users\Karvlox\AppData\Local\Temp\ic_android_black_24dp.xml" />
-                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -82,7 +81,7 @@
                                               <map>
                                                 <entry key="color" value="000000" />
                                                 <entry key="imagePath" value="D:\Downloads\BikeDoctorIcon2.png" />
-                                                <entry key="scalingPercent" value="82" />
+                                                <entry key="scalingPercent" value="87" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -95,7 +94,6 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -107,7 +105,6 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
