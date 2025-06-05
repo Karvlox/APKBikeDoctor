@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Cargar HomeFragment por defecto si no hay estado guardado
         if (savedInstanceState == null) {
             replaceFragment(HomeFragment())
         }

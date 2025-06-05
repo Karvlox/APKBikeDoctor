@@ -16,7 +16,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name="com.example.bikedoctor.ui.main.MainActivity"
+            android:name="com.example.bikedoctor.LoardingPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,16 +25,16 @@
         </activity>
 
         <activity
-            android:name=".SignUp"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".SignIn"
+            android:name=".ui.signUp.SignUp"
             android:exported="false" />
         <activity
-            android:name=".SignInUP"
+            android:name=".ui.signIn.SignIn"
             android:exported="false" />
         <activity
-            android:name=".LoardingPage"
+            android:name=".ui.signInUp.SignInUP"
             android:exported="false" />
 
         <meta-data

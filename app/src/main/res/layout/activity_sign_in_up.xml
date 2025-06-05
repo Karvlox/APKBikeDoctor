@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2E2E2E"
-    tools:context=".SignInUP">
+    tools:context=".ui.signInUp.SignInUP">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                 app:cardCornerRadius="5dp">
 
                 <TextView
-                    android:id="@+id/button_iniciar_sesion"
+                    android:id="@+id/buttonSignIn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#E6B5BC"
@@ -82,7 +82,7 @@
                 app:cardCornerRadius="5dp">
 
                 <TextView
-                    android:id="@+id/button_registrarse"
+                    android:id="@+id/buttonRegister"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#E88B61"
