@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -43,7 +44,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/roboto"
-                    android:text="Iniciar sesion"
+                    android:text="Iniciar sesión"
                     android:textColor="#F4F4F4"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -58,7 +59,7 @@
                 android:layout_marginTop="100dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
-                android:text="BikeDoctor guarda un registro por cada servicio, entregado un mapa claro de toda la interaccio con el cliente y la evidencia fotografica del servicio, esto te permitirá estar respaldado ante cualquier posible demanda o reclamo de algun cliente"
+                android:text="BikeDoctor guarda un registro por cada servicio, entregado un mapa claro de toda la interacción con el cliente y la evidencia fotográfica del servicio, esto te permitirá estar respaldado ante cualquier posible demanda o reclamo de algún cliente"
                 android:textColor="#FFFFFF" />
 
             <androidx.cardview.widget.CardView
@@ -80,23 +81,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="50dp"
                         android:layout_marginBottom="10dp"
-                        android:textColor="#000000"
-                        android:text="Email" />
+                        android:text="Ci"
+                        android:textColor="#000000" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputName"
+                        android:id="@+id/textInputEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:errorEnabled="true"
                         app:hintEnabled="false">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/textInputNameEdit"
+                            android:id="@+id/textInputEmailEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edit_text_background"
-                            android:hint="tucorreo@ejemplo.com"
-                            android:textColor="#000000"/>
+                            android:hint="00000000"
+                            android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -117,7 +118,7 @@
                         app:endIconMode="password_toggle">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/textInputLastNameEdit"
+                            android:id="@+id/textInputPasswordEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edit_text_background"
