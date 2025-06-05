@@ -19,6 +19,7 @@ import com.example.bikedoctor.data.model.Repair
 import com.example.bikedoctor.data.repository.ControlRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.RepairRepository
+import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
     private val controlRepository = ControlRepository()
     private val repairRepository = RepairRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val parseHour = ParserHour()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -52,12 +54,18 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
+        val reparationList = repair.listReparations ?: emptyList()
+        val firstReparation = reparationList.firstOrNull()
 
         idServiceText.text = repair.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${repair.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${repair.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${repair.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Lista de Reparaciones: ${repair.listReparations?.firstOrNull() ?: "Sin motivos especificados"}"
+        firstReasonText.text = if (firstReparation != null) {
+            "Lista de Reparacion: ${firstReparation.nameReparation}"
+        } else {
+            "Sin reparacion especificados"
+        }
 
         // Configurar botones (placeholders)
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
@@ -65,7 +73,7 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "repair_id" to repair.id,
-                "repair_date" to repair.date,
+                "repair_date" to parseHour.parserHourService(repair.date.toString()),
                 "repair_clientCI" to repair.clientCI?.toString(),
                 "repair_motorcycleLicensePlate" to repair.motorcycleLicensePlate,
                 "repair_employeeCI" to repair.employeeCI?.toString(),
@@ -222,8 +230,8 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                     Log.d(tag, "Repair $id marked as reviewed=$reviewed")
                     (context as? FragmentActivity)?.run {
                         val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchReceptions(1, 10)
+                            .get(RepairViewModel::class.java)
+                        viewModel.fetchCards(1, 100)
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")

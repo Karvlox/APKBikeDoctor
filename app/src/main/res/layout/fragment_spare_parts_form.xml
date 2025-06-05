@@ -17,6 +17,10 @@
         app:cardBackgroundColor="#2E2E2E"
         app:cardCornerRadius="15dp">
 
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +56,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Aprobación de Costos"
+                        android:text="Repuestos"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -162,7 +166,7 @@
                         android:layout_height="29dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="5dp"
-                        android:text="Diagnóstico"
+                        android:text="Lista de Repuestos"
                         android:textColor="#FFFF"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -279,7 +283,7 @@
                                 android:layout_height="match_parent"
                                 android:background="#E88B61"
                                 android:gravity="center"
-                                android:text="Agregar Diagnóstico"
+                                android:text="Agregar Repuesto"
                                 android:textColor="#000000"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -298,95 +302,14 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:cardCornerRadius="15dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#858585"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/evidence_section_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="29dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="5dp"
-                        android:text="Evidencia del Diagnóstico"
-                        android:textColor="#FFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#4D4848"
-                        android:orientation="horizontal"
-                        android:paddingBottom="20dp">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/photos_count_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:text="Fotos Adjuntadas (0)"
-                                android:textColor="#FFFF"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/photos_limit_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
-                                android:text="Máximo 5 fotografías"
-                                android:textColor="#FFFF"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:gravity="end"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/camera_button"
-                                android:layout_width="35dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="10dp"
-                                android:src="@drawable/camera_icon" />
-
-                            <ImageView
-                                android:id="@+id/gallery_button"
-                                android:layout_width="35dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginEnd="12dp"
-                                android:src="@drawable/galery_icon" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
@@ -433,5 +356,6 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

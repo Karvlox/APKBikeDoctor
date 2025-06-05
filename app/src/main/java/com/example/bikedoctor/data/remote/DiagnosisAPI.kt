@@ -25,7 +25,7 @@ interface DiagnosisAPI {
     @PUT("api/Diagnosis/{id}")
     fun updateDiagnosis(
         @Path("id") id: String,
-        @Body diagnosis: DiagnosisPost
+        @Body diagnosisPost: DiagnosisPost
     ): Call<DiagnosisPost>
 
     @PATCH("api/Diagnosis/{id}/reviewed")

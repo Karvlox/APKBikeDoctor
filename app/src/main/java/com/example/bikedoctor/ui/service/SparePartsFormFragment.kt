@@ -95,7 +95,7 @@ class SparePartsFormFragment : Fragment() {
             val clientCI = args.getString("spareParts_clientCI")
             val motorcycleLicensePlate = args.getString("spareParts_motorcycleLicensePlate")
             val employeeCI = args.getString("spareParts_employeeCI")
-            val spareParts = args.getParcelableArray("spareParts_listDiagnostic")?.map { it as SparePart }?.toList()
+            val spareParts = args.getParcelableArray("spareParts_listDiagnostic") ?.map { it as SparePart } ?.toList() ?: emptyList()
             val reviewed = args.getBoolean("spareParts_reviewed", false)
 
             Log.d(tag, "Arguments received - sparePartId: $sparePartId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
