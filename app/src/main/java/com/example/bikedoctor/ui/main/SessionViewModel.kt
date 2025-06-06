@@ -20,12 +20,6 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         }
     }
 
-    fun setToken(token: String) {
-        viewModelScope.launch {
-            sessionRepository.saveToken(token)
-        }
-    }
-
     fun clearToken() {
         viewModelScope.launch {
             sessionRepository.clearToken()

@@ -12,12 +12,18 @@ import com.example.bikedoctor.databinding.ActivityMainBinding
 import com.example.bikedoctor.ui.home.HomeFragment
 import com.example.bikedoctor.ui.profile.ProfileFragment
 import com.example.bikedoctor.ui.service.TableWorkFragment
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels {
+    private val mainViewModel: MainViewModel by viewModels {
         MainViewModelFactory(SessionRepository(applicationContext))
+    }
+    private val sessionViewModel: SessionViewModel by viewModels {
+        SessionViewModelFactory(SessionRepository(applicationContext))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,26 +36,30 @@ class MainActivity : AppCompatActivity() {
             throw IllegalStateException("Layout de MainActivity no contiene frame_layout o bottomNavigationView2")
         }
 
-        // Obtener el token del Intent
-        val token = intent.getStringExtra("USER_TOKEN")
-        if (token != null) {
-            viewModel.setToken(token) // Pasar el token al ViewModel
-        }
-
         // Configurar BottomNavigationView
         binding.bottomNavigationView2.setOnItemSelectedListener { menuItem ->
-            viewModel.onNavigationItemSelected(menuItem.itemId)
+            mainViewModel.onNavigationItemSelected(menuItem.itemId)
             true
         }
 
         // Observar el estado de navegación
-        viewModel.navigationState.observe(this) { state ->
+        mainViewModel.navigationState.observe(this) { state ->
             replaceFragment(state.selectedItemId)
         }
 
-        // Inicializar el fragmento inicial si no hay estado guardado
-        if (savedInstanceState == null) {
-            replaceFragment(R.id.home)
+        // Observar el token para verificar la sesión
+        sessionViewModel.token.observe(this) { token ->
+            if (token == null) {
+                // Si no hay token, redirigir al usuario a la pantalla de login
+                // Por ejemplo, iniciar SignIn activity y finalizar esta
+                // startActivity(Intent(this, SignIn::class.java))
+                // finish()
+            } else {
+                // Token disponible, continuar con la lógica normal
+                if (savedInstanceState == null) {
+                    replaceFragment(R.id.home)
+                }
+            }
         }
     }
 
@@ -71,6 +81,16 @@ class MainViewModelFactory(private val sessionRepository: SessionRepository) : V
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(sessionRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class SessionViewModelFactory(private val sessionRepository: SessionRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SessionViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SessionViewModel(sessionRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
