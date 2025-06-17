@@ -58,4 +58,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
     implementation ("androidx.fragment:fragment-ktx:1.8.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation ("org.json:json:20231013")
+    implementation ("com.auth0:java-jwt:4.4.0")
 }

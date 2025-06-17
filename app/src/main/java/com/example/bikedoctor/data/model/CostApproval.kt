@@ -41,6 +41,10 @@ data class LaborCost(
 
     override fun describeContents(): Int = 0
 
+    override fun toString(): String {
+        return "Reparacion: ${nameProduct ?: "Desconocido"}, Detalles: ${descriptionProduct ?: "Sin descripcion"}\nEl precio estimado de mano de obra: ${price ?: 0} Bs"
+    }
+
     companion object CREATOR : Parcelable.Creator<LaborCost> {
         override fun createFromParcel(parcel: Parcel): LaborCost {
             return LaborCost(parcel)

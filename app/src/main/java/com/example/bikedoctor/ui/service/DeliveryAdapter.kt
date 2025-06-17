@@ -12,10 +12,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
+import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.Delivery
 import com.example.bikedoctor.data.model.MessageNotification
 import com.example.bikedoctor.data.repository.DeliveryRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
+import com.example.bikedoctor.utils.GetClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +32,8 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
     private val tag = "DeliveryAdapter"
     private val deliveryRepository = DeliveryRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
+    private val getClient = GetClient(context)
+    private var currentClient: Client? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -110,47 +114,67 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
             updateDeliveryReviewedStatus(id, true)
         }
 
-        // If notifyClient is true, send notification
         if (notifyClient) {
-            val notification = MessageNotification(
-                message = "Enviar formulario (${delivery.clientCI}) (${delivery.motorcycleLicensePlate}) en la fecha $currentDate."
-            )
-            messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    if (response.isSuccessful) {
-                        Log.d(tag, "Notification sent successfully for reception: ${delivery.id}")
+            delivery.clientCI?.let { ci ->
+                getClient.getClientById(
+                    ci = ci,
+                    onSuccess = { client ->
+                        currentClient = client
+                        val notification = MessageNotification(
+                            message = "Hola ${client.name + " " + client.lastName} Queriamos agradecerte por la preferencia en el Taller de Motocicletas BikeDoctor!!. " +
+                                    "\nhttps://docs.google.com/forms/d/e/1FAIpQLSeTAR_GttK8qWzX9ouf0N1_ao6NGRaw-UFS7VlGPhvZ68Oxxg/viewform?usp=dialog" +
+                                    "\nAgradeceriamos mucho que pueda llenar el siguiente encuesta para calificar la atención que tuvo durante el periodo de reparacion, muchas gracias!."
+                        )
+                        messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
+                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                                if (response.isSuccessful) {
+                                    Log.d(tag, "Notification sent successfully for reception: ${delivery.id}")
+                                    (context as? FragmentActivity)?.run {
+                                        android.widget.Toast.makeText(
+                                            this,
+                                            "Se termino el proceso y encuesta enviada.",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    val errorMsg = "Error al enviar notificación: ${response.code()} ${response.message()}"
+                                    Log.e(tag, errorMsg)
+                                    (context as? FragmentActivity)?.run {
+                                        android.widget.Toast.makeText(
+                                            this,
+                                            errorMsg,
+                                            android.widget.Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<Void>, t: Throwable) {
+                                val errorMsg = "Error de conexión al enviar notificación: ${t.message}"
+                                Log.e(tag, errorMsg, t)
+                                (context as? FragmentActivity)?.run {
+                                    android.widget.Toast.makeText(
+                                        this,
+                                        errorMsg,
+                                        android.widget.Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        })
+                    },
+                    onError = { error ->
+                        Log.e(tag, "No se pudo obtener el cliente: $error")
                         (context as? FragmentActivity)?.run {
                             android.widget.Toast.makeText(
                                 this,
-                                "Se termino el proceso y encuesta enviada.",
-                                android.widget.Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } else {
-                        val errorMsg = "Error al enviar notificación: ${response.code()} ${response.message()}"
-                        Log.e(tag, errorMsg)
-                        (context as? FragmentActivity)?.run {
-                            android.widget.Toast.makeText(
-                                this,
-                                errorMsg,
+                                "No se pudo obtener la información del cliente para notificar",
                                 android.widget.Toast.LENGTH_LONG
                             ).show()
                         }
                     }
-                }
+                )
+            }
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    val errorMsg = "Error de conexión al enviar notificación: ${t.message}"
-                    Log.e(tag, errorMsg, t)
-                    (context as? FragmentActivity)?.run {
-                        android.widget.Toast.makeText(
-                            this,
-                            errorMsg,
-                            android.widget.Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            })
         } else {
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(

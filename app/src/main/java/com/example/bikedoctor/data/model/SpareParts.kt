@@ -41,6 +41,10 @@ data class SparePart(
 
     override fun describeContents(): Int = 0
 
+    override fun toString(): String {
+        return "\nRepuesto: ${nameSparePart ?: "Desconocido"}, Detalles: ${detailSparePart ?: "Sin detalle"}\nEl precio es de: ${price ?: 0} Bs"
+    }
+
     companion object CREATOR : Parcelable.Creator<SparePart> {
         override fun createFromParcel(parcel: Parcel): SparePart {
             return SparePart(parcel)
