@@ -12,4 +12,8 @@ class ClientRepository {
     fun getClients(): Call<List<Client>> {
         return RetrofitClient.clientApi.getClients()
     }
+
+    fun getClientById(ci: Int): Call<Client> {
+        return RetrofitClient.clientApi.getClientById(ci)
+    }
 }

@@ -2,6 +2,7 @@ package com.example.bikedoctor.ui.signIn
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ import com.example.bikedoctor.R
 import com.example.bikedoctor.data.repository.SessionRepository
 import com.example.bikedoctor.data.repository.StaffRepository
 import com.example.bikedoctor.ui.main.MainActivity
+import com.example.bikedoctor.ui.signInUp.SignInUP
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -41,6 +43,13 @@ class SignIn : AppCompatActivity() {
         val passwordInput: TextInputEditText = findViewById(R.id.textInputPasswordEditText)
         val passwordInputLayout: TextInputLayout = findViewById(R.id.textInputPassword)
         val loginButton: TextView = findViewById(R.id.buttonSignIn)
+        val backButton: ImageView = findViewById(R.id.backbuttom)
+
+        backButton.setOnClickListener {
+            val intent = Intent(this, SignInUP::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         // Configurar el toggle de visibilidad de la contraseña
         passwordInputLayout.setEndIconOnClickListener {
@@ -65,7 +74,6 @@ class SignIn : AppCompatActivity() {
             }
             viewModel.login(ci, password)
         }
-
 
         // Observar el estado de login
         viewModel.loginState.observe(this) { state ->

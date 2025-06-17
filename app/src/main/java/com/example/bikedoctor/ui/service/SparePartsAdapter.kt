@@ -13,12 +13,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
+import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.CostApprovalPost
 import com.example.bikedoctor.data.model.MessageNotification
 import com.example.bikedoctor.data.model.SpareParts
 import com.example.bikedoctor.data.repository.CostApprovalRepository
 import com.example.bikedoctor.data.repository.MessageNotificationRepository
 import com.example.bikedoctor.data.repository.SparePartsRepository
+import com.example.bikedoctor.utils.GetClient
 import com.example.bikedoctor.utils.ParserHour
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +36,8 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
     private val sparePartsRepository = SparePartsRepository()
     private val messageNotificationRepository = MessageNotificationRepository()
     private val parseHour = ParserHour()
+    private val getClient = GetClient(context)
+    private var currentClient: Client? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -154,47 +158,66 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                         ).show()
                     }
 
-                    // If notifyClient is true, send notification
+
                     if (notifyClient) {
-                        val notification = MessageNotification(
-                            message = "Se ha creado los Repuestos para su motocicleta (${sparePart.motorcycleLicensePlate}) en la fecha $currentDate."
-                        )
-                        messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
-                            override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                                if (response.isSuccessful) {
-                                    Log.d(tag, "Notification sent successfully for reception: ${sparePart.id}")
+                        sparePart.clientCI?.let { ci ->
+                            getClient.getClientById(
+                                ci = ci,
+                                onSuccess = { client ->
+                                    currentClient = client
+                                    val notification = MessageNotification(
+                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} los repuestos que llegaremos a necesitar para la reparacion de su motocicleta son: ${sparePart.listSpareParts}"
+                                    )
+                                    messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
+                                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                                            if (response.isSuccessful) {
+                                                Log.d(tag, "Notification sent successfully for reception: ${sparePart.id}")
+                                                (context as? FragmentActivity)?.run {
+                                                    android.widget.Toast.makeText(
+                                                        this,
+                                                        "Notificación enviada al cliente",
+                                                        android.widget.Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            } else {
+                                                val errorMsg = "Error al enviar notificación: ${response.code()} ${response.message()}"
+                                                Log.e(tag, errorMsg)
+                                                (context as? FragmentActivity)?.run {
+                                                    android.widget.Toast.makeText(
+                                                        this,
+                                                        errorMsg,
+                                                        android.widget.Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                            }
+                                        }
+
+                                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                                            val errorMsg = "Error de conexión al enviar notificación: ${t.message}"
+                                            Log.e(tag, errorMsg, t)
+                                            (context as? FragmentActivity)?.run {
+                                                android.widget.Toast.makeText(
+                                                    this,
+                                                    errorMsg,
+                                                    android.widget.Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+                                    })
+                                },
+                                onError = { error ->
+                                    Log.e(tag, "No se pudo obtener el cliente: $error")
                                     (context as? FragmentActivity)?.run {
                                         android.widget.Toast.makeText(
                                             this,
-                                            "Notificación enviada al cliente",
-                                            android.widget.Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                } else {
-                                    val errorMsg = "Error al enviar notificación: ${response.code()} ${response.message()}"
-                                    Log.e(tag, errorMsg)
-                                    (context as? FragmentActivity)?.run {
-                                        android.widget.Toast.makeText(
-                                            this,
-                                            errorMsg,
+                                            "No se pudo obtener la información del cliente para notificar",
                                             android.widget.Toast.LENGTH_LONG
                                         ).show()
                                     }
                                 }
-                            }
+                            )
+                        }
 
-                            override fun onFailure(call: Call<Void>, t: Throwable) {
-                                val errorMsg = "Error de conexión al enviar notificación: ${t.message}"
-                                Log.e(tag, errorMsg, t)
-                                (context as? FragmentActivity)?.run {
-                                    android.widget.Toast.makeText(
-                                        this,
-                                        errorMsg,
-                                        android.widget.Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        })
                     }
                 } else {
                     val errorMsg = "Error al crear Aprobacion de costos: ${response.code()} ${response.message()}"
@@ -256,5 +279,14 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                 }
             }
         })
+    }
+
+    private fun getGender(gender: String) : String{
+        if (gender == "MASCULINO"){
+            return "Estimado"
+        } else if (gender == "FEMENINO"){
+            return "Estimada"
+        }
+        return ""
     }
 }
