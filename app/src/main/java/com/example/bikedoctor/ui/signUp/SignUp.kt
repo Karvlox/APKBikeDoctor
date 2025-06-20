@@ -61,14 +61,12 @@ class SignUp : AppCompatActivity() {
             finish()
         }
 
-        // Configurar el padding para las barras del sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Configurar el spinner
         val opciones = arrayOf("Selecciona una opción", "ADMIN", "EMPLEADO")
         val adapter = ArrayAdapter(
             this,
@@ -78,7 +76,6 @@ class SignUp : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        // Configurar el toggle de visibilidad de la contraseña
         passwordInputLayout.setEndIconOnClickListener {
             val editText = passwordInputLayout.editText ?: return@setEndIconOnClickListener
             val isPasswordVisible = (editText.inputType and InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
@@ -94,9 +91,7 @@ class SignUp : AppCompatActivity() {
             ).show()
         }
 
-        // Configurar el botón de registro
         registerButton.setOnClickListener {
-            // Obtener valores de los inputs
             val name = nameInput.text.toString().trim()
             val lastName = lastNameInput.text.toString().trim()
             val ciText = ciInput.text.toString().trim()
@@ -105,7 +100,6 @@ class SignUp : AppCompatActivity() {
             val password = passwordInput.text.toString().trim()
             val role = spinner.selectedItem.toString()
 
-            // Validar inputs con ClientValidator y mostrar errores en los inputs
             val nameError = ClientValidator.validateName(name)
             val lastNameError = ClientValidator.validateLastName(lastName)
             val ciError = ClientValidator.validateCI(ciText)
@@ -120,7 +114,6 @@ class SignUp : AppCompatActivity() {
             numberPhoneInputLayout.error = phoneError
             passwordInputLayout.error = passwordError
 
-            // Verificar si hay errores de validación
             if (nameError != null || lastNameError != null || ciError != null || ageError != null ||
                 phoneError != null || passwordError != null || role == "Selecciona una opción") {
                 if (role == "Selecciona una opción") {
@@ -129,7 +122,6 @@ class SignUp : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Si las validaciones locales pasan, intentar el registro
             val ci = ciText.toIntOrNull()
             val age = ageText.toIntOrNull()
             val numberPhone = numberPhoneText.toIntOrNull()
@@ -141,14 +133,12 @@ class SignUp : AppCompatActivity() {
             viewModel.register(name, lastName, ci, password, age, numberPhone, role)
         }
 
-        // Configurar el botón de iniciar sesión
         signInButton.setOnClickListener {
             val intent = Intent(this, SignIn::class.java)
             startActivity(intent)
             finish()
         }
 
-        // Observar el estado de registro
         viewModel.registerState.observe(this) { state ->
             when (state) {
                 is RegisterState.Success -> {
@@ -163,12 +153,13 @@ class SignUp : AppCompatActivity() {
             }
         }
 
-        // Observar el estado de login tras registro
         viewModel.loginState.observe(this) { state ->
             when (state) {
                 is LoginState.Success -> {
                     Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, MainActivity::class.java).apply {
+                        putExtra("USER_TOKEN", state.token)
+                    }
                     startActivity(intent)
                     finish()
                 }
@@ -182,13 +173,12 @@ class SignUp : AppCompatActivity() {
         }
     }
 
-    // Función para mostrar un Toast que desaparece después de 3 segundos
     private fun showToast(message: String) {
         val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
         toast.show()
         Handler(Looper.getMainLooper()).postDelayed({
             toast.cancel()
-        }, 3000) // Desaparece después de 3 segundos
+        }, 3000)
     }
 }
 
