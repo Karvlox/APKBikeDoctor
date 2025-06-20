@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
@@ -14,7 +15,7 @@ import com.example.bikedoctor.databinding.ActivityMainBinding
 import com.example.bikedoctor.ui.home.HomeFragment
 import com.example.bikedoctor.ui.profile.ProfileFragment
 import com.example.bikedoctor.ui.service.TableWorkFragment
-import com.example.bikedoctor.ui.signIn.SignIn
+import com.example.bikedoctor.ui.signInUp.SignInUP
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val sessionViewModel: SessionViewModel by viewModels {
         SessionViewModelFactory(SessionRepository(applicationContext))
     }
+    private var tokenObserver: Observer<String?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +38,15 @@ class MainActivity : AppCompatActivity() {
             throw IllegalStateException("Layout de MainActivity no contiene frame_layout o bottomNavigationView2")
         }
 
+        // Configurar BottomNavigationView
         binding.bottomNavigationView2.setOnItemSelectedListener { menuItem ->
             mainViewModel.onNavigationItemSelected(menuItem.itemId)
             true
+        }
+
+        // Configurar botón de logout
+        binding.logout.setOnClickListener {
+            logout()
         }
 
         mainViewModel.navigationState.observe(this) { state ->
@@ -54,17 +62,15 @@ class MainActivity : AppCompatActivity() {
             RetrofitClient.updateToken(tokenFromIntent)
         }
 
-        sessionViewModel.token.observe(this) { token ->
+        // Configurar observador de token
+        tokenObserver = Observer { token ->
             RetrofitClient.updateToken(token)
-            if (token == null) {
-                startActivity(Intent(this, SignIn::class.java))
+            if (token == null && !isFinishing) { // Evitar redirección si la actividad se está cerrando
+                startActivity(Intent(this, SignInUP::class.java))
                 finish()
-            } else {
-                if (savedInstanceState == null) {
-                    replaceFragment(R.id.home)
-                }
             }
         }
+        sessionViewModel.token.observe(this, tokenObserver!!)
     }
 
     private fun replaceFragment(itemId: Int) {
@@ -77,6 +83,23 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, fragment)
             .commit()
+    }
+
+    private fun logout() {
+        runBlocking {
+            SessionRepository(applicationContext).clearToken()
+        }
+        RetrofitClient.updateToken(null)
+        // Remover el observador temporalmente para evitar conflicto
+        tokenObserver?.let { sessionViewModel.token.removeObserver(it) }
+        startActivity(Intent(this, SignInUP::class.java))
+        finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Limpiar el observador al destruir la actividad
+        tokenObserver?.let { sessionViewModel.token.removeObserver(it) }
     }
 }
 

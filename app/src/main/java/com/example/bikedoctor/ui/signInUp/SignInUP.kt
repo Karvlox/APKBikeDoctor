@@ -36,7 +36,7 @@ class SignInUP : AppCompatActivity() {
             try {
                 val intent = Intent(this, SignIn::class.java)
                 startActivity(intent)
-                finish() // Cierra SignInUP después de la transición
+                finish()
             } catch (e: Exception) {
                 Log.e("SignInUP", "Error al iniciar SignIn: ${e.message}")
             }
@@ -48,7 +48,7 @@ class SignInUP : AppCompatActivity() {
             try {
                 val intent = Intent(this, SignUp::class.java)
                 startActivity(intent)
-                finish() // Cierra SignInUP después de la transición
+                finish()
             } catch (e: Exception) {
                 Log.e("SignInUP", "Error al iniciar SignUp: ${e.message}")
             }
