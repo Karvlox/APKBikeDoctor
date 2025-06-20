@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -8,13 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.repository.SessionRepository
+import com.example.bikedoctor.data.remote.RetrofitClient
 import com.example.bikedoctor.databinding.ActivityMainBinding
 import com.example.bikedoctor.ui.home.HomeFragment
 import com.example.bikedoctor.ui.profile.ProfileFragment
 import com.example.bikedoctor.ui.service.TableWorkFragment
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import androidx.lifecycle.viewModelScope
+import com.example.bikedoctor.ui.signIn.SignIn
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,31 +32,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Verificar que los elementos del layout existan
         if (binding.frameLayout == null || binding.bottomNavigationView2 == null) {
             throw IllegalStateException("Layout de MainActivity no contiene frame_layout o bottomNavigationView2")
         }
 
-        // Configurar BottomNavigationView
         binding.bottomNavigationView2.setOnItemSelectedListener { menuItem ->
             mainViewModel.onNavigationItemSelected(menuItem.itemId)
             true
         }
 
-        // Observar el estado de navegación
         mainViewModel.navigationState.observe(this) { state ->
             replaceFragment(state.selectedItemId)
         }
 
-        // Observar el token para verificar la sesión
+        // Cargar token desde el Intent
+        val tokenFromIntent = intent.getStringExtra("USER_TOKEN")
+        if (tokenFromIntent != null) {
+            runBlocking {
+                SessionRepository(applicationContext).saveToken(tokenFromIntent)
+            }
+            RetrofitClient.updateToken(tokenFromIntent)
+        }
+
         sessionViewModel.token.observe(this) { token ->
+            RetrofitClient.updateToken(token)
             if (token == null) {
-                // Si no hay token, redirigir al usuario a la pantalla de login
-                // Por ejemplo, iniciar SignIn activity y finalizar esta
-                // startActivity(Intent(this, SignIn::class.java))
-                // finish()
+                startActivity(Intent(this, SignIn::class.java))
+                finish()
             } else {
-                // Token disponible, continuar con la lógica normal
                 if (savedInstanceState == null) {
                     replaceFragment(R.id.home)
                 }
@@ -68,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             R.id.home -> HomeFragment()
             R.id.table -> TableWorkFragment()
             R.id.profile -> ProfileFragment()
-            else -> HomeFragment() // Valor por defecto
+            else -> HomeFragment()
         }
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, fragment)
