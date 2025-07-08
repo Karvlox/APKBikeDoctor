@@ -1,15 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F3F3">
+    android:background="#F3F3F3"
+    tools:context=".ui.profile.ProfileFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Profile Fragment"
-        android:textSize="20sp"
-        android:textColor="#000000" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="match_parent"
+            android:layout_height="131dp"
+            app:srcCompat="@drawable/user" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F3F3F3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fullNameText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Nombre: Nombre Completo de Empleado"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/ciText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="start"
+                        android:text="CI: 00000000"
+                        android:textColor="#000000"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/ageText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:fontFamily="@font/roboto"
+                        android:gravity="start"
+                        android:text="Edad: 00"
+                        android:textColor="#000000"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/phoneText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Número de Teléfono: 00000000"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="#F3F3F3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_rounded_top_corners2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="170dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginEnd="20dp"
+                        app:cardBackgroundColor="#F3F3F3"
+                        app:cardCornerRadius="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/completedJobsIcon"
+                                android:layout_width="85dp"
+                                android:layout_height="85dp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="10dp"
+                                app:srcCompat="@drawable/motorcycle_icon" />
+
+                            <TextView
+                                android:id="@+id/completedJobsLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="@font/roboto"
+                                android:text="Total de trabajos completados:"
+                                android:textAlignment="center"
+                                android:textColor="#000000"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/completedJobsCount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:fontFamily="@font/roboto"
+                                android:text="0"
+                                android:textAlignment="center"
+                                android:textColor="#000000"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="40dp"
+                            app:cardBackgroundColor="#E6B5BC"
+                            app:cardCornerRadius="20dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/pendingJobsIcon"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_weight="1"
+                                    app:srcCompat="@drawable/calendary_icon" />
+
+                                <TextView
+                                    android:id="@+id/pendingJobsText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/roboto"
+                                    android:text="Trabajos Pendientes"
+                                    android:textColor="#000000"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/pendingJobsArrow"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    app:srcCompat="@drawable/next_1" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="200dp"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="20dp"
+                            app:cardBackgroundColor="#E88B61"
+                            app:cardCornerRadius="20dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/editProfileIcon"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="5dp"
+                                    app:srcCompat="@drawable/customer_icon_" />
+
+                                <TextView
+                                    android:id="@+id/editProfileText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:fontFamily="@font/roboto"
+                                    android:text="Editar Perfil"
+                                    android:textColor="#090909"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:id="@+id/editProfileArrow"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="20dp"
+                                    app:srcCompat="@drawable/next_1" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardBackgroundColor="#2E2E2E" >
+
+                    <TextView
+                        android:id="@+id/historyLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto"
+                        android:text="Historial"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <ListView
+                        android:id="@+id/historyListView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="30dp"
+                        android:layout_weight="1"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="10dp" />
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 </FrameLayout>

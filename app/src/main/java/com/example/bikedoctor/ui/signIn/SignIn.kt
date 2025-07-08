@@ -2,6 +2,7 @@ package com.example.bikedoctor.ui.signIn
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -17,6 +18,7 @@ import com.example.bikedoctor.data.repository.SessionRepository
 import com.example.bikedoctor.data.repository.StaffRepository
 import com.example.bikedoctor.ui.main.MainActivity
 import com.example.bikedoctor.ui.signInUp.SignInUP
+import com.example.bikedoctor.ui.signUp.SignUp
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -44,6 +46,7 @@ class SignIn : AppCompatActivity() {
         val passwordInputLayout: TextInputLayout = findViewById(R.id.textInputPassword)
         val loginButton: TextView = findViewById(R.id.buttonSignIn)
         val backButton: ImageView = findViewById(R.id.backbuttom)
+        val registerButton: TextView = findViewById(R.id.buttonRegister)
 
         backButton.setOnClickListener {
             val intent = Intent(this, SignInUP::class.java)
@@ -54,7 +57,12 @@ class SignIn : AppCompatActivity() {
         // Configurar el toggle de visibilidad de la contraseña
         passwordInputLayout.setEndIconOnClickListener {
             val editText = passwordInputLayout.editText ?: return@setEndIconOnClickListener
-            val isPasswordVisible = (editText.inputType and android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            val isPasswordVisible = (editText.inputType and InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            editText.inputType = if (isPasswordVisible) {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            } else {
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            }
             Toast.makeText(
                 this,
                 if (isPasswordVisible) "Contraseña oculta" else "Contraseña visible",
@@ -73,6 +81,12 @@ class SignIn : AppCompatActivity() {
                 return@setOnClickListener
             }
             viewModel.login(ci, password)
+        }
+
+        registerButton.setOnClickListener {
+            val intent = Intent(this, SignUp::class.java)
+            startActivity(intent)
+            finish()
         }
 
         // Observar el estado de login

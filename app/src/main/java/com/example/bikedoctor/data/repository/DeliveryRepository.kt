@@ -26,4 +26,8 @@ class DeliveryRepository {
     fun updateSurveyCompletedStatus(id: String, surveyCompleted: Boolean): Call<Void> {
         return RetrofitClient.deliveryAPI.updateSurveyCompletedStatus(id, surveyCompleted)
     }
+
+    fun getDeliveriesByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<Delivery>> {
+        return RetrofitClient.deliveryAPI.getDeliveriesByEmployee(ci, pageNumber, pageSize)
+    }
 }

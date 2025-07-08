@@ -69,20 +69,19 @@ class HomeFragment : Fragment() {
             pendingJobsText.text = homeData.pendingJobsCount.toString()
         }
 
-        // Observar el token y extraer el nombre
         sessionViewModel.token.observe(viewLifecycleOwner) { token ->
             if (token != null) {
                 try {
-                    // Decodificar el payload del JWT
-                    val payload = token.split(".")[1] // El payload es la segunda parte del JWT
+                    val payload = token.split(".")[1]
                     val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
                     val decodedPayload = String(decodedBytes, Charsets.UTF_8)
                     val jsonPayload = JSONObject(decodedPayload)
-                    val userName = jsonPayload.getString("Nombre") // Extraer el campo "Nombre"
-                    welcomeText.text = "Bienvenido de nuevo $userName"
+                    val userName = jsonPayload.getString("Name")
+                    val lastName = jsonPayload.getString("LastName")
+                    welcomeText.text = "Bienvenido de nuevo $userName $lastName"
                 } catch (e: Exception) {
                     welcomeText.text = "Bienvenido de nuevo"
-                    Toast.makeText(requireContext(), "Error al decodificar el token", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error al decodificar el token: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 welcomeText.text = "Bienvenido de nuevo"

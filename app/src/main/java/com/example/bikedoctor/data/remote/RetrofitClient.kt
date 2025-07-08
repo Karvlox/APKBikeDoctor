@@ -13,11 +13,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://bikedoctor-production-b048.up.railway.app/"
+    private const val BASE_URL = "https://bikedoctor-production-110b.up.railway.app/"
     private const val CONNECT_TIMEOUT = 30L
     private const val READ_TIMEOUT = 30L
+
     //https://bikedoctor.onrender.com/
     //https://bikedoctor-production-b048.up.railway.app/
+    //https://bikedoctor-production-110b.up.railway.app/
 
     private var currentToken: String? = null
 

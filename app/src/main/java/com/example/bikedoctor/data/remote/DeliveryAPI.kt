@@ -39,4 +39,11 @@ interface DeliveryAPI {
         @Path("id") id: String,
         @Query("surveyCompleted") surveyCompleted: Boolean
     ): Call<Void>
+
+    @GET("api/Delivery/by-employee/{ci}")
+    fun getDeliveriesByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<Delivery>>
 }
