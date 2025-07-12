@@ -13,12 +13,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.ui.client.ClientsListFragment
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.motorcycle.MotorcycleListFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -29,7 +31,9 @@ import java.util.Locale
 class ReceptionFormFragment : Fragment() {
 
     private val viewModel: ReceptionFormViewModel by viewModels()
-    private val tag = "AddServiceFragment"
+    private val sessionViewModel: SessionViewModel by activityViewModels()
+    private val tag = "ReceptionFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -44,7 +48,7 @@ class ReceptionFormFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(tag, "Inflating fragment_add_service layout")
+        Log.d(tag, "Inflating fragment_reception_form layout")
         val view: View
         try {
             view = inflater.inflate(R.layout.fragment_reception_form, container, false)
@@ -75,6 +79,18 @@ class ReceptionFormFragment : Fragment() {
             Log.e(tag, "Error initializing views: ${e.message}", e)
             Toast.makeText(context, "Error al inicializar vistas: ${e.message}", Toast.LENGTH_LONG).show()
             return view
+        }
+
+        // Observar el token desde SessionViewModel
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
         }
 
         // Verificar argumentos para modo edición
@@ -145,7 +161,7 @@ class ReceptionFormFragment : Fragment() {
             val motorcycleLicensePlate = motorcycleSelectText.tag?.toString() ?: ""
             val reason = reasonInputLayout.editText?.text.toString().trim()
             Log.d(tag, "Register button clicked: date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate, reason=$reason")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reason)
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reason, currentToken)
         }
 
         // Botón Agregar Motivo

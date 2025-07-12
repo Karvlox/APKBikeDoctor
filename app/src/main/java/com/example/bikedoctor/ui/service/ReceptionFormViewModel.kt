@@ -1,11 +1,13 @@
 package com.example.bikedoctor.ui.service
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.ReceptionPost
 import com.example.bikedoctor.data.repository.ReceptionRepository
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,8 +19,9 @@ class ReceptionFormViewModel : ViewModel() {
     private val repository = ReceptionRepository()
     private val reasons = mutableListOf<String>()
     private val photos = mutableListOf<String>()
-    private val tag = "AddServiceViewModel"
+    private val tag = "ReceptionFormViewModel"
     private var receptionId: String? = null
+    private var token: String? = null // Almacenar el token
 
     // LiveData para los errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
@@ -60,6 +63,11 @@ class ReceptionFormViewModel : ViewModel() {
     // LiveData para reviewed
     private val _reviewed = MutableLiveData<Boolean?>()
     val reviewed: LiveData<Boolean?> = _reviewed
+
+    fun setToken(token: String?) {
+        this.token = token
+        Log.d(tag, "Token set: $token")
+    }
 
     fun setDateTime(dateTime: String?) {
         _selectedDateTime.value = dateTime
@@ -115,7 +123,8 @@ class ReceptionFormViewModel : ViewModel() {
         date: String,
         clientCI: String,
         motorcycleLicensePlate: String,
-        reason: String
+        reason: String,
+        token: String?
     ) {
         Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate, reason=$reason")
         // Limpiar errores previos
@@ -141,11 +150,31 @@ class ReceptionFormViewModel : ViewModel() {
             _motorcycleError.value = "Debe seleccionar una motocicleta"
         }
 
-        /*
-        if (reason.isEmpty()) {
-            _reasonError.value = "El motivo no puede estar vacío"
+        // Obtener el employeeCI desde el token
+        var employeeCI: Int? = null
+        if (token == null) {
+            _clientError.value = "No se encontró el token de autenticación"
+            Log.e(tag, "No token provided")
+            return
         }
-        */
+
+        try {
+            val payload = token.split(".")[1]
+            val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+            val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+            val jsonPayload = JSONObject(decodedPayload)
+            employeeCI = jsonPayload.getString("Ci").toIntOrNull()
+            if (employeeCI == null) {
+                _clientError.value = "El CI del empleado no es válido"
+                Log.e(tag, "Invalid employee CI in token")
+                return
+            }
+        } catch (e: Exception) {
+            _clientError.value = "Error al decodificar el token"
+            Log.e(tag, "Token decoding error: ${e.message}", e)
+            return
+        }
+
         // Verificar si todos los campos son válidos
         if (_dateTimeError.value == null &&
             _clientError.value == null &&
@@ -164,7 +193,7 @@ class ReceptionFormViewModel : ViewModel() {
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
-                    employeeCI = 10387210, // Hardcode
+                    employeeCI = employeeCI,
                     reasons = reasons.toList(),
                     images = photos.toList(),
                     reviewed = _reviewed.value ?: false
@@ -282,6 +311,7 @@ class ReceptionFormViewModel : ViewModel() {
 
     fun clearSelections() {
         receptionId = null
+        token = null
         _selectedClient.value = Pair(null, null)
         _selectedMotorcycle.value = Pair(null, null)
         _selectedDateTime.value = null
