@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.MessageNotification
@@ -26,12 +25,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
-class RepairAdapter(context: Context, repair: List<Repair>) :
-    ArrayAdapter<Repair>(context, 0, repair) {
+class RepairAdapter(
+    context: Context,
+    repairs: List<Repair>,
+    private val viewModel: RepairViewModel,
+    private val token: String?
+) : ArrayAdapter<Repair>(context, 0, repairs) {
 
     private val tag = "RepairAdapter"
     private val controlRepository = ControlRepository()
@@ -47,11 +48,11 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
 
         val repair = getItem(position)
         if (repair == null) {
-            Log.e(tag, "Repairs at position $position is null")
+            Log.e(tag, "Repair at position $position is null")
             return view
         }
 
-        Log.d(tag, "Rendering repairs: id=${repair.id}")
+        Log.d(tag, "Rendering repair: id=${repair.id}")
 
         val idServiceText = view.findViewById<TextView>(R.id.idService)
         val nameCIText = view.findViewById<TextView>(R.id.clientCI)
@@ -64,16 +65,16 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         idServiceText.text = repair.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${repair.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${repair.motorcycleLicensePlate ?: "Sin datos"}"
-        employeeCIText.text = "Empleado Reponsable: ${repair.employeeCI ?: "Sin datos"}"
+        employeeCIText.text = "Empleado Responsable: ${repair.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstReparation != null) {
-            "Lista de Reparacion: ${firstReparation.nameReparation}"
+            "Lista de Reparaciones: ${firstReparation.nameReparation}"
         } else {
-            "Sin reparacion especificados"
+            "Sin reparaciones especificadas"
         }
 
-        // Configurar botones (placeholders)
+        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
-            Log.d(tag, "Edit button clicked for reception: ${repair.id}")
+            Log.d(tag, "Edit button clicked for repair: ${repair.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "repair_id" to repair.id,
@@ -81,7 +82,7 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                 "repair_clientCI" to repair.clientCI?.toString(),
                 "repair_motorcycleLicensePlate" to repair.motorcycleLicensePlate,
                 "repair_employeeCI" to repair.employeeCI?.toString(),
-                "repair_listDiagnostic" to repair.listReparations?.toTypedArray(),
+                "repair_listReparations" to repair.listReparations?.toTypedArray(),
                 "repair_reviewed" to repair.reviewed
             )
             val repairFormFragment = RepairFormFragment().apply {
@@ -92,17 +93,19 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                 .addToBackStack(null)
                 .commit()
         }
+
+        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
-            Log.d(tag, "Continue button clicked for reception: ${repair.id}")
+            Log.d(tag, "Continue button clicked for repair: ${repair.id}")
             createControlFromRepair(repair)
         }
 
         return view
     }
 
-    private fun createControlFromRepair(repair: Repair){
+    private fun createControlFromRepair(repair: Repair) {
         if (repair.clientCI == null || repair.motorcycleLicensePlate == null || repair.employeeCI == null) {
-            Log.e(tag, "Cannot create costApproval: Missing required fields")
+            Log.e(tag, "Cannot create quality control: Missing required fields")
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
@@ -115,26 +118,25 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
 
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
-                .setTitle("Continuar con Reparación")
-                .setMessage("¿Notificar la Aprobación de Costos?")
+                .setTitle("Continuar con Control de Calidad")
+                .setMessage("¿Desea notificar al cliente sobre el control de calidad?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
-                    proceedWithSpareParts(repair, notifyClient = true)
+                    proceedWithControl(repair, notifyClient = true)
                 }
                 .setNegativeButton("Continuar sin Notificar") { _, _ ->
-                    proceedWithSpareParts(repair, notifyClient = false)
+                    proceedWithControl(repair, notifyClient = false)
                 }
                 .setCancelable(false)
                 .show()
         }
     }
 
-    private fun proceedWithSpareParts(repair: Repair, notifyClient: Boolean) {
+    private fun proceedWithControl(repair: Repair, notifyClient: Boolean) {
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val control = QualityControlPost(
             date = currentDate,
             clientCI = repair.clientCI,
@@ -146,9 +148,9 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         controlRepository.createControls(control).enqueue(object : Callback<QualityControlPost> {
             override fun onResponse(call: Call<QualityControlPost>, response: Response<QualityControlPost>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Repair created successfully for reception: ${repair.id}")
+                    Log.d(tag, "Quality Control created successfully for repair: ${repair.id}")
                     repair.id?.let { id ->
-                        updateSparePartReviewedStatus(id, true)
+                        updateRepairReviewedStatus(id, true)
                     }
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -164,13 +166,14 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                                 ci = ci,
                                 onSuccess = { client ->
                                     currentClient = client
+                                    val reparationNames = repair.listReparations?.joinToString(", ") { it.nameReparation.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} se realizaron las reparaciones correspondientes a su motocicleta y pasaran a la fase de control para verificar el correcto funcionamiento de la motocicleta."
+                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, se han realizado las reparaciones ($reparationNames) a su motocicleta y ahora pasará a la fase de control de calidad para verificar su correcto funcionamiento."
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                             if (response.isSuccessful) {
-                                                Log.d(tag, "Notification sent successfully for reception: ${repair.id}")
+                                                Log.d(tag, "Notification sent successfully for repair: ${repair.id}")
                                                 (context as? FragmentActivity)?.run {
                                                     android.widget.Toast.makeText(
                                                         this,
@@ -216,10 +219,9 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
                                 }
                             )
                         }
-
                     }
                 } else {
-                    val errorMsg = "Error al crear Reparacion: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al crear control de calidad: ${response.code()} ${response.message()}"
                     Log.e(tag, errorMsg)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -245,22 +247,25 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         })
     }
 
-    private fun updateSparePartReviewedStatus(id: String, reviewed: Boolean) {
+    private fun updateRepairReviewedStatus(id: String, reviewed: Boolean) {
         repairRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Repair $id marked as reviewed=$reviewed")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(RepairViewModel::class.java)
-                        viewModel.fetchCards(1, 100)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    viewModel.fetchRepairs(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado: ${response.message()}",
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update repair reviewed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de reparación: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -268,11 +273,11 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating repair reviewed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar reparación: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -280,10 +285,10 @@ class RepairAdapter(context: Context, repair: List<Repair>) :
         })
     }
 
-    private fun getGender(gender: String) : String{
-        if (gender == "MASCULINO"){
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
             return "Estimado"
-        } else if (gender == "FEMENINO"){
+        } else if (gender == "FEMENINO") {
             return "Estimada"
         }
         return ""

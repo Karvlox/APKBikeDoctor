@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.CostApprovalPost
@@ -28,8 +27,12 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
-    ArrayAdapter<SpareParts>(context, 0, spareParts) {
+class SparePartsAdapter(
+    context: Context,
+    spareParts: List<SpareParts>,
+    private val viewModel: SparePartsViewModel,
+    private val token: String?
+) : ArrayAdapter<SpareParts>(context, 0, spareParts) {
 
     private val tag = "SparePartsAdapter"
     private val costApprovalRepository = CostApprovalRepository()
@@ -62,16 +65,16 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         idServiceText.text = spareParts.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${spareParts.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${spareParts.motorcycleLicensePlate ?: "Sin datos"}"
-        employeeCIText.text = "Empleado Reponsable: ${spareParts.employeeCI ?: "Sin datos"}"
+        employeeCIText.text = "Empleado Responsable: ${spareParts.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstSparePart != null) {
             "Lista de Repuestos: ${firstSparePart.nameSparePart}"
         } else {
             "Sin repuestos especificados"
         }
 
-        // Configurar botones (placeholders)
+        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
-            Log.d(tag, "Edit button clicked for reception: ${spareParts.id}")
+            Log.d(tag, "Edit button clicked for spare parts: ${spareParts.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "spareParts_id" to spareParts.id,
@@ -79,7 +82,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                 "spareParts_clientCI" to spareParts.clientCI?.toString(),
                 "spareParts_motorcycleLicensePlate" to spareParts.motorcycleLicensePlate,
                 "spareParts_employeeCI" to spareParts.employeeCI?.toString(),
-                "spareParts_listDiagnostic" to spareParts.listSpareParts?.toTypedArray(),
+                "spareParts_listSpareParts" to spareParts.listSpareParts?.toTypedArray(),
                 "spareParts_reviewed" to spareParts.reviewed
             )
             val sparePartsFormFragment = SparePartsFormFragment().apply {
@@ -90,6 +93,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                 .addToBackStack(null)
                 .commit()
         }
+
         // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for spare parts: ${spareParts.id}")
@@ -101,7 +105,7 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
 
     private fun createCostApprovalFromSpareParts(spareParts: SpareParts) {
         if (spareParts.clientCI == null || spareParts.motorcycleLicensePlate == null || spareParts.employeeCI == null) {
-            Log.e(tag, "Cannot create spareParts: Missing required fields")
+            Log.e(tag, "Cannot create cost approval: Missing required fields")
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
@@ -114,64 +118,62 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
 
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
-                .setTitle("Continuar con Aprobacion de Costos")
-                .setMessage("¿Desea notificar al cliente sobre los Repuestos?")
+                .setTitle("Continuar con Aprobación de Costos")
+                .setMessage("¿Desea notificar al cliente sobre los repuestos?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
-                    proceedWithSpareParts(spareParts, notifyClient = true)
+                    proceedWithCostApproval(spareParts, notifyClient = true)
                 }
                 .setNegativeButton("Continuar sin Notificar") { _, _ ->
-                    proceedWithSpareParts(spareParts, notifyClient = false)
+                    proceedWithCostApproval(spareParts, notifyClient = false)
                 }
                 .setCancelable(false)
                 .show()
         }
     }
 
-    private fun proceedWithSpareParts(sparePart: SpareParts, notifyClient: Boolean) {
-        // Get current date in ISO 8601 format
+    private fun proceedWithCostApproval(spareParts: SpareParts, notifyClient: Boolean) {
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val costApproval = CostApprovalPost(
             date = currentDate,
-            clientCI = sparePart.clientCI,
-            motorcycleLicensePlate = sparePart.motorcycleLicensePlate,
-            employeeCI = sparePart.employeeCI,
+            clientCI = spareParts.clientCI,
+            motorcycleLicensePlate = spareParts.motorcycleLicensePlate,
+            employeeCI = spareParts.employeeCI,
             listLaborCosts = null
         )
 
         costApprovalRepository.createCostApprovals(costApproval).enqueue(object : Callback<CostApprovalPost> {
             override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Spare Parts created successfully for reception: ${sparePart.id}")
-                    sparePart.id?.let { id ->
+                    Log.d(tag, "Cost Approval created successfully for spare parts: ${spareParts.id}")
+                    spareParts.id?.let { id ->
                         updateSparePartReviewedStatus(id, true)
                     }
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Repuestos creado exitosamente",
+                            "Aprobación de costos creada exitosamente",
                             android.widget.Toast.LENGTH_SHORT
                         ).show()
                     }
 
-
                     if (notifyClient) {
-                        sparePart.clientCI?.let { ci ->
+                        spareParts.clientCI?.let { ci ->
                             getClient.getClientById(
                                 ci = ci,
                                 onSuccess = { client ->
                                     currentClient = client
+                                    val sparePartsNames = spareParts.listSpareParts?.joinToString(", ") { it.nameSparePart.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} los repuestos que llegaremos a necesitar para la reparacion de su motocicleta son: ${sparePart.listSpareParts}"
+                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, los repuestos necesarios para la reparación de su motocicleta son: $sparePartsNames"
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                             if (response.isSuccessful) {
-                                                Log.d(tag, "Notification sent successfully for reception: ${sparePart.id}")
+                                                Log.d(tag, "Notification sent successfully for spare parts: ${spareParts.id}")
                                                 (context as? FragmentActivity)?.run {
                                                     android.widget.Toast.makeText(
                                                         this,
@@ -217,10 +219,9 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
                                 }
                             )
                         }
-
                     }
                 } else {
-                    val errorMsg = "Error al crear Aprobacion de costos: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al crear aprobación de costos: ${response.code()} ${response.message()}"
                     Log.e(tag, errorMsg)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -250,18 +251,21 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         sparePartsRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Cost Approval $id marked as reviewed=$reviewed")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchCards(1, 100)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    Log.d(tag, "Spare Parts $id marked as reviewed=$reviewed")
+                    viewModel.fetchSpareParts(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado de recepción: ${response.message()}",
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update spare parts reviewed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de repuestos: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -269,11 +273,11 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating spare parts reviewed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar repuestos: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -281,10 +285,10 @@ class SparePartsAdapter(context: Context, spareParts: List<SpareParts>) :
         })
     }
 
-    private fun getGender(gender: String) : String{
-        if (gender == "MASCULINO"){
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
             return "Estimado"
-        } else if (gender == "FEMENINO"){
+        } else if (gender == "FEMENINO") {
             return "Estimada"
         }
         return ""

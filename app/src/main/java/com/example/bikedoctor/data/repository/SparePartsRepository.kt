@@ -11,6 +11,10 @@ class SparePartsRepository {
         return RetrofitClient.sparePartsAPI.getSpareParts(pageNumber, pageSize)
     }
 
+    fun getSparePartsByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<SpareParts>> {
+        return RetrofitClient.sparePartsAPI.getSparePartsByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createSpareParts(sparePartsPost: SparePartsPost): Call<SparePartsPost> {
         return RetrofitClient.sparePartsAPI.createSpareParts(sparePartsPost)
     }

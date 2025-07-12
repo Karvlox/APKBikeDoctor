@@ -33,4 +33,11 @@ interface ControlAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @GET("api/QualityControl/by-employee/{ci}")
+    fun getControlsByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<QualityControl>>
 }

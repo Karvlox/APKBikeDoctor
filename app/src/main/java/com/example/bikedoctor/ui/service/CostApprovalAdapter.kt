@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.CostApproval
@@ -28,10 +27,12 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
-class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
-    ArrayAdapter<CostApproval>(context, 0, costApproval) {
+class CostApprovalAdapter(
+    context: Context,
+    costApprovals: List<CostApproval>,
+    private val viewModel: CostApprovalViewModel,
+    private val token: String?
+) : ArrayAdapter<CostApproval>(context, 0, costApprovals) {
 
     private val tag = "CostApprovalAdapter"
     private val repairRepository = RepairRepository()
@@ -51,7 +52,7 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
             return view
         }
 
-        Log.d(tag, "Rendering Cost Approval: id=${costApproval.id}")
+        Log.d(tag, "Rendering cost approval: id=${costApproval.id}")
 
         val idServiceText = view.findViewById<TextView>(R.id.idService)
         val nameCIText = view.findViewById<TextView>(R.id.clientCI)
@@ -64,16 +65,16 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
         idServiceText.text = costApproval.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${costApproval.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${costApproval.motorcycleLicensePlate ?: "Sin datos"}"
-        employeeCIText.text = "Empleado Reponsable: ${costApproval.employeeCI ?: "Sin datos"}"
+        employeeCIText.text = "Empleado Responsable: ${costApproval.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstCostApproval != null) {
-            "Lista de aprobacion de costos: ${firstCostApproval.nameProduct}"
+            "Lista de Costos: ${firstCostApproval.nameProduct}"
         } else {
-            "Sin aprobacion de costos especificados"
+            "Sin costos especificados"
         }
 
-        // Configurar botones (placeholders)
+        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
-            Log.d(tag, "Edit button clicked for reception: ${costApproval.id}")
+            Log.d(tag, "Edit button clicked for cost approval: ${costApproval.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
             val bundle = bundleOf(
                 "costApproval_id" to costApproval.id,
@@ -81,19 +82,21 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
                 "costApproval_clientCI" to costApproval.clientCI?.toString(),
                 "costApproval_motorcycleLicensePlate" to costApproval.motorcycleLicensePlate,
                 "costApproval_employeeCI" to costApproval.employeeCI?.toString(),
-                "costApproval_listDiagnostic" to costApproval.listLaborCosts?.toTypedArray(),
+                "costApproval_listLaborCosts" to costApproval.listLaborCosts?.toTypedArray(),
                 "costApproval_reviewed" to costApproval.reviewed
             )
-                val sparePartsFormFragment = CostApprovalFormFragment().apply {
+            val costApprovalFormFragment = CostApprovalFormFragment().apply {
                 arguments = bundle
             }
             fragmentManager.beginTransaction()
-                .replace(R.id.frame_layout, sparePartsFormFragment)
+                .replace(R.id.frame_layout, costApprovalFormFragment)
                 .addToBackStack(null)
                 .commit()
         }
+
+        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
-            Log.d(tag, "Continue button clicked for reception: ${costApproval.id}")
+            Log.d(tag, "Continue button clicked for cost approval: ${costApproval.id}")
             createRepairFromCostApproval(costApproval)
         }
 
@@ -102,7 +105,7 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
 
     private fun createRepairFromCostApproval(costApproval: CostApproval) {
         if (costApproval.clientCI == null || costApproval.motorcycleLicensePlate == null || costApproval.employeeCI == null) {
-            Log.e(tag, "Cannot create costApproval: Missing required fields")
+            Log.e(tag, "Cannot create repair: Missing required fields")
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
@@ -115,26 +118,25 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
 
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
-                .setTitle("Continuar con Aprobacion de Costos")
-                .setMessage("¿Desea notificar al cliente sobre los Repuestos?")
+                .setTitle("Continuar con Reparación")
+                .setMessage("¿Desea notificar al cliente sobre la aprobación de costos?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
-                    proceedWithSpareParts(costApproval, notifyClient = true)
+                    proceedWithRepair(costApproval, notifyClient = true)
                 }
                 .setNegativeButton("Continuar sin Notificar") { _, _ ->
-                    proceedWithSpareParts(costApproval, notifyClient = false)
+                    proceedWithRepair(costApproval, notifyClient = false)
                 }
                 .setCancelable(false)
                 .show()
         }
     }
 
-    private fun proceedWithSpareParts(costApproval: CostApproval, notifyClient: Boolean) {
+    private fun proceedWithRepair(costApproval: CostApproval, notifyClient: Boolean) {
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val repair = RepairPost(
             date = currentDate,
             clientCI = costApproval.clientCI,
@@ -146,14 +148,14 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
         repairRepository.createRepairs(repair).enqueue(object : Callback<RepairPost> {
             override fun onResponse(call: Call<RepairPost>, response: Response<RepairPost>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Repair created successfully for reception: ${costApproval.id}")
+                    Log.d(tag, "Repair created successfully for cost approval: ${costApproval.id}")
                     costApproval.id?.let { id ->
-                        updateSparePartReviewedStatus(id, true)
+                        updateCostApprovalReviewedStatus(id, true)
                     }
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Reparacion creada exitosamente",
+                            "Reparación creada exitosamente",
                             android.widget.Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -164,13 +166,14 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
                                 ci = ci,
                                 onSuccess = { client ->
                                     currentClient = client
+                                    val laborCostsNames = costApproval.listLaborCosts?.joinToString(", ") { it.nameProduct.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} las reparaciones que se realizaran a su motocicleta son: \n${costApproval.listLaborCosts}"
+                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, las reparaciones que se realizarán a su motocicleta incluyen los costos: $laborCostsNames"
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                             if (response.isSuccessful) {
-                                                Log.d(tag, "Notification sent successfully for reception: ${costApproval.id}")
+                                                Log.d(tag, "Notification sent successfully for cost approval: ${costApproval.id}")
                                                 (context as? FragmentActivity)?.run {
                                                     android.widget.Toast.makeText(
                                                         this,
@@ -216,10 +219,9 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
                                 }
                             )
                         }
-
                     }
                 } else {
-                    val errorMsg = "Error al crear Reparacion: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al crear reparación: ${response.code()} ${response.message()}"
                     Log.e(tag, errorMsg)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -245,22 +247,25 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
         })
     }
 
-    private fun updateSparePartReviewedStatus(id: String, reviewed: Boolean) {
+    private fun updateCostApprovalReviewedStatus(id: String, reviewed: Boolean) {
         costApprovalRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Repair $id marked as reviewed=$reviewed")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(CostApprovalViewModel::class.java)
-                        viewModel.fetchCards(1, 100)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    Log.d(tag, "Cost Approval $id marked as reviewed=$reviewed")
+                    viewModel.fetchCostApprovals(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado de recepción: ${response.message()}",
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update cost approval reviewed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de aprobación de costos: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -268,11 +273,11 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating cost approval reviewed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar: ${t.message}",
+                        "Error de conexión al actualizar aprobación de costos: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -280,10 +285,10 @@ class CostApprovalAdapter(context: Context, costApproval: List<CostApproval>) :
         })
     }
 
-    private fun getGender(gender: String) : String{
-        if (gender == "MASCULINO"){
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
             return "Estimado"
-        } else if (gender == "FEMENINO"){
+        } else if (gender == "FEMENINO") {
             return "Estimada"
         }
         return ""

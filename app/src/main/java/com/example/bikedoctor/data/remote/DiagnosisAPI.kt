@@ -33,4 +33,11 @@ interface DiagnosisAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @GET("api/Diagnosis/by-employee/{ci}")
+    fun getDiagnosisByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<Diagnosis>>
 }

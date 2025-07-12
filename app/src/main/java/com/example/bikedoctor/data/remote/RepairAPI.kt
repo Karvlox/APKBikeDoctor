@@ -33,4 +33,11 @@ interface RepairAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @GET("api/Repair/by-employee/{ci}")
+    fun getRepairsByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<Repair>>
 }

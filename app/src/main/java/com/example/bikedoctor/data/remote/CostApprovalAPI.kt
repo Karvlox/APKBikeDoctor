@@ -33,4 +33,11 @@ interface CostApprovalAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @GET("api/CostApproval/by-employee/{ci}")
+    fun getCostApprovalsByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<CostApproval>>
 }

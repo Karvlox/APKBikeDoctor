@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.DiagnosisPost
@@ -26,10 +25,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
-class ReceptionAdapter(context: Context, receptions: List<Reception>) :
-    ArrayAdapter<Reception>(context, 0, receptions) {
+class ReceptionAdapter(
+    context: Context,
+    receptions: List<Reception>,
+    private val viewModel: ReceptionViewModel,
+    private val token: String?
+) : ArrayAdapter<Reception>(context, 0, receptions) {
 
     private val tag = "ReceptionAdapter"
     private val diagnosisRepository = DiagnosisRepository()
@@ -38,7 +43,6 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
     private val parseHour = ParserHour()
     private val getClient = GetClient(context)
     private var currentClient: Client? = null
-
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context)
@@ -68,7 +72,6 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${reception.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
-
             val bundle = bundleOf(
                 "reception_id" to reception.id,
                 "reception_date" to parseHour.parserHourService(reception.date.toString()),
@@ -98,7 +101,6 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
     }
 
     private fun createDiagnosisFromReception(reception: Reception) {
-        // Validate required fields
         if (reception.clientCI == null || reception.motorcycleLicensePlate == null || reception.employeeCI == null) {
             Log.e(tag, "Cannot create diagnosis: Missing required fields")
             (context as? FragmentActivity)?.run {
@@ -111,7 +113,6 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
             return
         }
 
-        // Show dialog to choose notification option
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
                 .setTitle("Continuar con Diagnóstico")
@@ -128,13 +129,11 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
     }
 
     private fun proceedWithDiagnosis(reception: Reception, notifyClient: Boolean) {
-        // Get current date in ISO 8601 format
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val diagnosis = DiagnosisPost(
             date = currentDate,
             clientCI = reception.clientCI,
@@ -143,12 +142,10 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
             listDiagnostic = null
         )
 
-        // Make POST request for diagnosis
         diagnosisRepository.createDiagnosis(diagnosis).enqueue(object : Callback<DiagnosisPost> {
             override fun onResponse(call: Call<DiagnosisPost>, response: Response<DiagnosisPost>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Diagnosis created successfully for reception: ${reception.id}")
-                    // Update reception's reviewed status
                     reception.id?.let { id ->
                         updateReceptionReviewedStatus(id, true)
                     }
@@ -159,8 +156,6 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
                             android.widget.Toast.LENGTH_SHORT
                         ).show()
                     }
-
-
 
                     if (notifyClient) {
                         reception.clientCI?.let { ci ->
@@ -253,17 +248,20 @@ class ReceptionAdapter(context: Context, receptions: List<Reception>) :
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Reception $id marked as reviewed=$reviewed")
+                    viewModel.fetchReceptions(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(ReceptionViewModel::class.java)
-                        viewModel.fetchReceptions(1, 100)
+                        android.widget.Toast.makeText(
+                            this,
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado de recepción: ${response.message()}",
+                            "Error al actualizar estado: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }

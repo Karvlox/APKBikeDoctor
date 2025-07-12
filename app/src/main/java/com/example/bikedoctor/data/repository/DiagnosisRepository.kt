@@ -10,6 +10,10 @@ class DiagnosisRepository {
         return RetrofitClient.diagnosisAPI.getDiagnosis(pageNumber, pageSize)
     }
 
+    fun getDiagnosisByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<Diagnosis>> {
+        return RetrofitClient.diagnosisAPI.getDiagnosisByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createDiagnosis(diagnosis: DiagnosisPost): Call<DiagnosisPost> {
         return RetrofitClient.diagnosisAPI.createDiagnosis(diagnosis)
     }
