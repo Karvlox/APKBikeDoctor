@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.Delivery
@@ -22,12 +21,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
-class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
-    ArrayAdapter<Delivery>(context, 0, delivery) {
+class DeliveryAdapter(
+    context: Context,
+    deliveries: List<Delivery>,
+    private val viewModel: DeliveryViewModel,
+    private val token: String?
+) : ArrayAdapter<Delivery>(context, 0, deliveries) {
 
     private val tag = "DeliveryAdapter"
     private val deliveryRepository = DeliveryRepository()
@@ -56,29 +57,24 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
         idServiceText.text = delivery.id ?: "Sin ID"
         nameCIText.text = "Cliente: ${delivery.clientCI ?: "Desconocido"}"
         motorcycleClientText.text = "Motocicleta: ${delivery.motorcycleLicensePlate ?: "Sin datos"}"
-        employeeCIText.text = "Empleado Reponsable: ${delivery.employeeCI ?: "Sin datos"}"
-        firstReasonText.text = "Formulario llenado?: ${delivery.surveyCompleted?: "Sin confirmación"}"
+        employeeCIText.text = "Empleado Responsable: ${delivery.employeeCI ?: "Sin datos"}"
+        firstReasonText.text = "Encuesta completada: ${if (delivery.surveyCompleted == true) "Sí" else "No"}"
 
-        // Hacer que el botón editButtom sea invisible
-        view.findViewById<ImageView>(R.id.editButtom).visibility = View.INVISIBLE // o View.INVISIBLE según prefieras
+        // Mantener el botón de edición invisible
+        view.findViewById<ImageView>(R.id.editButtom)?.visibility = View.INVISIBLE
 
-        // Configurar botones (placeholders)
-        view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
-            Log.d(tag, "Edit button clicked for reception: ${delivery.id}")
-            // TODO: Implementar acción de edición
-        }
+        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
-            Log.d(tag, "Continue button clicked for reception: ${delivery.id}")
-            // TODO: Implementar acción de continuación
-            finishFromDelivery(delivery)
+            Log.d(tag, "Continue button clicked for delivery: ${delivery.id}")
+            completeDelivery(delivery)
         }
 
         return view
     }
 
-    private fun finishFromDelivery(delivery : Delivery){
+    private fun completeDelivery(delivery: Delivery) {
         if (delivery.clientCI == null || delivery.motorcycleLicensePlate == null || delivery.employeeCI == null) {
-            Log.e(tag, "Cannot create costApproval: Missing required fields")
+            Log.e(tag, "Cannot complete delivery: Missing required fields")
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
@@ -88,22 +84,23 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
             }
             return
         }
+
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
-                .setTitle("Continuar con Control")
-                .setMessage("¿Notificar la Reparación?")
+                .setTitle("Finalizar Entrega")
+                .setMessage("¿Desea notificar al cliente con un enlace a la encuesta de satisfacción?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
-                    proceedWithReparation(delivery, notifyClient = true)
+                    proceedWithDelivery(delivery, notifyClient = true)
                 }
-                .setNegativeButton("Continuar sin Notificar") { _, _ ->
-                    proceedWithReparation(delivery, notifyClient = false)
+                .setNegativeButton("Finalizar sin Notificar") { _, _ ->
+                    proceedWithDelivery(delivery, notifyClient = false)
                 }
                 .setCancelable(false)
                 .show()
         }
     }
 
-    private fun proceedWithReparation(delivery: Delivery, notifyClient: Boolean) {
+    private fun proceedWithDelivery(delivery: Delivery, notifyClient: Boolean) {
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -121,18 +118,18 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                     onSuccess = { client ->
                         currentClient = client
                         val notification = MessageNotification(
-                            message = "Hola ${client.name + " " + client.lastName} Queriamos agradecerte por la preferencia en el Taller de Motocicletas BikeDoctor!!. " +
-                                    "\nhttps://docs.google.com/forms/d/e/1FAIpQLSeTAR_GttK8qWzX9ouf0N1_ao6NGRaw-UFS7VlGPhvZ68Oxxg/viewform?usp=dialog" +
-                                    "\nAgradeceriamos mucho que pueda llenar el siguiente encuesta para calificar la atención que tuvo durante el periodo de reparacion, muchas gracias!."
+                            message = "${getGender(client.gender)} ${client.name} ${client.lastName}, ¡gracias por elegir BikeDoctor! Su motocicleta ha sido entregada. " +
+                                    "Por favor, complete nuestra encuesta de satisfacción: " +
+                                    "https://docs.google.com/forms/d/e/1FAIpQLSeTAR_GttK8qWzX9ouf0N1_ao6NGRaw-UFS7VlGPhvZ68Oxxg/viewform"
                         )
                         messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                 if (response.isSuccessful) {
-                                    Log.d(tag, "Notification sent successfully for reception: ${delivery.id}")
+                                    Log.d(tag, "Notification sent successfully for delivery: ${delivery.id}")
                                     (context as? FragmentActivity)?.run {
                                         android.widget.Toast.makeText(
                                             this,
-                                            "Se termino el proceso y encuesta enviada.",
+                                            "Entrega finalizada y notificación enviada",
                                             android.widget.Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -174,12 +171,11 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
                     }
                 )
             }
-
         } else {
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
-                    "Proceso terminado.",
+                    "Entrega finalizada",
                     android.widget.Toast.LENGTH_SHORT
                 ).show()
             }
@@ -191,17 +187,20 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Delivery $id marked as reviewed=$reviewed")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(SparePartsViewModel::class.java)
-                        viewModel.fetchCards(1, 10)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    viewModel.fetchDeliveries(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado: ${response.message()}",
+                            "Estado de entrega actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update delivery reviewed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de entrega: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -209,11 +208,11 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating delivery reviewed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar entrega: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -225,18 +224,21 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
         deliveryRepository.updateSurveyCompletedStatus(id, surveyCompleted).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Control $id marked as Survey Completed=$surveyCompleted")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(DeliveryViewModel::class.java)
-                        viewModel.fetchCards(1, 100)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update Survey Completed status: ${response.code()} ${response.message()}")
+                    Log.d(tag, "Delivery $id marked as surveyCompleted=$surveyCompleted")
+                    viewModel.fetchDeliveries(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado: ${response.message()}",
+                            "Estado de encuesta actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update delivery survey completed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de encuesta: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -244,15 +246,24 @@ class DeliveryAdapter(context: Context, delivery: List<Delivery>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating delivery survey completed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar encuesta: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
             }
         })
+    }
+
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
+            return "Estimado"
+        } else if (gender == "FEMENINO") {
+            return "Estimada"
+        }
+        return ""
     }
 }

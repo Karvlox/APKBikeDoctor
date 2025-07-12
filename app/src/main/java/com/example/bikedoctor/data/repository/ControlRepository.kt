@@ -11,6 +11,10 @@ class ControlRepository {
         return RetrofitClient.controlAPI.getControl(pageNumber, pageSize)
     }
 
+    fun getControlsByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<QualityControl>> {
+        return RetrofitClient.controlAPI.getControlsByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createControls(qualityControlPost: QualityControlPost): Call<QualityControlPost> {
         return RetrofitClient.controlAPI.createQualityControl(qualityControlPost)
     }

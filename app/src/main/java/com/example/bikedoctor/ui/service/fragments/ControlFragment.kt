@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.service.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +9,22 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.service.ControlAdapter
 import com.example.bikedoctor.ui.service.ControlViewModel
+import com.example.bikedoctor.ui.signIn.SignIn
 
 class ControlFragment : Fragment() {
 
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val viewModel: ControlViewModel by viewModels()
     private val tag = "ControlFragment"
+    private var currentToken: String? = null // Almacenar el token
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +51,20 @@ class ControlFragment : Fragment() {
             return view
         }
 
+        // Observar el token desde SessionViewModel
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token // Almacenar el token
+            if (token == null) {
+                Log.e(tag, "No token, redirecting to SignIn")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                startActivity(Intent(requireContext(), SignIn::class.java))
+                requireActivity().finish()
+            } else {
+                viewModel.fetchCards(1, 100, token)
+            }
+        }
+
         // Observar estado de carga
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             Log.d(tag, "isLoading: $isLoading")
@@ -56,6 +77,7 @@ class ControlFragment : Fragment() {
                 Log.e(tag, "Error: $error")
                 errorText.text = error
                 errorText.visibility = View.VISIBLE
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 viewModel.clearError()
             } else {
                 errorText.visibility = View.GONE
@@ -65,7 +87,7 @@ class ControlFragment : Fragment() {
         // Observar lista de controles
         viewModel.control.observe(viewLifecycleOwner) { controls ->
             Log.d(tag, "Controls updated: ${controls.size}")
-            val adapter = ControlAdapter(requireContext(), controls)
+            val adapter = ControlAdapter(requireContext(), controls, viewModel, currentToken)
             listView.adapter = adapter
             servicesNumberText.text = "${controls.size} Servicios"
         }

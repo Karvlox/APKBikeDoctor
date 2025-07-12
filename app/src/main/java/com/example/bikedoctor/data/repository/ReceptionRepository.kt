@@ -10,6 +10,10 @@ class ReceptionRepository {
         return RetrofitClient.receptionApi.getReceptions(pageNumber, pageSize)
     }
 
+    fun getReceptionsByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<Reception>> {
+        return RetrofitClient.receptionApi.getReceptionsByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createReception(reception: ReceptionPost): Call<ReceptionPost> {
         return RetrofitClient.receptionApi.createReception(reception)
     }

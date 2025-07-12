@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.Diagnosis
@@ -28,8 +27,12 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
-    ArrayAdapter<Diagnosis>(context, 0, diagnosis) {
+class DiagnosisAdapter(
+    context: Context,
+    diagnosis: List<Diagnosis>,
+    private val viewModel: DiagnosisViewModel,
+    private val token: String?
+) : ArrayAdapter<Diagnosis>(context, 0, diagnosis) {
 
     private val tag = "DiagnosisAdapter"
     private val sparePartsRepository = SparePartsRepository()
@@ -45,11 +48,11 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
 
         val diagnosis = getItem(position)
         if (diagnosis == null) {
-            Log.e(tag, "Diagnostic at position $position is null")
+            Log.e(tag, "Diagnosis at position $position is null")
             return view
         }
 
-        Log.d(tag, "Rendering diagnostic: id=${diagnosis.id}")
+        Log.d(tag, "Rendering diagnosis: id=${diagnosis.id}")
 
         val idServiceText = view.findViewById<TextView>(R.id.idService)
         val nameCIText = view.findViewById<TextView>(R.id.clientCI)
@@ -64,9 +67,9 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         motorcycleClientText.text = "Motocicleta: ${diagnosis.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${diagnosis.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstDiagnosis != null) {
-            "Lista de Diagnosticos: ${firstDiagnosis.error}"
+            "Lista de Diagnósticos: ${firstDiagnosis.error}"
         } else {
-            "Sin diagnosticos especificados"
+            "Sin diagnósticos especificados"
         }
 
         // Configurar botón de edición
@@ -103,7 +106,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
 
     private fun createSparePartsFromDiagnosis(diagnosis: Diagnosis) {
         if (diagnosis.clientCI == null || diagnosis.motorcycleLicensePlate == null || diagnosis.employeeCI == null) {
-            Log.e(tag, "Cannot create diagnosis: Missing required fields")
+            Log.e(tag, "Cannot create spare parts: Missing required fields")
             (context as? FragmentActivity)?.run {
                 android.widget.Toast.makeText(
                     this,
@@ -117,7 +120,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         (context as? FragmentActivity)?.run {
             AlertDialog.Builder(this)
                 .setTitle("Continuar con Repuestos")
-                .setMessage("¿Desea notificar al cliente sobre el Diagnostico?")
+                .setMessage("¿Desea notificar al cliente sobre el diagnóstico?")
                 .setPositiveButton("Notificar al Cliente") { _, _ ->
                     proceedWithSpareParts(diagnosis, notifyClient = true)
                 }
@@ -130,13 +133,11 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
     }
 
     private fun proceedWithSpareParts(diagnosis: Diagnosis, notifyClient: Boolean) {
-        // Get current date in ISO 8601 format
         val calendar = Calendar.getInstance()
         val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val spareParts = SparePartsPost(
             date = currentDate,
             clientCI = diagnosis.clientCI,
@@ -148,14 +149,14 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         sparePartsRepository.createSpareParts(spareParts).enqueue(object : Callback<SparePartsPost> {
             override fun onResponse(call: Call<SparePartsPost>, response: Response<SparePartsPost>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Spare Parts created successfully for reception: ${diagnosis.id}")
+                    Log.d(tag, "Spare Parts created successfully for diagnosis: ${diagnosis.id}")
                     diagnosis.id?.let { id ->
                         updateDiagnosisReviewedStatus(id, true)
                     }
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Repuestos creado exitosamente",
+                            "Repuestos creados exitosamente",
                             android.widget.Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -167,12 +168,12 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                                 onSuccess = { client ->
                                     currentClient = client
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name + client.lastName} su moto termino la fase de diagnostico. \nSe le informara sobre los repuestos que se llegaran a necesitar."
+                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, su moto terminó la fase de diagnóstico. \nSe le informará sobre los repuestos que se lleguen a necesitar."
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
                                             if (response.isSuccessful) {
-                                                Log.d(tag, "Notification sent successfully for reception: ${diagnosis.id}")
+                                                Log.d(tag, "Notification sent successfully for diagnosis: ${diagnosis.id}")
                                                 (context as? FragmentActivity)?.run {
                                                     android.widget.Toast.makeText(
                                                         this,
@@ -220,7 +221,7 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
                         }
                     }
                 } else {
-                    val errorMsg = "Error al crear diagnóstico: ${response.code()} ${response.message()}"
+                    val errorMsg = "Error al crear repuestos: ${response.code()} ${response.message()}"
                     Log.e(tag, errorMsg)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
@@ -250,18 +251,21 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         diagnosisRepository.updateReviewedStatus(id, reviewed).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
-                    Log.d(tag, "Reception $id marked as reviewed=$reviewed")
-                    (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(DiagnosisViewModel::class.java)
-                        viewModel.fetchDiagnosis(1, 100)
-                    }
-                } else {
-                    Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
+                    Log.d(tag, "Diagnosis $id marked as reviewed=$reviewed")
+                    viewModel.fetchDiagnosis(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,
-                            "Error al actualizar estado de recepción: ${response.message()}",
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Log.e(tag, "Failed to update diagnosis reviewed status: ${response.code()} ${response.message()}")
+                    (context as? FragmentActivity)?.run {
+                        android.widget.Toast.makeText(
+                            this,
+                            "Error al actualizar estado de diagnóstico: ${response.message()}",
                             android.widget.Toast.LENGTH_LONG
                         ).show()
                     }
@@ -269,11 +273,11 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
             }
 
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                Log.e(tag, "Error updating reception reviewed status: ${t.message}", t)
+                Log.e(tag, "Error updating diagnosis reviewed status: ${t.message}", t)
                 (context as? FragmentActivity)?.run {
                     android.widget.Toast.makeText(
                         this,
-                        "Error de conexión al actualizar recepción: ${t.message}",
+                        "Error de conexión al actualizar diagnóstico: ${t.message}",
                         android.widget.Toast.LENGTH_LONG
                     ).show()
                 }
@@ -281,10 +285,10 @@ class DiagnosisAdapter(context: Context, diagnosis: List<Diagnosis>) :
         })
     }
 
-    private fun getGender(gender: String) : String{
-        if (gender == "MASCULINO"){
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
             return "Estimado"
-        } else if (gender == "FEMENINO"){
+        } else if (gender == "FEMENINO") {
             return "Estimada"
         }
         return ""

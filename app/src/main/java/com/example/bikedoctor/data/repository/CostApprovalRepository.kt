@@ -11,6 +11,10 @@ class CostApprovalRepository {
         return RetrofitClient.costApprovalAPI.getCostApproval(pageNumber, pageSize)
     }
 
+    fun getCostApprovalsByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<CostApproval>> {
+        return RetrofitClient.costApprovalAPI.getCostApprovalsByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createCostApprovals(costApprovalPost: CostApprovalPost): Call<CostApprovalPost> {
         return RetrofitClient.costApprovalAPI.createCostApproval(costApprovalPost)
     }

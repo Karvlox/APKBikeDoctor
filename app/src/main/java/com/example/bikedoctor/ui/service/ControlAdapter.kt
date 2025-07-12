@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.model.DeliveryPost
@@ -30,8 +29,12 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-class ControlAdapter(context: Context, control: List<QualityControl>) :
-    ArrayAdapter<QualityControl>(context, 0, control) {
+class ControlAdapter(
+    context: Context,
+    control: List<QualityControl>,
+    private val controlViewModel: ControlViewModel,
+    private val token: String? // Agregar token como parámetro
+) : ArrayAdapter<QualityControl>(context, 0, control) {
 
     private val tag = "ControlAdapter"
     private val deliveryRepository = DeliveryRepository()
@@ -71,7 +74,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
             "Sin controles especificados"
         }
 
-        // Configurar botones (placeholders)
+        // Configurar botones
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${control.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -99,7 +102,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
         return view
     }
 
-    private fun createDeliveryFromControl(control : QualityControl){
+    private fun createDeliveryFromControl(control: QualityControl) {
         if (control.clientCI == null || control.motorcycleLicensePlate == null || control.employeeCI == null) {
             Log.e(tag, "Cannot create costApproval: Missing required fields")
             (context as? FragmentActivity)?.run {
@@ -133,7 +136,6 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
         outputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val currentDate = outputFormat.format(calendar.time)
 
-        // Create DiagnosisPost object
         val delivery = DeliveryPost(
             date = currentDate,
             clientCI = control.clientCI,
@@ -156,7 +158,6 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
                         ).show()
                     }
 
-                    // If notifyClient is true, send notification
                     if (notifyClient) {
                         control.clientCI?.let { ci ->
                             getClient.getClientById(
@@ -215,7 +216,6 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
                                 }
                             )
                         }
-
                     }
                 } else {
                     val errorMsg = "Error al crear Reparacion: ${response.code()} ${response.message()}"
@@ -229,6 +229,7 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
                     }
                 }
             }
+
             override fun onFailure(call: Call<DeliveryPost>, t: Throwable) {
                 val errorMsg = "Error de conexión: ${t.message}"
                 Log.e(tag, errorMsg, t)
@@ -248,10 +249,13 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Control $id marked as reviewed=$reviewed")
+                    controlViewModel.fetchCards(1, 100, token) // Usar el token proporcionado
                     (context as? FragmentActivity)?.run {
-                        val viewModel = ViewModelProvider(this)
-                            .get(ControlViewModel::class.java)
-                        viewModel.fetchCards(1, 100)
+                        android.widget.Toast.makeText(
+                            this,
+                            "Estado actualizado correctamente",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Log.e(tag, "Failed to update reception reviewed status: ${response.code()} ${response.message()}")
@@ -278,10 +282,10 @@ class ControlAdapter(context: Context, control: List<QualityControl>) :
         })
     }
 
-    private fun getGender(gender: String) : String{
-        if (gender == "MASCULINO"){
+    private fun getGender(gender: String): String {
+        if (gender == "MASCULINO") {
             return "Estimado"
-        } else if (gender == "FEMENINO"){
+        } else if (gender == "FEMENINO") {
             return "Estimada"
         }
         return ""

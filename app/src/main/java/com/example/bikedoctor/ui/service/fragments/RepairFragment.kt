@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.service.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,22 +9,28 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.service.RepairAdapter
 import com.example.bikedoctor.ui.service.RepairViewModel
+import com.example.bikedoctor.ui.signIn.SignIn
 
 class RepairFragment : Fragment() {
 
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val viewModel: RepairViewModel by viewModels()
     private val tag = "RepairFragment"
+    private var currentToken: String? = null // Almacenar el token
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(tag, "Inflating fragment repair layout")
+        Log.d(tag, "Inflating fragment_repair layout")
         val view: View
         try {
             view = inflater.inflate(R.layout.fragment_repair, container, false)
@@ -44,6 +51,20 @@ class RepairFragment : Fragment() {
             return view
         }
 
+        // Observar el token desde SessionViewModel
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token // Almacenar el token
+            if (token == null) {
+                Log.e(tag, "No token, redirecting to SignIn")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                startActivity(Intent(requireContext(), SignIn::class.java))
+                requireActivity().finish()
+            } else {
+                viewModel.fetchRepairs(1, 100, token)
+            }
+        }
+
         // Observar estado de carga
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             Log.d(tag, "isLoading: $isLoading")
@@ -56,18 +77,19 @@ class RepairFragment : Fragment() {
                 Log.e(tag, "Error: $error")
                 errorText.text = error
                 errorText.visibility = View.VISIBLE
+                Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 viewModel.clearError()
             } else {
                 errorText.visibility = View.GONE
             }
         }
 
-        // Observar lista de diagnosticos
-        viewModel.repairs.observe(viewLifecycleOwner) { diagnosis ->
-            Log.d(tag, "Diagnosis updated: ${diagnosis.size}")
-            val adapter = RepairAdapter(requireContext(), diagnosis)
+        // Observar lista de reparaciones
+        viewModel.repairs.observe(viewLifecycleOwner) { repairs ->
+            Log.d(tag, "Repairs updated: ${repairs.size}")
+            val adapter = RepairAdapter(requireContext(), repairs, viewModel, currentToken)
             listView.adapter = adapter
-            servicesNumberText.text = "${diagnosis.size} Servicios"
+            servicesNumberText.text = "${repairs.size} Servicios"
         }
 
         return view

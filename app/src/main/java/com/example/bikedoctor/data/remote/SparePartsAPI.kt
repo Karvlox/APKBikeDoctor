@@ -33,4 +33,11 @@ interface SparePartsAPI {
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
     ): Call<Void>
+
+    @GET("api/SpareParts/by-employee/{ci}")
+    fun getSparePartsByEmployee(
+        @Path("ci") ci: Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
+    ): Call<List<SpareParts>>
 }

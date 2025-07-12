@@ -11,6 +11,10 @@ class RepairRepository {
         return RetrofitClient.repairAPI.getRepair(pageNumber, pageSize)
     }
 
+    fun getRepairsByEmployee(ci: Int, pageNumber: Int, pageSize: Int): Call<List<Repair>> {
+        return RetrofitClient.repairAPI.getRepairsByEmployee(ci, pageNumber, pageSize)
+    }
+
     fun createRepairs(repairPost: RepairPost): Call<RepairPost> {
         return RetrofitClient.repairAPI.createRepair(repairPost)
     }
