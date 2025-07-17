@@ -72,7 +72,6 @@ class RepairAdapter(
             "Sin reparaciones especificadas"
         }
 
-        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for repair: ${repair.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -94,7 +93,6 @@ class RepairAdapter(
                 .commit()
         }
 
-        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for repair: ${repair.id}")
             createControlFromRepair(repair)

@@ -60,10 +60,8 @@ class DeliveryAdapter(
         employeeCIText.text = "Empleado Responsable: ${delivery.employeeCI ?: "Sin datos"}"
         firstReasonText.text = "Encuesta completada: ${if (delivery.surveyCompleted == true) "Sí" else "No"}"
 
-        // Mantener el botón de edición invisible
         view.findViewById<ImageView>(R.id.editButtom)?.visibility = View.INVISIBLE
 
-        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for delivery: ${delivery.id}")
             completeDelivery(delivery)

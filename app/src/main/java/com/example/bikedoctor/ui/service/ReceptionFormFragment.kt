@@ -13,12 +13,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.ui.client.ClientsListFragment
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.motorcycle.MotorcycleListFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -29,7 +31,9 @@ import java.util.Locale
 class ReceptionFormFragment : Fragment() {
 
     private val viewModel: ReceptionFormViewModel by viewModels()
-    private val tag = "AddServiceFragment"
+    private val sessionViewModel: SessionViewModel by activityViewModels()
+    private val tag = "ReceptionFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -44,7 +48,7 @@ class ReceptionFormFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(tag, "Inflating fragment_add_service layout")
+        Log.d(tag, "Inflating fragment_reception_form layout")
         val view: View
         try {
             view = inflater.inflate(R.layout.fragment_reception_form, container, false)
@@ -54,7 +58,6 @@ class ReceptionFormFragment : Fragment() {
             return null
         }
 
-        // Inicializar vistas con manejo de errores
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -77,7 +80,17 @@ class ReceptionFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
             val receptionId = args.getString("reception_id")
             val date = args.getString("reception_date")
@@ -105,14 +118,11 @@ class ReceptionFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
-        dateTimeEditText.keyListener = null // Deshabilitar entrada de texto
+        dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView para motivos
         reasonsRecyclerView.layoutManager = LinearLayoutManager(context)
         val reasonsAdapter = ReasonsAdapter(
             reasons = emptyList(),
@@ -125,47 +135,40 @@ class ReceptionFormFragment : Fragment() {
         )
         reasonsRecyclerView.adapter = reasonsAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.imageView3)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.button_cancel)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.button_register_service)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientSelectText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleSelectText.tag?.toString() ?: ""
             val reason = reasonInputLayout.editText?.text.toString().trim()
             Log.d(tag, "Register button clicked: date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate, reason=$reason")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reason)
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reason, currentToken)
         }
 
-        // Botón Agregar Motivo
         view.findViewById<TextView>(R.id.textView16)?.setOnClickListener {
             val reason = reasonInputLayout.editText?.text.toString().trim()
             viewModel.addReason(reason)
             reasonInputLayout.editText?.text?.clear()
         }
 
-        // Selección de cliente (TextView)
         clientSelectText.setOnClickListener {
             navigateToClientsList()
         }
 
-        // Selección de cliente (ImageView)
         view.findViewById<ImageView>(R.id.imageView5)?.setOnClickListener {
             navigateToClientsList()
         }
 
-        // Recibir cliente seleccionado
         setFragmentResultListener("client_selection") { _, bundle ->
             val clientCI = bundle.getString("client_id") ?: ""
             val clientName = bundle.getString("client_name") ?: "Cliente Seleccionado"
@@ -173,17 +176,14 @@ class ReceptionFormFragment : Fragment() {
             viewModel.setClient(clientCI, clientName)
         }
 
-        // Selección de motocicleta (TextView)
         motorcycleSelectText.setOnClickListener {
             navigateToMotorcyclesList()
         }
 
-        // Selección de motocicleta (ImageView)
         view.findViewById<ImageView>(R.id.imageView7)?.setOnClickListener {
             navigateToMotorcyclesList()
         }
 
-        // Recibir motocicleta seleccionada
         setFragmentResultListener("motorcycle_selection") { _, bundle ->
             val motorcycleLicensePlate = bundle.getString("motorcycle_details") ?: ""
             val motorcycleDetails = bundle.getString("motorcycle_id") ?: "Motocicleta Seleccionada"
@@ -191,19 +191,16 @@ class ReceptionFormFragment : Fragment() {
             viewModel.setMotorcycle(motorcycleLicensePlate, motorcycleDetails)
         }
 
-        // Botón de cámara (simulado)
         view.findViewById<ImageView>(R.id.imageView8)?.setOnClickListener {
             // TODO: Implementar captura de foto con permisos
             viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
         }
 
-        // Botón de galería (simulado)
         view.findViewById<ImageView>(R.id.imageView9)?.setOnClickListener {
             // TODO: Implementar selección de foto con permisos
             viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -239,7 +236,6 @@ class ReceptionFormFragment : Fragment() {
             photosCountText.text = "Fotos Adjuntadas ($count)"
         }
 
-        // Observar selecciones de cliente y motocicleta
         viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
             if (clientCI != null && clientName != null) {
                 clientSelectText.text = clientName
@@ -259,7 +255,6 @@ class ReceptionFormFragment : Fragment() {
             }
         }
 
-        // Observar fecha seleccionada
         viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
             dateTimeEditText.setText(dateTime ?: "")
         }
@@ -306,14 +301,11 @@ class ReceptionFormFragment : Fragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        // Mostrar DatePickerDialog
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
-                // Actualizar calendario con la fecha seleccionada
                 calendar.set(selectedYear, selectedMonth, selectedDay)
 
-                // Mostrar TimePickerDialog después de seleccionar la fecha
                 val hour = calendar.get(Calendar.HOUR_OF_DAY)
                 val minute = calendar.get(Calendar.MINUTE)
                 val timePickerDialog = TimePickerDialog(
@@ -322,7 +314,6 @@ class ReceptionFormFragment : Fragment() {
                         calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                         calendar.set(Calendar.MINUTE, selectedMinute)
 
-                        // Formatear la fecha y hora seleccionadas
                         val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
                         val formattedDate = dateFormat.format(calendar.time)
                         dateTimeEditText.setText(formattedDate)
@@ -330,7 +321,7 @@ class ReceptionFormFragment : Fragment() {
                     },
                     hour,
                     minute,
-                    false // Formato de 12 horas (AM/PM)
+                    false
                 )
                 timePickerDialog.show()
             },

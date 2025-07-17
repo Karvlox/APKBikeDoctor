@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
+import com.example.bikedoctor.data.model.Motorcycle
 import com.google.android.material.textfield.TextInputLayout
 
 class AddMotorcycleFragment : Fragment() {
@@ -32,6 +33,21 @@ class AddMotorcycleFragment : Fragment() {
         modelInputLayout = view.findViewById(R.id.modelInputLayout)
         licensePlateInputLayout = view.findViewById(R.id.licensePlateInputLayout)
         colorInputLayout = view.findViewById(R.id.colorInputLayout)
+
+        // Verificar si estamos en modo edición
+        viewModel.isEditing = arguments != null
+
+        // Prellenar datos si estamos editando
+        arguments?.let { args ->
+            ciInputLayout.editText?.setText(args.getInt("clientCI", 0).toString())
+            brandInputLayout.editText?.setText(args.getString("brand", ""))
+            modelInputLayout.editText?.setText(args.getString("model", ""))
+            licensePlateInputLayout.editText?.setText(args.getString("licensePlate", ""))
+            colorInputLayout.editText?.setText(args.getString("color", ""))
+
+            // Bloquear placa en modo edición
+            licensePlateInputLayout.isEnabled = false
+        }
 
         // Botones
         view.findViewById<View>(R.id.buttomRegisterMotocicleta).setOnClickListener {
@@ -68,7 +84,7 @@ class AddMotorcycleFragment : Fragment() {
 
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Motocicleta registrada")) {
+            if (status.startsWith("Motocicleta registrada") || status.startsWith("Motocicleta actualizada")) {
                 clearFields()
                 parentFragmentManager.popBackStack()
             }
@@ -83,5 +99,22 @@ class AddMotorcycleFragment : Fragment() {
         modelInputLayout.editText?.text?.clear()
         licensePlateInputLayout.editText?.text?.clear()
         colorInputLayout.editText?.text?.clear()
+    }
+
+    companion object {
+        fun newInstance(motorcycle: Motorcycle? = null): AddMotorcycleFragment {
+            val fragment = AddMotorcycleFragment()
+            motorcycle?.let {
+                val args = Bundle().apply {
+                    putInt("clientCI", it.clientCI)
+                    putString("brand", it.brand)
+                    putString("model", it.model)
+                    putString("licensePlate", it.licensePlateNumber)
+                    putString("color", it.color)
+                }
+                fragment.arguments = args
+            }
+            return fragment
+        }
     }
 }

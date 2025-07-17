@@ -31,7 +31,6 @@ class ReasonsAdapter(
         holder.reasonText.text = reason
 
         holder.editButton.setOnClickListener {
-            // Mostrar un diálogo para editar (implementado en AddServiceFragment)
             onEdit(position, reason)
         }
 

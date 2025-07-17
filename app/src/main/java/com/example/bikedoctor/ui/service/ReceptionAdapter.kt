@@ -68,7 +68,6 @@ class ReceptionAdapter(
         employeeCIText.text = "Empleado Responsable: ${reception.employeeCI ?: "Sin datos"}"
         firstReasonText.text = "Motivos manifestados: ${reception.reasons?.firstOrNull() ?: "Sin motivos especificados"}"
 
-        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${reception.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -91,7 +90,6 @@ class ReceptionAdapter(
                 .commit()
         }
 
-        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for reception: ${reception.id}")
             createDiagnosisFromReception(reception)
@@ -248,7 +246,7 @@ class ReceptionAdapter(
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Reception $id marked as reviewed=$reviewed")
-                    viewModel.fetchReceptions(1, 100, token) // Usar el token proporcionado
+                    viewModel.fetchReceptions(1, 100, token)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,

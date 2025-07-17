@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
+import com.example.bikedoctor.ui.admin.ClientManagement
+import com.example.bikedoctor.ui.admin.MotorcycleManagement
 import com.example.bikedoctor.ui.client.AddClientFragment
 import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.motorcycle.AddMotorcycleFragment
@@ -35,6 +37,8 @@ class HomeFragment : Fragment() {
         val cardAddClient = view.findViewById<CardView>(R.id.card_add_client)
         val cardAddMotorcycle = view.findViewById<CardView>(R.id.card_add_motorcycle)
         val cardNewRepair = view.findViewById<CardView>(R.id.new_repair)
+        val clientsButton = view.findViewById<CardView>(R.id.clients_buttom)
+        val motorcycleButton = view.findViewById<CardView>(R.id.motorcycle_buttom)
 
         // Referencias a los TextView para datos dinámicos
         val welcomeText = view.findViewById<TextView>(R.id.welcome_text)
@@ -64,6 +68,22 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
+        // Navegar a ClientManagement
+        clientsButton.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, ClientManagement())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+        // Navegar a MotorcycleManagement
+        motorcycleButton.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, MotorcycleManagement())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
         // Observar datos dinámicos de HomeViewModel
         viewModel.homeData.observe(viewLifecycleOwner) { homeData ->
             pendingJobsText.text = homeData.pendingJobsCount.toString()
@@ -78,13 +98,27 @@ class HomeFragment : Fragment() {
                     val jsonPayload = JSONObject(decodedPayload)
                     val userName = jsonPayload.getString("Name")
                     val lastName = jsonPayload.getString("LastName")
+                    val role = jsonPayload.getString("Role")
                     welcomeText.text = "Bienvenido de nuevo $userName $lastName"
+
+                    // Mostrar u ocultar botones según el rol
+                    if (role == "ADMIN") {
+                        clientsButton.visibility = View.VISIBLE
+                        motorcycleButton.visibility = View.VISIBLE
+                    } else {
+                        clientsButton.visibility = View.GONE
+                        motorcycleButton.visibility = View.GONE
+                    }
                 } catch (e: Exception) {
                     welcomeText.text = "Bienvenido de nuevo"
+                    clientsButton.visibility = View.GONE
+                    motorcycleButton.visibility = View.GONE
                     Toast.makeText(requireContext(), "Error al decodificar el token: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 welcomeText.text = "Bienvenido de nuevo"
+                clientsButton.visibility = View.GONE
+                motorcycleButton.visibility = View.GONE
                 startActivity(Intent(requireContext(), SignIn::class.java))
                 requireActivity().finish()
             }

@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.service
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,12 +8,12 @@ import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.CostApprovalPost
 import com.example.bikedoctor.data.model.LaborCost
 import com.example.bikedoctor.data.repository.CostApprovalRepository
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 
 class CostApprovalFormViewModel : ViewModel() {
 
@@ -20,8 +21,8 @@ class CostApprovalFormViewModel : ViewModel() {
     private val costApprovals = mutableListOf<LaborCost>()
     private val tag = "CostApprovalFormViewModel"
     private var costApprovalId: String? = null
+    private var token: String? = null
 
-    // LiveData para errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
     val dateTimeError: LiveData<String?> = _dateTimeError
 
@@ -40,18 +41,15 @@ class CostApprovalFormViewModel : ViewModel() {
     private val _timeSpentError = MutableLiveData<String?>()
     val timeSpentError: LiveData<String?> = _timeSpentError
 
-    // LiveData para el estado del registro
     private val _registerStatus = MutableLiveData<String>()
     val registerStatus: LiveData<String> = _registerStatus
 
-    // LiveData para la lista de Repuestos
     private val _costApprovalList = MutableLiveData<List<LaborCost>>()
     val costApprovalList: LiveData<List<LaborCost>> = _costApprovalList
 
     private val _selectedDateTime = MutableLiveData<String?>()
     val selectedDateTime: LiveData<String?> = _selectedDateTime
 
-    // LiveData para las selecciones
     private val _selectedClient = MutableLiveData<String?>()
     val selectedClient: LiveData<String?> = _selectedClient
 
@@ -60,6 +58,11 @@ class CostApprovalFormViewModel : ViewModel() {
 
     private val _reviewed = MutableLiveData<Boolean?>()
     val reviewed: LiveData<Boolean?> = _reviewed
+
+    fun setToken(token: String?) {
+        this.token = token
+        Log.d(tag, "Token set: $token")
+    }
 
     fun setDateTime(dateTime: String?) {
         _selectedDateTime.value = dateTime
@@ -84,9 +87,8 @@ class CostApprovalFormViewModel : ViewModel() {
             this.costApprovals.addAll(costApprovals)
         }
         _costApprovalList.value = this.costApprovals.toList()
-
         _reviewed.value = reviewed
-        Log.d(tag, "Initialized diagnosis: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
+        Log.d(tag, "Initialized cost approval: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
     }
 
     fun validateAndRegister(
@@ -95,10 +97,10 @@ class CostApprovalFormViewModel : ViewModel() {
         motorcycleLicensePlate: String,
         nameCostApproval: String,
         detailCostApproval: String,
-        price: String
+        price: String,
+        token: String?
     ) {
-        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$nameCostApproval, errorDetail=$detailCostApproval, timeSpent=$price")
-        // Limpiar errores previos
+        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, name=$nameCostApproval, detail=$detailCostApproval, price=$price")
         _dateTimeError.value = null
         _clientError.value = null
         _motorcycleError.value = null
@@ -106,7 +108,6 @@ class CostApprovalFormViewModel : ViewModel() {
         _errorDetailError.value = null
         _timeSpentError.value = null
 
-        // Validar campos
         if (date.isEmpty()) {
             _dateTimeError.value = "La fecha y hora no pueden estar vacías"
         } else if (!date.matches(Regex("^\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2} (AM|PM)$"))) {
@@ -124,10 +125,9 @@ class CostApprovalFormViewModel : ViewModel() {
         }
 
         if (costApprovals.isEmpty() && nameCostApproval.isEmpty()) {
-            _errorDiagnosticError.value = "Debe agregar al menos una aprobacion de costo"
+            _errorDiagnosticError.value = "Debe agregar al menos una aprobación de costos"
         }
 
-        // Validar Aprobacion de costos si se intenta agregar uno
         if (nameCostApproval.isNotEmpty() || detailCostApproval.isNotEmpty() || price.isNotEmpty()) {
             if (nameCostApproval.isEmpty()) {
                 _errorDiagnosticError.value = "El nombre no puede estar vacío"
@@ -142,7 +142,31 @@ class CostApprovalFormViewModel : ViewModel() {
             }
         }
 
-        // Verificar si todos los campos son válidos
+        // Obtener el employeeCI desde el token
+        var employeeCI: Int? = null
+        if (token == null) {
+            _clientError.value = "No se encontró el token de autenticación"
+            Log.e(tag, "No token provided")
+            return
+        }
+
+        try {
+            val payload = token.split(".")[1]
+            val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+            val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+            val jsonPayload = JSONObject(decodedPayload)
+            employeeCI = jsonPayload.getString("Ci").toIntOrNull()
+            if (employeeCI == null) {
+                _clientError.value = "El CI del empleado no es válido"
+                Log.e(tag, "Invalid employee CI in token")
+                return
+            }
+        } catch (e: Exception) {
+            _clientError.value = "Error al decodificar el token"
+            Log.e(tag, "Token decoding error: ${e.message}", e)
+            return
+        }
+
         if (_dateTimeError.value == null &&
             _clientError.value == null &&
             _motorcycleError.value == null &&
@@ -151,14 +175,12 @@ class CostApprovalFormViewModel : ViewModel() {
             _timeSpentError.value == null
         ) {
             try {
-                // Convertir fecha a formato ISO 8601
                 val inputFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
                 val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                 outputFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val parsedDate = inputFormat.parse(date)
                 val isoDate = outputFormat.format(parsedDate)
 
-                // Agregar repuesto si los campos no están vacíos
                 if (nameCostApproval.isNotEmpty() && detailCostApproval.isNotEmpty() && price.isNotEmpty()) {
                     costApprovals.add(LaborCost(nameCostApproval, detailCostApproval, price))
                     _costApprovalList.value = costApprovals.toList()
@@ -168,7 +190,7 @@ class CostApprovalFormViewModel : ViewModel() {
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
-                    employeeCI = 10387210, // Hardcode
+                    employeeCI = employeeCI,
                     listLaborCosts = costApprovals.toList(),
                     reviewed = _reviewed.value ?: false
                 )
@@ -193,10 +215,10 @@ class CostApprovalFormViewModel : ViewModel() {
             try {
                 costApprovals.add(LaborCost(nameCostApproval, detailCostApproval, price))
                 _costApprovalList.value = costApprovals.toList()
-                Log.d(tag, "CostApproval added: title=$nameCostApproval, detail=$detailCostApproval, time=$price")
+                Log.d(tag, "Cost approval added: name=$nameCostApproval, detail=$detailCostApproval, price=$price")
             } catch (e: NumberFormatException) {
-                _timeSpentError.value = "El tiempo debe ser un número entero"
-                Log.e(tag, "Invalid timeSpent format: $price", e)
+                _timeSpentError.value = "El precio debe ser un número entero"
+                Log.e(tag, "Invalid price format: $price", e)
             }
         } else {
             if (nameCostApproval.isEmpty()) _errorDiagnosticError.value = "El nombre no puede estar vacío"
@@ -212,11 +234,11 @@ class CostApprovalFormViewModel : ViewModel() {
                 _costApprovalList.value = costApprovals.toList()
                 Log.d(
                     tag,
-                    "Cost Approval edited at index $index: title=$newCostApproval, detail=$newDetailCostApproval, time=$newPrice"
+                    "Cost approval edited at index $index: name=$newCostApproval, detail=$newDetailCostApproval, price=$newPrice"
                 )
             } catch (e: NumberFormatException) {
                 _timeSpentError.value = "El precio debe ser un número entero"
-                Log.e(tag, "Invalid timeSpent format: $newPrice", e)
+                Log.e(tag, "Invalid price format: $newPrice", e)
             }
         } else {
             _registerStatus.value = "Todos los campos deben estar completos"
@@ -227,59 +249,59 @@ class CostApprovalFormViewModel : ViewModel() {
         if (index in costApprovals.indices) {
             val removed = costApprovals.removeAt(index)
             _costApprovalList.value = costApprovals.toList()
-            Log.d(tag, "Spare Part deleted at index $index: $removed")
+            Log.d(tag, "Cost approval deleted at index $index: $removed")
         }
     }
 
-
     private fun createCostApproval(costApproval: CostApprovalPost) {
-        Log.d(tag, "Creating Cost Approval: $costApproval")
+        Log.d(tag, "Creating cost approval: $costApproval")
         repository.createCostApprovals(costApproval).enqueue(object : Callback<CostApprovalPost> {
-        override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
-            if (response.isSuccessful) {
-                _registerStatus.value = "Aprobacion de costo registrado exitosamente"
-                Log.d(tag, "Spare Part created successfully")
-                clearSelections()
-            } else {
-                val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
-                _registerStatus.value = errorMsg
-                Log.e(tag, errorMsg)
+            override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
+                if (response.isSuccessful) {
+                    _registerStatus.value = "Aprobación de costos registrada exitosamente"
+                    Log.d(tag, "Cost approval created successfully")
+                    clearSelections()
+                } else {
+                    val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
+                    _registerStatus.value = errorMsg
+                    Log.e(tag, errorMsg)
+                }
             }
-        }
 
-        override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
-            val errorMsg = "Error de conexión: ${t.message}"
-            _registerStatus.value = errorMsg
-            Log.e(tag, errorMsg, t)
+            override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
+                val errorMsg = "Error de conexión: ${t.message}"
+                _registerStatus.value = errorMsg
+                Log.e(tag, errorMsg, t)
             }
         })
     }
 
-    private fun updateCostApproval(id: String, costAppoval: CostApprovalPost) {
-        Log.d(tag, "Updating cost approval with id=$id: $costAppoval")
-        repository.updateCostApprovals(id, costAppoval).enqueue(object : Callback<CostApprovalPost> {
-        override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
-        if (response.isSuccessful) {
-            _registerStatus.value = "Repuesto actualizado exitosamente"
-            Log.d(tag, "Cost Approval updated successfully")
-            clearSelections()
-        } else {
-            val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
-            _registerStatus.value = errorMsg
-            Log.e(tag, errorMsg)
+    private fun updateCostApproval(id: String, costApproval: CostApprovalPost) {
+        Log.d(tag, "Updating cost approval with id=$id: $costApproval")
+        repository.updateCostApprovals(id, costApproval).enqueue(object : Callback<CostApprovalPost> {
+            override fun onResponse(call: Call<CostApprovalPost>, response: Response<CostApprovalPost>) {
+                if (response.isSuccessful) {
+                    _registerStatus.value = "Aprobación de costos actualizada exitosamente"
+                    Log.d(tag, "Cost approval updated successfully")
+                    clearSelections()
+                } else {
+                    val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
+                    _registerStatus.value = errorMsg
+                    Log.e(tag, errorMsg)
+                }
             }
-        }
 
-        override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
-            val errorMsg = "Error de conexión: ${t.message}"
-            _registerStatus.value = errorMsg
-            Log.e(tag, errorMsg, t)
+            override fun onFailure(call: Call<CostApprovalPost>, t: Throwable) {
+                val errorMsg = "Error de conexión: ${t.message}"
+                _registerStatus.value = errorMsg
+                Log.e(tag, errorMsg, t)
             }
         })
     }
 
     fun clearSelections() {
         costApprovalId = null
+        token = null
         _selectedClient.value = null
         _selectedMotorcycle.value = null
         _selectedDateTime.value = null
@@ -288,6 +310,4 @@ class CostApprovalFormViewModel : ViewModel() {
         _costApprovalList.value = emptyList()
         Log.d(tag, "Selections cleared")
     }
-
 }
-

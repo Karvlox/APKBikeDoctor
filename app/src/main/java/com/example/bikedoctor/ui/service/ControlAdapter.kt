@@ -33,7 +33,7 @@ class ControlAdapter(
     context: Context,
     control: List<QualityControl>,
     private val controlViewModel: ControlViewModel,
-    private val token: String? // Agregar token como parámetro
+    private val token: String?
 ) : ArrayAdapter<QualityControl>(context, 0, control) {
 
     private val tag = "ControlAdapter"
@@ -74,7 +74,6 @@ class ControlAdapter(
             "Sin controles especificados"
         }
 
-        // Configurar botones
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${control.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -249,7 +248,7 @@ class ControlAdapter(
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Control $id marked as reviewed=$reviewed")
-                    controlViewModel.fetchCards(1, 100, token) // Usar el token proporcionado
+                    controlViewModel.fetchCards(1, 100, token)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,

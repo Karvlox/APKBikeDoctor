@@ -72,7 +72,6 @@ class DiagnosisAdapter(
             "Sin diagnósticos especificados"
         }
 
-        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for diagnosis: ${diagnosis.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -95,7 +94,6 @@ class DiagnosisAdapter(
                 .commit()
         }
 
-        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for diagnosis: ${diagnosis.id}")
             createSparePartsFromDiagnosis(diagnosis)

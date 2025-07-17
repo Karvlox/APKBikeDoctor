@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.Motorcycle
 import com.example.bikedoctor.data.repository.MotorcycleRepository
 import com.example.bikedoctor.utils.MotorcycleValidator
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class AddMotorcycleViewModel : ViewModel() {
 
     private val repository = MotorcycleRepository()
+    var isEditing: Boolean = false
 
     // LiveData para los errores de validación
     private val _ciError = MutableLiveData<String?>()
@@ -65,7 +63,12 @@ class AddMotorcycleViewModel : ViewModel() {
                     licensePlateNumber = licensePlate,
                     color = color
                 )
-                registerMotorcycle(motorcycle)
+
+                if (isEditing) {
+                    updateMotorcycle(motorcycle)
+                } else {
+                    registerMotorcycle(motorcycle)
+                }
             } catch (e: NumberFormatException) {
                 _ciError.value = "La cédula debe ser un número válido"
             }
@@ -73,8 +76,8 @@ class AddMotorcycleViewModel : ViewModel() {
     }
 
     private fun registerMotorcycle(motorcycle: Motorcycle) {
-        repository.createMotorcycle(motorcycle).enqueue(object : Callback<Motorcycle> {
-            override fun onResponse(call: Call<Motorcycle>, response: Response<Motorcycle>) {
+        repository.createMotorcycle(motorcycle).enqueue(object : retrofit2.Callback<Motorcycle> {
+            override fun onResponse(call: retrofit2.Call<Motorcycle>, response: retrofit2.Response<Motorcycle>) {
                 if (response.isSuccessful) {
                     _registerStatus.value = "Motocicleta registrada exitosamente"
                 } else {
@@ -82,7 +85,23 @@ class AddMotorcycleViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<Motorcycle>, t: Throwable) {
+            override fun onFailure(call: retrofit2.Call<Motorcycle>, t: Throwable) {
+                _registerStatus.value = "Error de conexión: ${t.message}"
+            }
+        })
+    }
+
+    private fun updateMotorcycle(motorcycle: Motorcycle) {
+        repository.updateMotorcycle(motorcycle).enqueue(object : retrofit2.Callback<Void> {
+            override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    _registerStatus.value = "Motocicleta actualizada exitosamente"
+                } else {
+                    _registerStatus.value = "Error al actualizar: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
                 _registerStatus.value = "Error de conexión: ${t.message}"
             }
         })

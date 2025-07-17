@@ -38,7 +38,6 @@ class SparePartsViewModel : ViewModel() {
         }
 
         try {
-            // Decodificar el token para obtener Role y Ci
             val payload = token.split(".")[1]
             val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
             val decodedPayload = String(decodedBytes, Charsets.UTF_8)
@@ -46,7 +45,6 @@ class SparePartsViewModel : ViewModel() {
             val role = jsonPayload.getString("Role")
             val ci = jsonPayload.getString("Ci").toIntOrNull()
 
-            // Decidir qué request realizar según el rol
             val call = if (role == "ADMIN") {
                 Log.d(tag, "Role is ADMIN, fetching all spare parts")
                 repository.getSpareParts(pageNumber, pageSize)
@@ -60,7 +58,6 @@ class SparePartsViewModel : ViewModel() {
                 return
             }
 
-            // Ejecutar el request
             call.enqueue(object : Callback<List<SpareParts>> {
                 override fun onResponse(call: Call<List<SpareParts>>, response: Response<List<SpareParts>>) {
                     _isLoading.value = false

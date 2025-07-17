@@ -28,7 +28,7 @@ interface RepairAPI {
         @Body repairPost: RepairPost
     ): Call<RepairPost>
 
-    @PATCH("api/CostApproval/{id}/reviewed")
+    @PATCH("api/Repair/{id}/reviewed")
     fun updateReviewedStatus(
         @Path("id") id: String,
         @Query("reviewed") reviewed: Boolean
