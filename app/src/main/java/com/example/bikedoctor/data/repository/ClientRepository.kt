@@ -16,4 +16,12 @@ class ClientRepository {
     fun getClientById(ci: Int): Call<Client> {
         return RetrofitClient.clientApi.getClientById(ci)
     }
+
+    fun deleteClient(ci: Int): Call<Void> {
+        return RetrofitClient.clientApi.deleteClient(ci)
+    }
+
+    fun updateClient(client: Client): Call<Void> {
+        return RetrofitClient.clientApi.updateClient(client.ci, client)
+    }
 }

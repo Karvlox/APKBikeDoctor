@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.bikedoctor.R
+import com.example.bikedoctor.data.model.Client
 import com.google.android.material.textfield.TextInputLayout
 
 class AddClientFragment : Fragment() {
@@ -34,6 +35,22 @@ class AddClientFragment : Fragment() {
         ageInputLayout = view.findViewById(R.id.ageInputLayout)
         phoneInputLayout = view.findViewById(R.id.phoneInputLayout)
         genderInputLayout = view.findViewById(R.id.genderInputLayout)
+
+        // Verificar si estamos en modo edición
+        viewModel.isEditing = arguments != null
+
+        // Prellenar datos si estamos editando
+        arguments?.let { args ->
+            nameInputLayout.editText?.setText(args.getString("name", ""))
+            lastNameInputLayout.editText?.setText(args.getString("lastName", ""))
+            ciInputLayout.editText?.setText(args.getInt("ci", 0).toString())
+            ageInputLayout.editText?.setText(args.getInt("age", 0).toString())
+            phoneInputLayout.editText?.setText(args.getInt("numberPhone", 0).toString())
+            genderInputLayout.editText?.setText(args.getString("gender", ""))
+
+            // Bloquear CI en modo edición
+            ciInputLayout.isEnabled = false
+        }
 
         // Botones
         val cancelButton = view.findViewById<View>(R.id.button_cancel)
@@ -76,11 +93,29 @@ class AddClientFragment : Fragment() {
 
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Cliente registrado")) {
+            if (status.startsWith("Cliente registrado") || status.startsWith("Cliente actualizado")) {
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
 
         return view
+    }
+
+    companion object {
+        fun newInstance(client: Client? = null): AddClientFragment {
+            val fragment = AddClientFragment()
+            client?.let {
+                val args = Bundle().apply {
+                    putInt("ci", it.ci)
+                    putString("name", it.name)
+                    putString("lastName", it.lastName)
+                    putInt("age", it.age)
+                    putInt("numberPhone", it.numberPhone)
+                    putString("gender", it.gender)
+                }
+                fragment.arguments = args
+            }
+            return fragment
+        }
     }
 }

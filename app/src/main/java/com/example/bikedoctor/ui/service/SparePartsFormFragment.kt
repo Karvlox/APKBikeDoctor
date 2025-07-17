@@ -13,21 +13,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.SparePart
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class SparePartsFormFragment : Fragment() {
 
     private val viewModel: SparePartsFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val tag = "SparePartsFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -56,7 +59,6 @@ class SparePartsFormFragment : Fragment() {
             return null
         }
 
-        // Inicializar vistas
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -88,14 +90,25 @@ class SparePartsFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        // Observar el token desde SessionViewModel
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
             val sparePartId = args.getString("spareParts_id")
             val date = args.getString("spareParts_date")
             val clientCI = args.getString("spareParts_clientCI")
             val motorcycleLicensePlate = args.getString("spareParts_motorcycleLicensePlate")
             val employeeCI = args.getString("spareParts_employeeCI")
-            val spareParts = args.getParcelableArray("spareParts_listDiagnostic") ?.map { it as SparePart } ?.toList() ?: emptyList()
+            val spareParts = args.getParcelableArray("spareParts_listDiagnostic")?.map { it as SparePart }?.toList() ?: emptyList()
             val reviewed = args.getBoolean("spareParts_reviewed", false)
 
             Log.d(tag, "Arguments received - sparePartId: $sparePartId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
@@ -114,14 +127,11 @@ class SparePartsFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
         dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView para diagnósticos
         sparePartsRecyclerView.layoutManager = LinearLayoutManager(context)
         val sparePartsAdapter = SparePartsAdapterList(
             spareParts = emptyList(),
@@ -134,43 +144,38 @@ class SparePartsFormFragment : Fragment() {
         )
         sparePartsRecyclerView.adapter = sparePartsAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.save_button)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleText.tag?.toString() ?: ""
-            val sparePart = sparePartInputLayout.editText?.text.toString().trim()
-            val sparePartDetail = sparePartDetailInputLayout.editText?.text.toString().trim()
-            val price = priceInputLayout.editText?.text.toString().trim()
+            val sparePart = sparePartEditText.text.toString().trim()
+            val sparePartDetail = sparePartDetailEditText.text.toString().trim()
+            val price = priceEditText.text.toString().trim()
             Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, sparePart=$sparePart")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, sparePart, sparePartDetail, price)
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, sparePart, sparePartDetail, price, currentToken)
         }
 
-        // Botón Agregar Repuesto
         view.findViewById<TextView>(R.id.add_diagnostic_button)?.setOnClickListener {
-            val sparePart = sparePartInputLayout.editText?.text.toString().trim()
-            val sparePartDetail = sparePartDetailInputLayout.editText?.text.toString().trim()
-            val price = priceInputLayout.editText?.text.toString().trim()
+            val sparePart = sparePartEditText.text.toString().trim()
+            val sparePartDetail = sparePartDetailEditText.text.toString().trim()
+            val price = priceEditText.text.toString().trim()
             viewModel.addSparePart(sparePart, sparePartDetail, price)
-            sparePartInputLayout.editText?.text?.clear()
-            sparePartDetailInputLayout.editText?.text?.clear()
-            priceInputLayout.editText?.text?.clear()
+            sparePartEditText.text?.clear()
+            sparePartDetailEditText.text?.clear()
+            priceEditText.text?.clear()
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -211,7 +216,6 @@ class SparePartsFormFragment : Fragment() {
         viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
             dateTimeEditText.setText(dateTime ?: "")
         }
-
         viewModel.selectedClient.observe(viewLifecycleOwner) { clientCI ->
             Log.d(tag, "Observing selectedClient: $clientCI")
             if (clientCI != null) {
@@ -219,9 +223,9 @@ class SparePartsFormFragment : Fragment() {
                 clientText.tag = clientCI
                 Log.d(tag, "clientText set to: ${clientText.text}")
             } else {
-                clientText.text = "Cliente no"
+                clientText.text = "Cliente no seleccionado"
                 clientText.tag = null
-                Log.d(tag, "clientText set to: Cliente no (clientCI is null)")
+                Log.d(tag, "clientText set to: Cliente no seleccionado (clientCI is null)")
             }
         }
         viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { motorcycleLicensePlate ->
@@ -229,7 +233,7 @@ class SparePartsFormFragment : Fragment() {
             if (motorcycleLicensePlate != null) {
                 motorcycleText.text = motorcycleLicensePlate
                 motorcycleText.tag = motorcycleLicensePlate
-                Log.d(tag, "clientText set to: ${motorcycleText.text}")
+                Log.d(tag, "motorcycleText set to: ${motorcycleText.text}")
             } else {
                 motorcycleText.text = "Motocicleta no seleccionada"
                 motorcycleText.tag = null
@@ -299,10 +303,10 @@ class SparePartsFormFragment : Fragment() {
 
     private fun clearFields() {
         dateTimeEditText.text?.clear()
-        sparePartInputLayout.editText?.text?.clear()
-        sparePartDetailInputLayout.editText?.text?.clear()
-        priceInputLayout.editText?.text?.clear()
-        clientText.text = "Cliente no..."
+        sparePartEditText.text?.clear()
+        sparePartDetailEditText.text?.clear()
+        priceEditText.text?.clear()
+        clientText.text = "Cliente no seleccionado"
         clientText.tag = null
         motorcycleText.text = "Motocicleta no seleccionada"
         motorcycleText.tag = null

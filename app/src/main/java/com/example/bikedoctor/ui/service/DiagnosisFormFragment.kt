@@ -13,21 +13,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Diagnostic
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import java.util.*
 
 class DiagnosisFormFragment : Fragment() {
 
     private val viewModel: DiagnosisFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val tag = "DiagnosisFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -54,7 +57,6 @@ class DiagnosisFormFragment : Fragment() {
             return null
         }
 
-        // Inicializar vistas
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -81,7 +83,17 @@ class DiagnosisFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
             val diagnosisId = args.getString("diagnosis_id")
             val date = args.getString("diagnosis_date")
@@ -90,7 +102,7 @@ class DiagnosisFormFragment : Fragment() {
             val motorcycleLicensePlate = args.getString("diagnosis_motorcycleLicensePlate")
             val motorcycleDetails = args.getString("diagnosis_motorcycleDetails")
             val employeeCI = args.getString("diagnosis_employeeCI")
-            val diagnostics = args.getParcelableArray("diagnosis_listDiagnostic")?.map { it as Diagnostic } ?.toList() ?: emptyList()
+            val diagnostics = args.getParcelableArray("diagnosis_listDiagnostic")?.map { it as Diagnostic }?.toList() ?: emptyList()
             val images = args.getStringArray("diagnosis_images")?.toList()
             val reviewed = args.getBoolean("diagnosis_reviewed", false)
 
@@ -111,14 +123,11 @@ class DiagnosisFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
         dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView para diagnósticos
         diagnosticsRecyclerView.layoutManager = LinearLayoutManager(context)
         val diagnosticsAdapter = DiagnosticsAdapter(
             diagnosis = emptyList(),
@@ -131,20 +140,17 @@ class DiagnosisFormFragment : Fragment() {
         )
         diagnosticsRecyclerView.adapter = diagnosticsAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.save_button)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
@@ -153,10 +159,9 @@ class DiagnosisFormFragment : Fragment() {
             val errorDetail = errorDetailInputLayout.editText?.text.toString().trim()
             val timeSpent = timeSpentInputLayout.editText?.text.toString().trim()
             Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$error")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, error, errorDetail, timeSpent)
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, error, errorDetail, timeSpent, currentToken)
         }
 
-        // Botón Agregar Diagnóstico
         view.findViewById<TextView>(R.id.add_diagnostic_button)?.setOnClickListener {
             val error = errorInputLayout.editText?.text.toString().trim()
             val errorDetail = errorDetailInputLayout.editText?.text.toString().trim()
@@ -167,17 +172,14 @@ class DiagnosisFormFragment : Fragment() {
             timeSpentInputLayout.editText?.text?.clear()
         }
 
-        // Botón de cámara (simulado)
         view.findViewById<ImageView>(R.id.camera_button)?.setOnClickListener {
             viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
         }
 
-        // Botón de galería (simulado)
         view.findViewById<ImageView>(R.id.gallery_button)?.setOnClickListener {
             viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -220,7 +222,7 @@ class DiagnosisFormFragment : Fragment() {
         }
         viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
             if (clientCI != null && clientName != null) {
-                clientText.text = clientCI
+                clientText.text = clientName
                 clientText.tag = clientCI
             } else {
                 clientText.text = "Cliente no seleccionado"

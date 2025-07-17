@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.service
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.SparePart
 import com.example.bikedoctor.data.model.SparePartsPost
 import com.example.bikedoctor.data.repository.SparePartsRepository
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,8 +21,8 @@ class SparePartsFormViewModel : ViewModel() {
     private val spareParts = mutableListOf<SparePart>()
     private val tag = "SparePartsFormViewModel"
     private var sparePartId: String? = null
+    private var token: String? = null
 
-    // LiveData para errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
     val dateTimeError: LiveData<String?> = _dateTimeError
 
@@ -39,18 +41,15 @@ class SparePartsFormViewModel : ViewModel() {
     private val _timeSpentError = MutableLiveData<String?>()
     val timeSpentError: LiveData<String?> = _timeSpentError
 
-    // LiveData para el estado del registro
     private val _registerStatus = MutableLiveData<String>()
     val registerStatus: LiveData<String> = _registerStatus
 
-    // LiveData para la lista de Repuestos
     private val _sparePartsList = MutableLiveData<List<SparePart>>()
     val sparePartsList: LiveData<List<SparePart>> = _sparePartsList
 
     private val _selectedDateTime = MutableLiveData<String?>()
     val selectedDateTime: LiveData<String?> = _selectedDateTime
 
-    // LiveData para las selecciones
     private val _selectedClient = MutableLiveData<String?>()
     val selectedClient: LiveData<String?> = _selectedClient
 
@@ -59,6 +58,11 @@ class SparePartsFormViewModel : ViewModel() {
 
     private val _reviewed = MutableLiveData<Boolean?>()
     val reviewed: LiveData<Boolean?> = _reviewed
+
+    fun setToken(token: String?) {
+        this.token = token
+        Log.d(tag, "Token set: $token")
+    }
 
     fun setDateTime(dateTime: String?) {
         _selectedDateTime.value = dateTime
@@ -83,9 +87,8 @@ class SparePartsFormViewModel : ViewModel() {
             this.spareParts.addAll(spareParts)
         }
         _sparePartsList.value = this.spareParts.toList()
-
         _reviewed.value = reviewed
-        Log.d(tag, "Initialized diagnosis: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
+        Log.d(tag, "Initialized spare parts: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
     }
 
     fun validateAndRegister(
@@ -94,10 +97,10 @@ class SparePartsFormViewModel : ViewModel() {
         motorcycleLicensePlate: String,
         nameSparePart: String,
         detailSparePart: String,
-        price: String
+        price: String,
+        token: String?
     ) {
-        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$nameSparePart, errorDetail=$detailSparePart, timeSpent=$price")
-        // Limpiar errores previos
+        Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, nameSparePart=$nameSparePart, detailSparePart=$detailSparePart, price=$price")
         _dateTimeError.value = null
         _clientError.value = null
         _motorcycleError.value = null
@@ -105,7 +108,6 @@ class SparePartsFormViewModel : ViewModel() {
         _errorDetailError.value = null
         _timeSpentError.value = null
 
-        // Validar campos
         if (date.isEmpty()) {
             _dateTimeError.value = "La fecha y hora no pueden estar vacías"
         } else if (!date.matches(Regex("^\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2} (AM|PM)$"))) {
@@ -126,7 +128,6 @@ class SparePartsFormViewModel : ViewModel() {
             _errorDiagnosticError.value = "Debe agregar al menos un repuesto"
         }
 
-        // Validar diagnóstico si se intenta agregar uno
         if (nameSparePart.isNotEmpty() || detailSparePart.isNotEmpty() || price.isNotEmpty()) {
             if (nameSparePart.isEmpty()) {
                 _errorDiagnosticError.value = "El nombre del repuesto no puede estar vacío"
@@ -141,7 +142,31 @@ class SparePartsFormViewModel : ViewModel() {
             }
         }
 
-        // Verificar si todos los campos son válidos
+        // Obtener el employeeCI desde el token
+        var employeeCI: Int? = null
+        if (token == null) {
+            _clientError.value = "No se encontró el token de autenticación"
+            Log.e(tag, "No token provided")
+            return
+        }
+
+        try {
+            val payload = token.split(".")[1]
+            val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+            val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+            val jsonPayload = JSONObject(decodedPayload)
+            employeeCI = jsonPayload.getString("Ci").toIntOrNull()
+            if (employeeCI == null) {
+                _clientError.value = "El CI del empleado no es válido"
+                Log.e(tag, "Invalid employee CI in token")
+                return
+            }
+        } catch (e: Exception) {
+            _clientError.value = "Error al decodificar el token"
+            Log.e(tag, "Token decoding error: ${e.message}", e)
+            return
+        }
+
         if (_dateTimeError.value == null &&
             _clientError.value == null &&
             _motorcycleError.value == null &&
@@ -150,14 +175,12 @@ class SparePartsFormViewModel : ViewModel() {
             _timeSpentError.value == null
         ) {
             try {
-                // Convertir fecha a formato ISO 8601
                 val inputFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
                 val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                 outputFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val parsedDate = inputFormat.parse(date)
                 val isoDate = outputFormat.format(parsedDate)
 
-                // Agregar repuesto si los campos no están vacíos
                 if (nameSparePart.isNotEmpty() && detailSparePart.isNotEmpty() && price.isNotEmpty()) {
                     spareParts.add(SparePart(nameSparePart, detailSparePart, price.toInt()))
                     _sparePartsList.value = spareParts.toList()
@@ -167,7 +190,7 @@ class SparePartsFormViewModel : ViewModel() {
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
-                    employeeCI = 10387210, // Hardcode
+                    employeeCI = employeeCI,
                     listSpareParts = spareParts.toList(),
                     reviewed = _reviewed.value ?: false
                 )
@@ -193,28 +216,28 @@ class SparePartsFormViewModel : ViewModel() {
                 val priceInt = price.toInt()
                 spareParts.add(SparePart(nameSparePart, detailSparePart, priceInt))
                 _sparePartsList.value = spareParts.toList()
-                Log.d(tag, "SparePart added: title=$nameSparePart, detail=$detailSparePart, time=$priceInt")
+                Log.d(tag, "SparePart added: name=$nameSparePart, detail=$detailSparePart, price=$priceInt")
             } catch (e: NumberFormatException) {
-                _timeSpentError.value = "El tiempo debe ser un número entero"
-                Log.e(tag, "Invalid timeSpent format: $price", e)
+                _timeSpentError.value = "El precio debe ser un número entero"
+                Log.e(tag, "Invalid price format: $price", e)
             }
         } else {
             if (nameSparePart.isEmpty()) _errorDiagnosticError.value = "El nombre no puede estar vacío"
             if (detailSparePart.isEmpty()) _errorDetailError.value = "La descripción no puede estar vacía"
-            if (price.isEmpty()) _timeSpentError.value = "El precio nopuede estar vacío"
+            if (price.isEmpty()) _timeSpentError.value = "El precio no puede estar vacío"
         }
     }
 
-    fun editSparePart(index: Int, newSparePart: String, newdetailSparePart: String, newPrice: String) {
-        if (index in spareParts.indices && newSparePart.isNotEmpty() && newdetailSparePart.isNotEmpty() && newPrice.isNotEmpty()) {
+    fun editSparePart(index: Int, newSparePart: String, newDetailSparePart: String, newPrice: String) {
+        if (index in spareParts.indices && newSparePart.isNotEmpty() && newDetailSparePart.isNotEmpty() && newPrice.isNotEmpty()) {
             try {
-                val time = newPrice.toInt()
-                spareParts[index] = SparePart(newSparePart, newdetailSparePart, time)
+                val priceInt = newPrice.toInt()
+                spareParts[index] = SparePart(newSparePart, newDetailSparePart, priceInt)
                 _sparePartsList.value = spareParts.toList()
-                Log.d(tag, "Spare Part edited at index $index: title=$newSparePart, detail=$newdetailSparePart, time=$time")
+                Log.d(tag, "SparePart edited at index $index: name=$newSparePart, detail=$newDetailSparePart, price=$priceInt")
             } catch (e: NumberFormatException) {
                 _timeSpentError.value = "El precio debe ser un número entero"
-                Log.e(tag, "Invalid timeSpent format: $newPrice", e)
+                Log.e(tag, "Invalid price format: $newPrice", e)
             }
         } else {
             _registerStatus.value = "Todos los campos deben estar completos"
@@ -225,17 +248,17 @@ class SparePartsFormViewModel : ViewModel() {
         if (index in spareParts.indices) {
             val removed = spareParts.removeAt(index)
             _sparePartsList.value = spareParts.toList()
-            Log.d(tag, "Spare Part deleted at index $index: $removed")
+            Log.d(tag, "SparePart deleted at index $index: $removed")
         }
     }
 
     private fun createSparePart(spareParts: SparePartsPost) {
-        Log.d(tag, "Creating Spare Parts: $spareParts")
+        Log.d(tag, "Creating spare parts: $spareParts")
         repository.createSpareParts(spareParts).enqueue(object : Callback<SparePartsPost> {
             override fun onResponse(call: Call<SparePartsPost>, response: Response<SparePartsPost>) {
                 if (response.isSuccessful) {
                     _registerStatus.value = "Repuesto registrado exitosamente"
-                    Log.d(tag, "Spare Part created successfully")
+                    Log.d(tag, "Spare parts created successfully")
                     clearSelections()
                 } else {
                     val errorMsg = "Error al registrar: ${response.code()} ${response.message()}"
@@ -253,12 +276,12 @@ class SparePartsFormViewModel : ViewModel() {
     }
 
     private fun updateSparePart(id: String, sparePart: SparePartsPost) {
-        Log.d(tag, "Updating spare part with id=$id: $sparePart")
+        Log.d(tag, "Updating spare parts with id=$id: $sparePart")
         repository.updateSpareParts(id, sparePart).enqueue(object : Callback<SparePartsPost> {
             override fun onResponse(call: Call<SparePartsPost>, response: Response<SparePartsPost>) {
                 if (response.isSuccessful) {
                     _registerStatus.value = "Repuesto actualizado exitosamente"
-                    Log.d(tag, "Spare Part updated successfully")
+                    Log.d(tag, "Spare parts updated successfully")
                     clearSelections()
                 } else {
                     val errorMsg = "Error al actualizar: ${response.code()} ${response.message()}"
@@ -277,6 +300,7 @@ class SparePartsFormViewModel : ViewModel() {
 
     fun clearSelections() {
         sparePartId = null
+        token = null
         _selectedClient.value = null
         _selectedMotorcycle.value = null
         _selectedDateTime.value = null

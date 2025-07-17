@@ -24,10 +24,8 @@ class TableWorkFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for TableWorkFragment
         val view = inflater.inflate(R.layout.fragment_table_work, container, false)
 
-        // Find the ImageViews
         val recepcionButton: ImageView = view.findViewById(R.id.bottom_recepcion)
         val diagnosticoButton: ImageView = view.findViewById(R.id.bottom_diagnostico)
         val repuestosButton: ImageView = view.findViewById(R.id.bottom_repuestos)
@@ -36,7 +34,6 @@ class TableWorkFragment : Fragment() {
         val controlButton: ImageView = view.findViewById(R.id.bottom_control)
         val entregaButton: ImageView = view.findViewById(R.id.bottom_entrega)
 
-        // Set click listeners for each ImageView with logging
         recepcionButton.setOnClickListener {
             Log.d(TAG, "Reception button clicked")
             loadFragment(ReceptionFragment())
@@ -66,7 +63,6 @@ class TableWorkFragment : Fragment() {
             loadFragment(DeliveryFragment())
         }
 
-        // Load the default fragment (optional)
         if (savedInstanceState == null) {
             Log.d(TAG, "Loading default ReceptionFragment")
             loadFragment(ReceptionFragment())
@@ -77,7 +73,6 @@ class TableWorkFragment : Fragment() {
 
     private fun loadFragment(fragment: Fragment) {
         try {
-            // Perform the fragment transaction
             val transaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.frameLayout, fragment)
             transaction.commit()

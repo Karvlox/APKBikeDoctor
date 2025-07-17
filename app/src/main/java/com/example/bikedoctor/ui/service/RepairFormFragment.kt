@@ -13,22 +13,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Reparation
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import kotlin.getValue
+import java.util.*
 
 class RepairFormFragment : Fragment() {
 
     private val viewModel: RepairFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val tag = "RepairFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -55,7 +57,6 @@ class RepairFormFragment : Fragment() {
             return null
         }
 
-        // Initialize views
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -83,22 +84,32 @@ class RepairFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
-            val repair = args.getString("repair_id")
+            val repairId = args.getString("repair_id")
             val date = args.getString("repair_date")
             val clientCI = args.getString("repair_clientCI")
             val motorcycleLicensePlate = args.getString("repair_motorcycleLicensePlate")
             val employeeCI = args.getString("repair_employeeCI")
-            val repairs = args.getParcelableArray("repair_listDiagnostic")?.map { it as Reparation } ?.toList() ?: emptyList()
+            val repairs = args.getParcelableArray("repair_listDiagnostic")?.map { it as Reparation }?.toList() ?: emptyList()
             val reviewed = args.getBoolean("repair_reviewed", false)
 
-            Log.d(tag, "Arguments received - repairId: $repair, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
+            Log.d(tag, "Arguments received - repairId: $repairId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
 
-            if (repair != null) {
+            if (repairId != null) {
                 titleTextView.text = "Editar Reparaciones"
                 viewModel.initializeRepair(
-                    id = repair,
+                    id = repairId,
                     date = date,
                     clientCI = clientCI,
                     motorcycleLicensePlate = motorcycleLicensePlate,
@@ -109,60 +120,52 @@ class RepairFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
         dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView
         repairRecyclerView.layoutManager = LinearLayoutManager(context)
         val repairAdapter = RepairAdapterList(
             control = emptyList(),
-            onEdit = { index, control ->
-                showEditSparePartDialog(index, control)
+            onEdit = { index, reparation ->
+                showEditReparationDialog(index, reparation)
             },
             onDelete = { index ->
-                viewModel.deleteRepair(index)
+                viewModel.deleteReparation(index)
             }
         )
         repairRecyclerView.adapter = repairAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.save_button)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleText.tag?.toString() ?: ""
-            val repairTitle = repairEditText.text.toString().trim()
-            val repairDetail = repairDetailEditText.text.toString().trim()
-            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, repair=$repairTitle")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, repairTitle, repairDetail)
+            val reparationName = repairEditText.text.toString().trim()
+            val reparationDetail = repairDetailEditText.text.toString().trim()
+            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, reparation=$reparationName")
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reparationName, reparationDetail, currentToken)
         }
 
-        // Botón Agregar
         view.findViewById<TextView>(R.id.add_button)?.setOnClickListener {
-            val repairTitle = repairEditText.text.toString().trim()
-            val repairDetail = repairDetailEditText.text.toString().trim()
-            viewModel.addSparePart(repairTitle, repairDetail)
+            val reparationName = repairEditText.text.toString().trim()
+            val reparationDetail = repairDetailEditText.text.toString().trim()
+            viewModel.addReparation(reparationName, reparationDetail)
             repairEditText.text?.clear()
             repairDetailEditText.text?.clear()
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -189,11 +192,11 @@ class RepairFormFragment : Fragment() {
             repairAdapter.notifyDataSetChanged()
             repairRecyclerView.adapter = RepairAdapterList(
                 control = repairs,
-                onEdit = { index, control ->
-                    showEditSparePartDialog(index, control)
+                onEdit = { index, reparation ->
+                    showEditReparationDialog(index, reparation)
                 },
                 onDelete = { index ->
-                    viewModel.deleteRepair(index)
+                    viewModel.deleteReparation(index)
                 }
             )
         }
@@ -225,21 +228,21 @@ class RepairFormFragment : Fragment() {
         return view
     }
 
-    private fun showEditSparePartDialog(index: Int, currentRepair: Reparation) {
+    private fun showEditReparationDialog(index: Int, currentReparation: Reparation) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_diagnostic, null)
         val repairEditText = view.findViewById<EditText>(R.id.edit_error)
         val repairDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
 
-        repairEditText.setText(currentRepair.nameReparation)
-        repairDetailEditText.setText(currentRepair.descriptionReparation)
+        repairEditText.setText(currentReparation.nameReparation)
+        repairDetailEditText.setText(currentReparation.descriptionReparation)
 
         AlertDialog.Builder(requireContext())
             .setTitle("Editar Reparación")
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
-                val newSparePart = repairEditText.text.toString().trim()
-                val newSparePartDetail = repairDetailEditText.text.toString().trim()
-                viewModel.editSparePart(index, newSparePart, newSparePartDetail)
+                val newName = repairEditText.text.toString().trim()
+                val newDetail = repairDetailEditText.text.toString().trim()
+                viewModel.editReparation(index, newName, newDetail)
             }
             .setNegativeButton("Cancelar", null)
             .show()

@@ -1,5 +1,6 @@
 package com.example.bikedoctor.ui.service
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.Diagnostic
 import com.example.bikedoctor.data.model.DiagnosisPost
 import com.example.bikedoctor.data.repository.DiagnosisRepository
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,8 +22,8 @@ class DiagnosisFormViewModel : ViewModel() {
     private val photos = mutableListOf<String>()
     private val tag = "DiagnosisFormViewModel"
     private var diagnosisId: String? = null
+    private var token: String? = null
 
-    // LiveData para errores de validación
     private val _dateTimeError = MutableLiveData<String?>()
     val dateTimeError: LiveData<String?> = _dateTimeError
 
@@ -40,19 +42,15 @@ class DiagnosisFormViewModel : ViewModel() {
     private val _timeSpentError = MutableLiveData<String?>()
     val timeSpentError: LiveData<String?> = _timeSpentError
 
-    // LiveData para el estado del registro
     private val _registerStatus = MutableLiveData<String>()
     val registerStatus: LiveData<String> = _registerStatus
 
-    // LiveData para la lista de diagnósticos
     private val _diagnosticsList = MutableLiveData<List<Diagnostic>>()
     val diagnosticsList: LiveData<List<Diagnostic>> = _diagnosticsList
 
-    // LiveData para la cantidad de fotos
     private val _photosCount = MutableLiveData<Int>()
     val photosCount: LiveData<Int> = _photosCount
 
-    // LiveData para las selecciones
     private val _selectedClient = MutableLiveData<Pair<String?, String?>>()
     val selectedClient: LiveData<Pair<String?, String?>> = _selectedClient
 
@@ -64,6 +62,11 @@ class DiagnosisFormViewModel : ViewModel() {
 
     private val _reviewed = MutableLiveData<Boolean?>()
     val reviewed: LiveData<Boolean?> = _reviewed
+
+    fun setToken(token: String?) {
+        this.token = token
+        Log.d(tag, "Token set: $token")
+    }
 
     fun setDateTime(dateTime: String?) {
         _selectedDateTime.value = dateTime
@@ -121,10 +124,10 @@ class DiagnosisFormViewModel : ViewModel() {
         motorcycleLicensePlate: String,
         error: String,
         errorDetail: String,
-        timeSpent: String
+        timeSpent: String,
+        token: String?
     ) {
         Log.d(tag, "Validating: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, error=$error, errorDetail=$errorDetail, timeSpent=$timeSpent")
-        // Limpiar errores previos
         _dateTimeError.value = null
         _clientError.value = null
         _motorcycleError.value = null
@@ -132,7 +135,6 @@ class DiagnosisFormViewModel : ViewModel() {
         _errorDetailError.value = null
         _timeSpentError.value = null
 
-        // Validar campos
         if (date.isEmpty()) {
             _dateTimeError.value = "La fecha y hora no pueden estar vacías"
         } else if (!date.matches(Regex("^\\d{2}-\\d{2}-\\d{4} \\d{2}:\\d{2} (AM|PM)$"))) {
@@ -153,7 +155,6 @@ class DiagnosisFormViewModel : ViewModel() {
             _errorDiagnosticError.value = "Debe agregar al menos un diagnóstico"
         }
 
-        // Validar diagnóstico si se intenta agregar uno
         if (error.isNotEmpty() || errorDetail.isNotEmpty() || timeSpent.isNotEmpty()) {
             if (error.isEmpty()) {
                 _errorDiagnosticError.value = "El nombre del error no puede estar vacío"
@@ -168,7 +169,31 @@ class DiagnosisFormViewModel : ViewModel() {
             }
         }
 
-        // Verificar si todos los campos son válidos
+        // Obtener el employeeCI desde el token
+        var employeeCI: Int? = null
+        if (token == null) {
+            _clientError.value = "No se encontró el token de autenticación"
+            Log.e(tag, "No token provided")
+            return
+        }
+
+        try {
+            val payload = token.split(".")[1]
+            val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+            val decodedPayload = String(decodedBytes, Charsets.UTF_8)
+            val jsonPayload = JSONObject(decodedPayload)
+            employeeCI = jsonPayload.getString("Ci").toIntOrNull()
+            if (employeeCI == null) {
+                _clientError.value = "El CI del empleado no es válido"
+                Log.e(tag, "Invalid employee CI in token")
+                return
+            }
+        } catch (e: Exception) {
+            _clientError.value = "Error al decodificar el token"
+            Log.e(tag, "Token decoding error: ${e.message}", e)
+            return
+        }
+
         if (_dateTimeError.value == null &&
             _clientError.value == null &&
             _motorcycleError.value == null &&
@@ -177,14 +202,12 @@ class DiagnosisFormViewModel : ViewModel() {
             _timeSpentError.value == null
         ) {
             try {
-                // Convertir fecha a formato ISO 8601
                 val inputFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
                 val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                 outputFormat.timeZone = TimeZone.getTimeZone("UTC")
                 val parsedDate = inputFormat.parse(date)
                 val isoDate = outputFormat.format(parsedDate)
 
-                // Agregar diagnóstico si los campos no están vacíos
                 if (error.isNotEmpty() && errorDetail.isNotEmpty() && timeSpent.isNotEmpty()) {
                     diagnostics.add(Diagnostic(error, errorDetail, timeSpent.toInt()))
                     _diagnosticsList.value = diagnostics.toList()
@@ -194,7 +217,7 @@ class DiagnosisFormViewModel : ViewModel() {
                     date = isoDate,
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
-                    employeeCI = 10387210, // Hardcode
+                    employeeCI = employeeCI,
                     listDiagnostic = diagnostics.toList(),
                     reviewed = _reviewed.value ?: false
                 )
@@ -315,6 +338,7 @@ class DiagnosisFormViewModel : ViewModel() {
 
     fun clearSelections() {
         diagnosisId = null
+        token = null
         _selectedClient.value = Pair(null, null)
         _selectedMotorcycle.value = Pair(null, null)
         _selectedDateTime.value = null

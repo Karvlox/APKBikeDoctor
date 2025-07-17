@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.example.bikedoctor.data.model.Client
 import com.example.bikedoctor.data.repository.ClientRepository
 import com.example.bikedoctor.utils.ClientValidator
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class AddClientViewModel : ViewModel() {
 
     private val repository = ClientRepository()
+
+    // Indicador de si estamos editando
+    var isEditing: Boolean = false
 
     // LiveData para los errores de validación
     private val _nameError = MutableLiveData<String?>()
@@ -71,13 +71,18 @@ class AddClientViewModel : ViewModel() {
                 numberPhone = phone.toInt(),
                 gender = gender
             )
-            registerClient(client)
+
+            if (isEditing) {
+                updateClient(client)
+            } else {
+                registerClient(client)
+            }
         }
     }
 
     private fun registerClient(client: Client) {
-        repository.registerClient(client).enqueue(object : Callback<Client> {
-            override fun onResponse(call: Call<Client>, response: Response<Client>) {
+        repository.registerClient(client).enqueue(object : retrofit2.Callback<Client> {
+            override fun onResponse(call: retrofit2.Call<Client>, response: retrofit2.Response<Client>) {
                 if (response.isSuccessful) {
                     _registerStatus.value = "Cliente registrado con éxito"
                 } else {
@@ -85,7 +90,23 @@ class AddClientViewModel : ViewModel() {
                 }
             }
 
-            override fun onFailure(call: Call<Client>, t: Throwable) {
+            override fun onFailure(call: retrofit2.Call<Client>, t: Throwable) {
+                _registerStatus.value = "Error de red: ${t.message}"
+            }
+        })
+    }
+
+    private fun updateClient(client: Client) {
+        repository.updateClient(client).enqueue(object : retrofit2.Callback<Void> {
+            override fun onResponse(call: retrofit2.Call<Void>, response: retrofit2.Response<Void>) {
+                if (response.isSuccessful) {
+                    _registerStatus.value = "Cliente actualizado con éxito"
+                } else {
+                    _registerStatus.value = "Error al actualizar: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<Void>, t: Throwable) {
                 _registerStatus.value = "Error de red: ${t.message}"
             }
         })

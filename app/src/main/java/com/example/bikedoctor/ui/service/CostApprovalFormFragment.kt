@@ -13,11 +13,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.LaborCost
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -27,7 +29,9 @@ import java.util.Locale
 class CostApprovalFormFragment : Fragment() {
 
     private val viewModel: CostApprovalFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val tag = "CostApprovalFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -56,7 +60,6 @@ class CostApprovalFormFragment : Fragment() {
             return null
         }
 
-        // Initialize views
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -88,22 +91,33 @@ class CostApprovalFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        // Observar el token desde SessionViewModel
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
-            val costApproval = args.getString("costApproval_id")
+            val costApprovalId = args.getString("costApproval_id")
             val date = args.getString("costApproval_date")
             val clientCI = args.getString("costApproval_clientCI")
             val motorcycleLicensePlate = args.getString("costApproval_motorcycleLicensePlate")
             val employeeCI = args.getString("costApproval_employeeCI")
-            val costApprovals = args.getParcelableArray("costApproval_listDiagnostic")?.map { it as LaborCost } ?.toList() ?: emptyList()
+            val costApprovals = args.getParcelableArray("costApproval_listDiagnostic")?.map { it as LaborCost }?.toList() ?: emptyList()
             val reviewed = args.getBoolean("costApproval_reviewed", false)
 
-            Log.d(tag, "Arguments received - costApprovalId: $costApproval, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
+            Log.d(tag, "Arguments received - costApprovalId: $costApprovalId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
 
-            if (costApproval != null) {
+            if (costApprovalId != null) {
                 titleTextView.text = "Editar Aprobación de Costos"
                 viewModel.initializeCostApproval(
-                    id = costApproval,
+                    id = costApprovalId,
                     date = date,
                     clientCI = clientCI,
                     motorcycleLicensePlate = motorcycleLicensePlate,
@@ -114,14 +128,11 @@ class CostApprovalFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
         dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView
         costApprovalRecyclerView.layoutManager = LinearLayoutManager(context)
         val costApprovalAdapter = CostApprovalAdapterList(
             costApproval = emptyList(),
@@ -134,20 +145,17 @@ class CostApprovalFormFragment : Fragment() {
         )
         costApprovalRecyclerView.adapter = costApprovalAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.save_button)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
@@ -156,10 +164,9 @@ class CostApprovalFormFragment : Fragment() {
             val costApprovalDetail = costApprovalDetailEditText.text.toString().trim()
             val price = priceEditText.text.toString().trim()
             Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, costApproval=$costApproval")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, costApproval, costApprovalDetail, price)
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, costApproval, costApprovalDetail, price, currentToken)
         }
 
-        // Botón Agregar
         view.findViewById<TextView>(R.id.add_button)?.setOnClickListener {
             val costApproval = costApprovalEditText.text.toString().trim()
             val costApprovalDetail = costApprovalDetailEditText.text.toString().trim()
@@ -170,7 +177,6 @@ class CostApprovalFormFragment : Fragment() {
             priceEditText.text?.clear()
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }

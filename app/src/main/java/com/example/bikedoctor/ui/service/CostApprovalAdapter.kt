@@ -72,7 +72,6 @@ class CostApprovalAdapter(
             "Sin costos especificados"
         }
 
-        // Configurar botón de edición
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for cost approval: ${costApproval.id}")
             val fragmentManager = (context as FragmentActivity).supportFragmentManager
@@ -94,7 +93,6 @@ class CostApprovalAdapter(
                 .commit()
         }
 
-        // Configurar botón de continuación
         view.findViewById<ImageView>(R.id.continueBottom)?.setOnClickListener {
             Log.d(tag, "Continue button clicked for cost approval: ${costApproval.id}")
             createRepairFromCostApproval(costApproval)
@@ -252,7 +250,7 @@ class CostApprovalAdapter(
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Log.d(tag, "Cost Approval $id marked as reviewed=$reviewed")
-                    viewModel.fetchCostApprovals(1, 100, token) // Usar el token proporcionado
+                    viewModel.fetchCostApprovals(1, 100, token)
                     (context as? FragmentActivity)?.run {
                         android.widget.Toast.makeText(
                             this,

@@ -13,22 +13,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Control
+import com.example.bikedoctor.ui.main.SessionViewModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import kotlin.getValue
+import java.util.*
 
 class ControlFormFragment : Fragment() {
 
     private val viewModel: ControlFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
     private val tag = "ControlFormFragment"
+    private var currentToken: String? = null
 
     private lateinit var dateTimeInputLayout: TextInputLayout
     private lateinit var dateTimeEditText: TextInputEditText
@@ -55,7 +57,6 @@ class ControlFormFragment : Fragment() {
             return null
         }
 
-        // Initialize views
         try {
             dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
                 ?: throw IllegalStateException("date_time_input_layout no encontrado")
@@ -83,22 +84,32 @@ class ControlFormFragment : Fragment() {
             return view
         }
 
-        // Verificar argumentos para modo edición
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
         arguments?.let { args ->
-            val control = args.getString("control_id")
+            val controlId = args.getString("control_id")
             val date = args.getString("control_date")
             val clientCI = args.getString("control_clientCI")
             val motorcycleLicensePlate = args.getString("control_motorcycleLicensePlate")
             val employeeCI = args.getString("control_employeeCI")
-            val controls = args.getParcelableArray("control_listDiagnostic")?.map { it as Control } ?.toList() ?: emptyList()
+            val controls = args.getParcelableArray("control_listDiagnostic")?.map { it as Control }?.toList() ?: emptyList()
             val reviewed = args.getBoolean("control_reviewed", false)
 
-            Log.d(tag, "Arguments received - controId: $control, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
+            Log.d(tag, "Arguments received - controlId: $controlId, clientCI: $clientCI, motorcycleLicensePlate: $motorcycleLicensePlate")
 
-            if (control != null) {
+            if (controlId != null) {
                 titleTextView.text = "Editar Controles"
                 viewModel.initializeControl(
-                    id = control,
+                    id = controlId,
                     date = date,
                     clientCI = clientCI,
                     motorcycleLicensePlate = motorcycleLicensePlate,
@@ -109,19 +120,16 @@ class ControlFormFragment : Fragment() {
             }
         }
 
-        // Hacer el campo de fecha y hora no editable manualmente
         dateTimeEditText.isEnabled = true
         dateTimeEditText.keyListener = null
 
-        // Configurar DatePicker y TimePicker
         dateTimeEditText.setOnClickListener { showDateTimePicker() }
 
-        // Configurar RecyclerView
         controlRecyclerView.layoutManager = LinearLayoutManager(context)
         val controlAdapter = ControlAdapterList(
             control = emptyList(),
             onEdit = { index, control ->
-                showEditSparePartDialog(index, control)
+                showEditControlDialog(index, control)
             },
             onDelete = { index ->
                 viewModel.deleteControl(index)
@@ -129,40 +137,35 @@ class ControlFormFragment : Fragment() {
         )
         controlRecyclerView.adapter = controlAdapter
 
-        // Botón de retroceso
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Cancelar
         view.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
             clearFields()
             viewModel.clearSelections()
             parentFragmentManager.popBackStack()
         }
 
-        // Botón Guardar
         view.findViewById<TextView>(R.id.save_button)?.setOnClickListener {
             val date = dateTimeEditText.text.toString().trim()
             val clientCI = clientText.tag?.toString() ?: ""
             val motorcycleLicensePlate = motorcycleText.tag?.toString() ?: ""
-            val controlTitle = controlEditText.text.toString().trim()
+            val controlName = controlEditText.text.toString().trim()
             val controlDetail = controlDetailEditText.text.toString().trim()
-            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, control=$controlTitle")
-            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, controlTitle, controlDetail)
+            Log.d(tag, "Save button clicked: date=$date, clientCI=$clientCI, motorcycle=$motorcycleLicensePlate, control=$controlName")
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, controlName, controlDetail, currentToken)
         }
 
-        // Botón Agregar
         view.findViewById<TextView>(R.id.add_button)?.setOnClickListener {
-            val controlTitle = controlEditText.text.toString().trim()
+            val controlName = controlEditText.text.toString().trim()
             val controlDetail = controlDetailEditText.text.toString().trim()
-            viewModel.addSparePart(controlTitle, controlDetail)
+            viewModel.addControl(controlName, controlDetail)
             controlEditText.text?.clear()
             controlDetailEditText.text?.clear()
         }
 
-        // Observar errores y estado
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -180,7 +183,7 @@ class ControlFormFragment : Fragment() {
         }
         viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-            if (status.startsWith("Reparación registrada") || status.startsWith("Reparación actualizada")) {
+            if (status.startsWith("Control registrado") || status.startsWith("Control actualizado")) {
                 clearFields()
                 parentFragmentManager.popBackStack()
             }
@@ -190,7 +193,7 @@ class ControlFormFragment : Fragment() {
             controlRecyclerView.adapter = ControlAdapterList(
                 control = controls,
                 onEdit = { index, control ->
-                    showEditSparePartDialog(index, control)
+                    showEditControlDialog(index, control)
                 },
                 onDelete = { index ->
                     viewModel.deleteControl(index)
@@ -225,7 +228,7 @@ class ControlFormFragment : Fragment() {
         return view
     }
 
-    private fun showEditSparePartDialog(index: Int, currentControl: Control) {
+    private fun showEditControlDialog(index: Int, currentControl: Control) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_diagnostic, null)
         val controlEditText = view.findViewById<EditText>(R.id.edit_error)
         val controlDetailEditText = view.findViewById<EditText>(R.id.edit_error_detail)
@@ -237,9 +240,9 @@ class ControlFormFragment : Fragment() {
             .setTitle("Editar Control")
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
-                val newSparePart = controlEditText.text.toString().trim()
-                val newSparePartDetail = controlDetailEditText.text.toString().trim()
-                viewModel.editSparePart(index, newSparePart, newSparePartDetail)
+                val newName = controlEditText.text.toString().trim()
+                val newDetail = controlDetailEditText.text.toString().trim()
+                viewModel.editControl(index, newName, newDetail)
             }
             .setNegativeButton("Cancelar", null)
             .show()
