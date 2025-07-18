@@ -137,7 +137,7 @@ class ReceptionAdapter(
             clientCI = reception.clientCI,
             motorcycleLicensePlate = reception.motorcycleLicensePlate,
             employeeCI = reception.employeeCI,
-            listDiagnostic = null
+            listDiagnostics = null
         )
 
         diagnosisRepository.createDiagnosis(diagnosis).enqueue(object : Callback<DiagnosisPost> {

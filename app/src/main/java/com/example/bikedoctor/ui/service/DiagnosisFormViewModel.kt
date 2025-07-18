@@ -218,7 +218,7 @@ class DiagnosisFormViewModel : ViewModel() {
                     clientCI = clientCI.toInt(),
                     motorcycleLicensePlate = motorcycleLicensePlate,
                     employeeCI = employeeCI,
-                    listDiagnostic = diagnostics.toList(),
+                    listDiagnostics = diagnostics.toList(),
                     reviewed = _reviewed.value ?: false
                 )
 
