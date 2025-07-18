@@ -59,7 +59,7 @@ class DiagnosisAdapter(
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
         val employeeCIText = view.findViewById<TextView>(R.id.employeeCI)
         val firstReasonText = view.findViewById<TextView>(R.id.details)
-        val diagnosisList = diagnosis.listDiagnostic ?: emptyList()
+        val diagnosisList = diagnosis.listDiagnostics ?: emptyList()
         val firstDiagnosis = diagnosisList.firstOrNull()
 
         idServiceText.text = diagnosis.id ?: "Sin ID"
@@ -81,8 +81,8 @@ class DiagnosisAdapter(
                 "diagnosis_clientCI" to diagnosis.clientCI?.toString(),
                 "diagnosis_motorcycleLicensePlate" to diagnosis.motorcycleLicensePlate,
                 "diagnosis_employeeCI" to diagnosis.employeeCI?.toString(),
-                "diagnosis_listDiagnostic" to diagnosis.listDiagnostic?.toTypedArray(),
-                "diagnosis_images" to diagnosis.listDiagnostic?.map { it.detailOfError ?: "" }?.toTypedArray(),
+                "diagnosis_listDiagnostic" to diagnosis.listDiagnostics?.toTypedArray(),
+                "diagnosis_images" to diagnosis.listDiagnostics?.map { it.detailOfError ?: "" }?.toTypedArray(),
                 "diagnosis_reviewed" to diagnosis.reviewed
             )
             val diagnosisFormFragment = DiagnosisFormFragment().apply {

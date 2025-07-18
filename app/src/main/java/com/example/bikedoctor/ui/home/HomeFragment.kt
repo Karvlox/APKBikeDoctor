@@ -33,18 +33,15 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Referencias a los CardView
         val cardAddClient = view.findViewById<CardView>(R.id.card_add_client)
         val cardAddMotorcycle = view.findViewById<CardView>(R.id.card_add_motorcycle)
         val cardNewRepair = view.findViewById<CardView>(R.id.new_repair)
         val clientsButton = view.findViewById<CardView>(R.id.clients_buttom)
         val motorcycleButton = view.findViewById<CardView>(R.id.motorcycle_buttom)
 
-        // Referencias a los TextView para datos dinámicos
         val welcomeText = view.findViewById<TextView>(R.id.welcome_text)
         val pendingJobsText = view.findViewById<TextView>(R.id.numero_de_trabajos)
 
-        // Navegar a AddClient
         cardAddClient.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, AddClientFragment())
@@ -52,7 +49,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        // Navegar a AddMotorcycle
         cardAddMotorcycle.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, AddMotorcycleFragment())
@@ -60,7 +56,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        // Navegar a AddService
         cardNewRepair.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, ReceptionFormFragment())
@@ -68,7 +63,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        // Navegar a ClientManagement
         clientsButton.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, ClientManagement())
@@ -76,7 +70,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        // Navegar a MotorcycleManagement
         motorcycleButton.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, MotorcycleManagement())
@@ -84,7 +77,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        // Observar datos dinámicos de HomeViewModel
         viewModel.homeData.observe(viewLifecycleOwner) { homeData ->
             pendingJobsText.text = homeData.pendingJobsCount.toString()
         }
@@ -101,7 +93,6 @@ class HomeFragment : Fragment() {
                     val role = jsonPayload.getString("Role")
                     welcomeText.text = "Bienvenido de nuevo $userName $lastName"
 
-                    // Mostrar u ocultar botones según el rol
                     if (role == "ADMIN") {
                         clientsButton.visibility = View.VISIBLE
                         motorcycleButton.visibility = View.VISIBLE
