@@ -167,6 +167,7 @@ class RepairAdapter(
                                     val reparationNames = repair.listReparations?.joinToString(", ") { it.nameReparation.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
                                         message = "${getGender(client.gender)} ${client.name} ${client.lastName}, se han realizado las reparaciones ($reparationNames) a su motocicleta y ahora pasará a la fase de control de calidad para verificar su correcto funcionamiento."
+
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {

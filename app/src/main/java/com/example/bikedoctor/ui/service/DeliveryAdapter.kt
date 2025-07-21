@@ -47,7 +47,7 @@ class DeliveryAdapter(
         }
 
         Log.d(tag, "Rendering delivery: id=${delivery.id}")
-
+ 
         val idServiceText = view.findViewById<TextView>(R.id.idService)
         val nameCIText = view.findViewById<TextView>(R.id.clientCI)
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
@@ -116,9 +116,9 @@ class DeliveryAdapter(
                     onSuccess = { client ->
                         currentClient = client
                         val notification = MessageNotification(
-                            message = "${getGender(client.gender)} ${client.name} ${client.lastName}, ¡gracias por elegir BikeDoctor! Su motocicleta ha sido entregada. " +
-                                    "Por favor, complete nuestra encuesta de satisfacción: " +
-                                    "https://docs.google.com/forms/d/e/1FAIpQLSeTAR_GttK8qWzX9ouf0N1_ao6NGRaw-UFS7VlGPhvZ68Oxxg/viewform"
+                            message = "${client.name + " " + client.lastName} agradecerte por la preferencia en el Taller de Motocicletas BikeDoctor!!. " +
+                                    "\nhttps://docs.google.com/forms/d/e/1FAIpQLSeTAR_GttK8qWzX9ouf0N1_ao6NGRaw-UFS7VlGPhvZ68Oxxg/viewform?usp=dialog" +
+                                    "\nAgradeceriamos mucho que pueda llenar el siguiente encuesta para calificar la atención que tuvo durante el periodo de reparacion, muchas gracias!."
                         )
                         messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                             override fun onResponse(call: Call<Void>, response: Response<Void>) {

@@ -166,7 +166,7 @@ class SparePartsAdapter(
                                     currentClient = client
                                     val sparePartsNames = spareParts.listSpareParts?.joinToString(", ") { it.nameSparePart.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, los repuestos necesarios para la reparación de su motocicleta son: $sparePartsNames"
+                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} los repuestos que llegaremos a necesitar para la reparacion de su motocicleta son: ${spareParts.listSpareParts}"
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {

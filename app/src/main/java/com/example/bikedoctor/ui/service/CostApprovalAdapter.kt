@@ -166,7 +166,7 @@ class CostApprovalAdapter(
                                     currentClient = client
                                     val laborCostsNames = costApproval.listLaborCosts?.joinToString(", ") { it.nameProduct.toString() } ?: "ninguno"
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, las reparaciones que se realizarán a su motocicleta incluyen los costos: $laborCostsNames"
+                                        message = "${getGender(client.gender)} ${client.name + " " + client.lastName} las reparaciones que se realizaran a su motocicleta son: \n${costApproval.listLaborCosts}"
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
