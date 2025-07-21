@@ -166,7 +166,7 @@ class DiagnosisAdapter(
                                 onSuccess = { client ->
                                     currentClient = client
                                     val notification = MessageNotification(
-                                        message = "${getGender(client.gender)} ${client.name} ${client.lastName}, su moto terminó la fase de diagnóstico. \nSe le informará sobre los repuestos que se lleguen a necesitar."
+                                        message = "${getGender(client.gender)} ${client.name + client.lastName} su moto termino la fase de diagnostico. \nSe le informara sobre los repuestos que se llegaran a necesitar."
                                     )
                                     messageNotificationRepository.sendNotification(notification).enqueue(object : Callback<Void> {
                                         override fun onResponse(call: Call<Void>, response: Response<Void>) {
