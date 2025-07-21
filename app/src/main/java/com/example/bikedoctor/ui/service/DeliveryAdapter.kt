@@ -47,7 +47,7 @@ class DeliveryAdapter(
         }
 
         Log.d(tag, "Rendering delivery: id=${delivery.id}")
- 
+
         val idServiceText = view.findViewById<TextView>(R.id.idService)
         val nameCIText = view.findViewById<TextView>(R.id.clientCI)
         val motorcycleClientText = view.findViewById<TextView>(R.id.motorcycleLicensePlate)
