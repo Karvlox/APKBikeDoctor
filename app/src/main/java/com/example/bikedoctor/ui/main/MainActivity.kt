@@ -12,6 +12,7 @@ import com.example.bikedoctor.R
 import com.example.bikedoctor.data.repository.SessionRepository
 import com.example.bikedoctor.data.remote.RetrofitClient
 import com.example.bikedoctor.databinding.ActivityMainBinding
+import com.example.bikedoctor.ui.aboutUs.AboutUs
 import com.example.bikedoctor.ui.home.HomeFragment
 import com.example.bikedoctor.ui.profile.ProfileFragment
 import com.example.bikedoctor.ui.service.TableWorkFragment
@@ -47,6 +48,11 @@ class MainActivity : AppCompatActivity() {
         // Configurar botón de logout
         binding.logout.setOnClickListener {
             logout()
+        }
+
+        // Configurar botón About Us
+        binding.aboutUs.setOnClickListener {
+            showAboutUsFragment()
         }
 
         mainViewModel.navigationState.observe(this) { state ->
@@ -90,15 +96,21 @@ class MainActivity : AppCompatActivity() {
             SessionRepository(applicationContext).clearToken()
         }
         RetrofitClient.updateToken(null)
-        // Remover el observador temporalmente para evitar conflicto
         tokenObserver?.let { sessionViewModel.token.removeObserver(it) }
         startActivity(Intent(this, SignInUP::class.java))
         finish()
     }
 
+    private fun showAboutUsFragment() {
+        val aboutUsFragment = AboutUs()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout, aboutUsFragment)
+            .addToBackStack("about_us")
+            .commit()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        // Limpiar el observador al destruir la actividad
         tokenObserver?.let { sessionViewModel.token.removeObserver(it) }
     }
 }
