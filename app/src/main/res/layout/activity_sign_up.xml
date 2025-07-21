@@ -139,6 +139,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
                                 android:hint="Tu Cédula de Identidad"
+                                android:inputType="number"
                                 android:textColor="#000000" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,6 +166,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
                                 android:hint="Tu Edad"
+                                android:inputType="number"
                                 android:textColor="#000000" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -189,6 +191,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/edit_text_background"
                                 android:hint="Tu Número de Teléfono Celular"
+                                android:inputType="number"
                                 android:textColor="#000000" />
                         </com.google.android.material.textfield.TextInputLayout>
 
