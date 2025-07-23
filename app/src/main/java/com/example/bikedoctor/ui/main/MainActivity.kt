@@ -14,6 +14,7 @@ import com.example.bikedoctor.data.remote.RetrofitClient
 import com.example.bikedoctor.databinding.ActivityMainBinding
 import com.example.bikedoctor.ui.aboutUs.AboutUs
 import com.example.bikedoctor.ui.home.HomeFragment
+import com.example.bikedoctor.ui.learnAboutApp.LearnAboutApp
 import com.example.bikedoctor.ui.profile.ProfileFragment
 import com.example.bikedoctor.ui.service.TableWorkFragment
 import com.example.bikedoctor.ui.signInUp.SignInUP
@@ -53,6 +54,11 @@ class MainActivity : AppCompatActivity() {
         // Configurar botón About Us
         binding.aboutUs.setOnClickListener {
             showAboutUsFragment()
+        }
+
+        // Configurar botón Learn About App
+        binding.learnAboutApp.setOnClickListener {
+            showLearnAboutAppFragment()
         }
 
         mainViewModel.navigationState.observe(this) { state ->
@@ -106,6 +112,14 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_layout, aboutUsFragment)
             .addToBackStack("about_us")
+            .commit()
+    }
+
+    private fun showLearnAboutAppFragment() {
+        val learnAboutApp = LearnAboutApp()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_layout, learnAboutApp)
+            .addToBackStack("learn_about_app")
             .commit()
     }
 
