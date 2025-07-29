@@ -19,6 +19,7 @@ import com.example.bikedoctor.ui.client.AddClientFragment
 import com.example.bikedoctor.ui.main.SessionViewModel
 import com.example.bikedoctor.ui.motorcycle.AddMotorcycleFragment
 import com.example.bikedoctor.ui.service.ReceptionFormFragment
+import com.example.bikedoctor.ui.service.TableWorkFragment
 import com.example.bikedoctor.ui.signIn.SignIn
 import org.json.JSONObject
 
@@ -33,14 +34,22 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        val cardPendingJobs = view.findViewById<CardView>(R.id.trabajos_pendientes_)
         val cardAddClient = view.findViewById<CardView>(R.id.card_add_client)
         val cardAddMotorcycle = view.findViewById<CardView>(R.id.card_add_motorcycle)
         val cardNewRepair = view.findViewById<CardView>(R.id.new_repair)
         val clientsButton = view.findViewById<CardView>(R.id.clients_buttom)
         val motorcycleButton = view.findViewById<CardView>(R.id.motorcycle_buttom)
+        val textPendingJobs = view.findViewById<TextView>(R.id.trabajos_pendientes)
 
         val welcomeText = view.findViewById<TextView>(R.id.welcome_text)
-        val pendingJobsText = view.findViewById<TextView>(R.id.numero_de_trabajos)
+
+        cardPendingJobs.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, TableWorkFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
         cardAddClient.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -77,10 +86,6 @@ class HomeFragment : Fragment() {
             transaction.commit()
         }
 
-        viewModel.homeData.observe(viewLifecycleOwner) { homeData ->
-            pendingJobsText.text = homeData.pendingJobsCount.toString()
-        }
-
         sessionViewModel.token.observe(viewLifecycleOwner) { token ->
             if (token != null) {
                 try {
@@ -96,20 +101,24 @@ class HomeFragment : Fragment() {
                     if (role == "ADMIN") {
                         clientsButton.visibility = View.VISIBLE
                         motorcycleButton.visibility = View.VISIBLE
+                        textPendingJobs.text = "Ver trabajos pendientes"
                     } else {
                         clientsButton.visibility = View.GONE
                         motorcycleButton.visibility = View.GONE
+                        textPendingJobs.text = "Trabajos Asignados"
                     }
                 } catch (e: Exception) {
                     welcomeText.text = "Bienvenido de nuevo"
                     clientsButton.visibility = View.GONE
                     motorcycleButton.visibility = View.GONE
+                    textPendingJobs.text = "Trabajos Asignados"
                     Toast.makeText(requireContext(), "Error al decodificar el token: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 welcomeText.text = "Bienvenido de nuevo"
                 clientsButton.visibility = View.GONE
                 motorcycleButton.visibility = View.GONE
+                textPendingJobs.text = "Trabajos Asignados"
                 startActivity(Intent(requireContext(), SignIn::class.java))
                 requireActivity().finish()
             }
