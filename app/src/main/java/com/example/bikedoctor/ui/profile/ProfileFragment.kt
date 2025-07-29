@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.bikedoctor.R
 import com.example.bikedoctor.data.model.Delivery
 import com.example.bikedoctor.data.repository.DeliveryRepository
 import com.example.bikedoctor.ui.main.SessionViewModel
+import com.example.bikedoctor.ui.service.TableWorkFragment
 import com.example.bikedoctor.ui.signIn.SignIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +43,15 @@ class ProfileFragment : Fragment() {
         val ageText = view.findViewById<TextView>(R.id.ageText)
         val phoneText = view.findViewById<TextView>(R.id.phoneText)
         val historyListView = view.findViewById<ListView>(R.id.historyListView)
+        val editProfileCard = view.findViewById<CardView>(R.id.editProfileCard)
+        val pendingJobs = view.findViewById<CardView>(R.id.pendingJobs)
+
+        pendingJobs.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, TableWorkFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
 
         // Observar el token y extraer datos
         sessionViewModel.token.observe(viewLifecycleOwner) { token ->
@@ -53,6 +64,7 @@ class ProfileFragment : Fragment() {
                     val jsonPayload = JSONObject(decodedPayload)
 
                     // Extraer datos
+                    val id = jsonPayload.getString("Id")
                     val name = jsonPayload.getString("Name")
                     val lastName = jsonPayload.getString("LastName")
                     val ci = jsonPayload.getString("Ci")
@@ -67,6 +79,19 @@ class ProfileFragment : Fragment() {
 
                     // Cargar historial usando el CI
                     loadHistory(ci.toInt(), historyListView)
+
+                    // Configurar el listener para el botón de Editar Perfil
+                    editProfileCard.setOnClickListener {
+                        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                        val editProfileFragment = EditProfile().apply {
+                            arguments = Bundle().apply {
+                                putString("staff_id", id)
+                            }
+                        }
+                        transaction.replace(R.id.frame_layout, editProfileFragment)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
                 } catch (e: Exception) {
                     fullNameText.text = "Nombre: No disponible"
                     ciText.text = "CI: No disponible"

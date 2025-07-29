@@ -1,9 +1,11 @@
 package com.example.bikedoctor.data.repository
 
+import com.example.bikedoctor.data.model.Staff
 import com.example.bikedoctor.data.model.StaffChangePassword
 import com.example.bikedoctor.data.model.StaffLogin
 import com.example.bikedoctor.data.model.StaffPost
 import com.example.bikedoctor.data.model.StaffResetPassword
+import com.example.bikedoctor.data.model.UpdateStaffRequest
 import com.example.bikedoctor.data.remote.LoginResponse
 import com.example.bikedoctor.data.remote.RetrofitStaff
 import okhttp3.ResponseBody
@@ -24,6 +26,14 @@ class StaffRepository {
 
     fun resetPasswordStaff(staff: StaffResetPassword): Call<StaffResetPassword> {
         return RetrofitStaff.staffApi.resetPasswordStaff(staff)
+    }
+
+    fun getStaffById(id: String): Call<Staff> {
+        return RetrofitStaff.staffApi.getStaffById(id)
+    }
+
+    fun updateStaff(id: String, staff: UpdateStaffRequest): Call<ResponseBody> {
+        return RetrofitStaff.staffApi.updateStaff(id, staff)
     }
 
 }
