@@ -63,13 +63,31 @@ class RepairAdapter(
         val firstReparation = reparationList.firstOrNull()
 
         idServiceText.text = repair.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${repair.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${repair.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${repair.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstReparation != null) {
             "Lista de Reparaciones: ${firstReparation.nameReparation}"
         } else {
             "Sin reparaciones especificadas"
+        }
+
+        // Obtener el nombre del cliente usando GetClient
+        repair.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${repair.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
         }
 
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {

@@ -63,10 +63,28 @@ class ReceptionAdapter(
         val firstReasonText = view.findViewById<TextView>(R.id.details)
 
         idServiceText.text = reception.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${reception.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${reception.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${reception.employeeCI ?: "Sin datos"}"
         firstReasonText.text = "Motivos manifestados: ${reception.reasons?.firstOrNull() ?: "Sin motivos especificados"}"
+
+        // Obtener el nombre del cliente usando GetClient
+        reception.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${reception.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
+        }
 
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
             Log.d(tag, "Edit button clicked for reception: ${reception.id}")

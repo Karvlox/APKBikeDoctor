@@ -55,10 +55,28 @@ class DeliveryAdapter(
         val firstReasonText = view.findViewById<TextView>(R.id.details)
 
         idServiceText.text = delivery.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${delivery.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${delivery.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${delivery.employeeCI ?: "Sin datos"}"
         firstReasonText.text = "Encuesta completada: ${if (delivery.surveyCompleted == true) "Sí" else "No"}"
+
+        // Obtener el nombre del cliente usando GetClient
+        delivery.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${delivery.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
+        }
 
         view.findViewById<ImageView>(R.id.editButtom)?.visibility = View.INVISIBLE
 

@@ -63,13 +63,31 @@ class DiagnosisAdapter(
         val firstDiagnosis = diagnosisList.firstOrNull()
 
         idServiceText.text = diagnosis.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${diagnosis.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${diagnosis.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${diagnosis.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstDiagnosis != null) {
             "Lista de Diagnósticos: ${firstDiagnosis.error}"
         } else {
             "Sin diagnósticos especificados"
+        }
+
+        // Obtener el nombre del cliente usando GetClient
+        diagnosis.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${diagnosis.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
         }
 
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {

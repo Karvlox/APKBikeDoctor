@@ -63,13 +63,31 @@ class CostApprovalAdapter(
         val firstCostApproval = costApprovalList.firstOrNull()
 
         idServiceText.text = costApproval.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${costApproval.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${costApproval.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Responsable: ${costApproval.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstCostApproval != null) {
             "Lista de Costos: ${firstCostApproval.nameProduct}"
         } else {
             "Sin costos especificados"
+        }
+
+        // Obtener el nombre del cliente usando GetClient
+        costApproval.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${costApproval.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
         }
 
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {

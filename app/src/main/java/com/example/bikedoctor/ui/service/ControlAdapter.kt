@@ -65,13 +65,31 @@ class ControlAdapter(
         val firstSparePart = sparePartsList.firstOrNull()
 
         idServiceText.text = control.id ?: "Sin ID"
-        nameCIText.text = "Cliente: ${control.clientCI ?: "Desconocido"}"
+        nameCIText.text = "Cliente: Cargando..."
         motorcycleClientText.text = "Motocicleta: ${control.motorcycleLicensePlate ?: "Sin datos"}"
         employeeCIText.text = "Empleado Reponsable: ${control.employeeCI ?: "Sin datos"}"
         firstReasonText.text = if (firstSparePart != null) {
             "Lista de Controles: ${firstSparePart.controlName}"
         } else {
             "Sin controles especificados"
+        }
+
+        // Obtener el nombre del cliente usando GetClient
+        control.clientCI?.let { ci ->
+            getClient.getClientById(
+                ci = ci,
+                onSuccess = { client ->
+                    nameCIText.text = "Cliente: ${client.name} ${client.lastName}"
+                    Log.d(tag, "Client name fetched: ${client.name} ${client.lastName}")
+                },
+                onError = { error ->
+
+                    nameCIText.text = "Cliente: ${control.clientCI}"
+                    Log.e(tag, "Error fetching client name: $error")
+                }
+            )
+        } ?: run {
+            nameCIText.text = "Cliente: Desconocido"
         }
 
         view.findViewById<ImageView>(R.id.editButtom)?.setOnClickListener {
