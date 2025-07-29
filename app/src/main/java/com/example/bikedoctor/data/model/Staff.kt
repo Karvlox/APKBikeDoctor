@@ -37,3 +37,12 @@ data class StaffResetPassword (
     val numberPhone: Int,
     val newPassword: String,
 )
+
+data class UpdateStaffRequest(
+    val name: String,
+    val lastName: String,
+    val ci: Int,
+    val age: Int,
+    val numberPhone: Int,
+    val role: String
+)
