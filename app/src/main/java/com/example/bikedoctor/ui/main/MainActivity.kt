@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         // Configurar observador de token
         tokenObserver = Observer { token ->
             RetrofitClient.updateToken(token)
-            if (token == null && !isFinishing) { // Evitar redirección si la actividad se está cerrando
+            if (token == null && !isFinishing) {
                 startActivity(Intent(this, SignInUP::class.java))
                 finish()
             }
