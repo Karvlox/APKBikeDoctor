@@ -1,13 +1,11 @@
 package com.example.bikedoctor.ui.signInUp
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.bikedoctor.R
-import com.example.bikedoctor.ui.signUp.SignUp
 import android.widget.ImageView
 
 class PrivacyPolicy : AppCompatActivity() {
@@ -18,8 +16,6 @@ class PrivacyPolicy : AppCompatActivity() {
 
         val backButton: ImageView = findViewById(R.id.back_buttom)
         backButton.setOnClickListener {
-            val intent = Intent(this, SignUp::class.java)
-            startActivity(intent)
             finish()
         }
 

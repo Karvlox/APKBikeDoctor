@@ -12,6 +12,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -33,6 +34,10 @@ class SignUp : AppCompatActivity() {
 
     private val viewModel: SignUpViewModel by viewModels {
         SignUpViewModelFactory(StaffRepository(), SessionRepository(this))
+    }
+
+    private val privacyPolicyLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        // No necesitamos manejar el resultado, simplemente regresamos a SignUp
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +86,7 @@ class SignUp : AppCompatActivity() {
         // Navegar a PrivacyPolicy al hacer clic en el texto
         privacyPolicyText.setOnClickListener {
             val intent = Intent(this, PrivacyPolicy::class.java)
-            startActivity(intent)
+            privacyPolicyLauncher.launch(intent)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -175,7 +180,6 @@ class SignUp : AppCompatActivity() {
                     showToast(state.message)
                 }
                 is RegisterState.Idle -> {
-                    // No hacer nada
                 }
             }
         }
@@ -194,7 +198,6 @@ class SignUp : AppCompatActivity() {
                     showToast("Error al iniciar sesión: ${state.message}")
                 }
                 is LoginState.Idle -> {
-                    // No hacer nada
                 }
             }
         }
