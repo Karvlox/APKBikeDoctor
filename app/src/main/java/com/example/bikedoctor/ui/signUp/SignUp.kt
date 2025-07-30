@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.InputType
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
@@ -22,6 +23,7 @@ import com.example.bikedoctor.data.repository.SessionRepository
 import com.example.bikedoctor.data.repository.StaffRepository
 import com.example.bikedoctor.ui.main.MainActivity
 import com.example.bikedoctor.ui.signIn.SignIn
+import com.example.bikedoctor.ui.signInUp.PrivacyPolicy
 import com.example.bikedoctor.ui.signInUp.SignInUP
 import com.example.bikedoctor.utils.ClientValidator
 import com.google.android.material.textfield.TextInputEditText
@@ -54,11 +56,32 @@ class SignUp : AppCompatActivity() {
         val registerButton: TextView = findViewById(R.id.buttonRegister)
         val signInButton: TextView = findViewById(R.id.buttonSignIn)
         val backButton: ImageView = findViewById(R.id.backButtom)
+        val privacyPolicyCheckBox: CheckBox = findViewById(R.id.privacyPolicyCheckBox)
+        val privacyPolicyText: TextView = findViewById(R.id.textView53)
+
+        // Restaurar datos si existen
+        savedInstanceState?.let {
+            nameInput.setText(it.getString("name"))
+            lastNameInput.setText(it.getString("lastName"))
+            ciInput.setText(it.getString("ci"))
+            ageInput.setText(it.getString("age"))
+            numberPhoneInput.setText(it.getString("numberPhone"))
+            passwordInput.setText(it.getString("password"))
+            val roleIndex = it.getInt("roleIndex", 0)
+            spinner.setSelection(roleIndex)
+            privacyPolicyCheckBox.isChecked = it.getBoolean("privacyPolicyChecked")
+        }
 
         backButton.setOnClickListener {
             val intent = Intent(this, SignInUP::class.java)
             startActivity(intent)
             finish()
+        }
+
+        // Navegar a PrivacyPolicy al hacer clic en el texto
+        privacyPolicyText.setOnClickListener {
+            val intent = Intent(this, PrivacyPolicy::class.java)
+            startActivity(intent)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -106,6 +129,7 @@ class SignUp : AppCompatActivity() {
             val ageError = ClientValidator.validateAge(ageText)
             val phoneError = ClientValidator.validatePhone(numberPhoneText)
             val passwordError = if (password.length < 6) "La contraseña debe tener al menos 6 caracteres" else null
+            val privacyError = if (!privacyPolicyCheckBox.isChecked) "Debes aceptar la Política de Privacidad" else null
 
             nameInputLayout.error = nameError
             lastNameInputLayout.error = lastNameError
@@ -115,9 +139,12 @@ class SignUp : AppCompatActivity() {
             passwordInputLayout.error = passwordError
 
             if (nameError != null || lastNameError != null || ciError != null || ageError != null ||
-                phoneError != null || passwordError != null || role == "Selecciona una opción") {
+                phoneError != null || passwordError != null || role == "Selecciona una opción" || privacyError != null) {
                 if (role == "Selecciona una opción") {
                     showToast("Seleccione un rol válido")
+                }
+                if (privacyError != null) {
+                    showToast(privacyError)
                 }
                 return@setOnClickListener
             }
@@ -171,6 +198,27 @@ class SignUp : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val nameInput: TextInputEditText = findViewById(R.id.textInputNameEdit)
+        val lastNameInput: TextInputEditText = findViewById(R.id.textInputLastNameEdit)
+        val ciInput: TextInputEditText = findViewById(R.id.textInputCiEdit)
+        val ageInput: TextInputEditText = findViewById(R.id.textInputAgeEdit)
+        val numberPhoneInput: TextInputEditText = findViewById(R.id.textInputNumberPhoneEdit)
+        val passwordInput: TextInputEditText = findViewById(R.id.textInputPasswordEdit)
+        val spinner: Spinner = findViewById(R.id.filterSpinner)
+        val privacyPolicyCheckBox: CheckBox = findViewById(R.id.privacyPolicyCheckBox)
+
+        outState.putString("name", nameInput.text.toString())
+        outState.putString("lastName", lastNameInput.text.toString())
+        outState.putString("ci", ciInput.text.toString())
+        outState.putString("age", ageInput.text.toString())
+        outState.putString("numberPhone", numberPhoneInput.text.toString())
+        outState.putString("password", passwordInput.text.toString())
+        outState.putInt("roleIndex", spinner.selectedItemPosition)
+        outState.putBoolean("privacyPolicyChecked", privacyPolicyCheckBox.isChecked)
     }
 
     private fun showToast(message: String) {

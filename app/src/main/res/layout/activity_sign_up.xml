@@ -17,50 +17,49 @@
             android:layout_height="match_parent"
             android:fillViewport="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/backButtom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="20dp"
-                    android:src="@drawable/back_icon" />
-
-                <ImageView
-                    android:id="@+id/imageView13"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/icon_logo" />
-
-                <TextView
-                    android:id="@+id/textView21"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:fontFamily="@font/roboto"
-                    android:text="Registrarse"
-                    android:textColor="#F4F4F4"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="50dp"
-                app:cardBackgroundColor="#2E2E2E">
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/backButtom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/back_icon" />
+
+                    <ImageView
+                        android:id="@+id/imageView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/icon_logo" />
+
+                    <TextView
+                        android:id="@+id/textView21"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/roboto"
+                        android:text="Registrarse"
+                        android:textColor="#F4F4F4"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="50dp"
+                    app:cardBackgroundColor="#2E2E2E">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -76,7 +75,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="30dp"
                             android:text="Nombre (s)"
-                            android:textColor="#000000"/>
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputName"
@@ -100,7 +99,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Apellido (s)"
-                            android:textColor="#000000"/>/>
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputLastName"
@@ -124,7 +123,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="CI"
-                            android:textColor="#000000"/>/>
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputCI"
@@ -143,15 +142,13 @@
                                 android:textColor="#000000" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-
-
                         <TextView
                             android:id="@+id/textView28"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Edad"
-                            android:textColor="#000000"/>/>
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputAge"
@@ -175,8 +172,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Número de Teléfono Celular"
-                            android:textColor="#000000"/>/>
+                            android:text="Número de Teléfono Celular"
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputNumberPhone"
@@ -201,7 +198,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Contraseña"
-                            android:textColor="#000000"/>/>
+                            android:textColor="#000000" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputPassword"
@@ -218,7 +215,7 @@
                                 android:background="@drawable/edit_text_background"
                                 android:hint="Tu contraseña"
                                 android:inputType="textPassword"
-                                android:textColor="#000000"/>
+                                android:textColor="#000000" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <Spinner
@@ -273,9 +270,33 @@
                                 android:textStyle="bold" />
                         </androidx.cardview.widget.CardView>
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <CheckBox
+                                android:id="@+id/privacyPolicyCheckBox"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:id="@+id/textView53"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Acepto la Política de Privacidad"
+                                android:textColor="#000000"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
