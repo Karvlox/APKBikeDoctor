@@ -39,7 +39,6 @@ class DiagnosisFormFragment : Fragment() {
     private lateinit var errorInputLayout: TextInputLayout
     private lateinit var errorDetailInputLayout: TextInputLayout
     private lateinit var timeSpentInputLayout: TextInputLayout
-    private lateinit var photosCountText: TextView
     private lateinit var diagnosticsRecyclerView: RecyclerView
     private lateinit var titleTextView: TextView
 
@@ -71,8 +70,6 @@ class DiagnosisFormFragment : Fragment() {
                 ?: throw IllegalStateException("error_detail_input_layout no encontrado")
             timeSpentInputLayout = view.findViewById(R.id.time_spent_input_layout)
                 ?: throw IllegalStateException("time_spent_input_layout no encontrado")
-            photosCountText = view.findViewById(R.id.photos_count_text)
-                ?: throw IllegalStateException("photos_count_text no encontrado")
             diagnosticsRecyclerView = view.findViewById(R.id.diagnostics_recycler_view)
                 ?: throw IllegalStateException("diagnostics_recycler_view no encontrado")
             titleTextView = view.findViewById(R.id.title_text)
@@ -172,14 +169,6 @@ class DiagnosisFormFragment : Fragment() {
             timeSpentInputLayout.editText?.text?.clear()
         }
 
-        view.findViewById<ImageView>(R.id.camera_button)?.setOnClickListener {
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
-        }
-
-        view.findViewById<ImageView>(R.id.gallery_button)?.setOnClickListener {
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
-        }
-
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -216,9 +205,6 @@ class DiagnosisFormFragment : Fragment() {
                     viewModel.deleteDiagnostic(index)
                 }
             )
-        }
-        viewModel.photosCount.observe(viewLifecycleOwner) { count ->
-            photosCountText.text = "Fotos Adjuntadas ($count)"
         }
         viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
             if (clientCI != null && clientName != null) {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2E2E2E"
+    android:background="#96A4A7"
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
@@ -40,7 +40,7 @@
                 android:gravity="center"
                 android:text="Bienvenido de nuevo Nombre"
                 android:textAlignment="center"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -60,12 +60,12 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/create_service_background"
+                android:background="@drawable/create_service_background2"
                 android:fontFamily="@font/roboto"
                 android:gravity="center"
                 android:text="CREAR ORDEN DE SERVICIO"
                 android:textAlignment="center"
-                android:textColor="#000000"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </androidx.cardview.widget.CardView>
@@ -223,7 +223,7 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="Clientes"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
@@ -244,7 +244,7 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="Motocicletas"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </androidx.cardview.widget.CardView>

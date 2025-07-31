@@ -10,7 +10,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#2E2E2E">
+        app:cardBackgroundColor="#96A4A7">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,8 +29,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="20dp"
-                    android:src="@drawable/back_icon"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@drawable/back_icon" />
 
                 <ImageView
                     android:id="@+id/imageView13"
@@ -46,7 +46,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/roboto"
                     android:text="Iniciar sesión"
-                    android:textColor="#F4F4F4"
+                    android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -61,13 +61,13 @@
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
                 android:text="BikeDoctor guarda un registro por cada servicio, entregado un mapa claro de toda la interacción con el cliente y la evidencia fotográfica del servicio, esto te permitirá estar respaldado ante cualquier posible demanda o reclamo de algún cliente"
-                android:textColor="#FFFFFF" />
+                android:textColor="#000000" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="50dp"
-                app:cardBackgroundColor="#2E2E2E">
+                app:cardBackgroundColor="#96A4A7">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                         android:layout_marginTop="50dp"
                         android:layout_marginBottom="10dp"
                         android:text="Ci"
-                        android:textColor="#000000" />
+                        android:textColor="#FFFF" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputEmail"
@@ -97,8 +97,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edit_text_background"
-                            android:inputType="number"
                             android:hint="00000000"
+                            android:inputType="number"
                             android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,16 +108,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="50dp"
                         android:layout_marginBottom="10dp"
-                        android:textColor="#000000"
-                        android:text="Contraseña" />
+                        android:text="Contraseña"
+                        android:textColor="#FFFF" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:endIconMode="password_toggle"
                         app:errorEnabled="true"
-                        app:hintEnabled="false"
-                        app:endIconMode="password_toggle">
+                        app:hintEnabled="false">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/textInputPasswordEditText"
@@ -126,7 +126,7 @@
                             android:background="@drawable/edit_text_background"
                             android:hint="Tu contraseña"
                             android:inputType="textPassword"
-                            android:textColor="#000000"/>
+                            android:textColor="#000000" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <androidx.cardview.widget.CardView
@@ -140,29 +140,38 @@
                             android:id="@+id/buttonSignIn"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#E6B5BC"
+                            android:background="#485A68"
                             android:clickable="true"
                             android:focusable="true"
                             android:fontFamily="@font/roboto"
                             android:gravity="center"
                             android:text="INICIAR SESIÓN"
                             android:textAlignment="center"
-                            android:textColor="#000000"
+                            android:textColor="#FBFBFB"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </androidx.cardview.widget.CardView>
 
+                    <TextView
+                        android:id="@+id/textView54"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:gravity="center"
+                        android:text="¿No tienes una cuenta aún?"
+                        android:textColor="#FFFFFF" />
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:layout_marginTop="35dp"
+                        android:layout_marginTop="5dp"
                         app:cardCornerRadius="5dp">
 
                         <TextView
                             android:id="@+id/buttonRegister"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#E88B61"
+                            android:background="#CCD0CF"
                             android:clickable="true"
                             android:focusable="true"
                             android:fontFamily="@font/roboto"

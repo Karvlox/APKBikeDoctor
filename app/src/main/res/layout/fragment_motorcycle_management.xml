@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F3F3"
+    android:background="#96A4A7"
     tools:context=".ui.admin.MotorcycleManagement">
 
     <androidx.cardview.widget.CardView
@@ -16,8 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@drawable/custom_font_background">
+            android:background="@drawable/custom_font_background"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="8dp"  />
+                android:dividerHeight="8dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

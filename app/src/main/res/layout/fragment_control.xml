@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2E2E2E">
+    android:background="#96A4A7">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        app:cardBackgroundColor="#212121"
+        app:cardBackgroundColor="#10202D"
         app:cardCornerRadius="15dp">
 
         <LinearLayout
@@ -23,7 +23,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#858585"
+                android:background="#233543"
                 android:orientation="horizontal">
 
                 <TextView
@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hapticFeedbackEnabled="false"
-                    app:cardBackgroundColor="#858585">
+                    app:cardBackgroundColor="#233543">
 
                     <TextView
                         android:id="@+id/servicesNumber_control"

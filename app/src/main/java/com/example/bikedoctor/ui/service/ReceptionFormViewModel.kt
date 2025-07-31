@@ -41,9 +41,6 @@ class ReceptionFormViewModel : ViewModel() {
     private val _reasonsList = MutableLiveData<List<String>>()
     val reasonsList: LiveData<List<String>> = _reasonsList
 
-    private val _photosCount = MutableLiveData<Int>()
-    val photosCount: LiveData<Int> = _photosCount
-
     private val _selectedClient = MutableLiveData<Pair<String?, String?>>()
     val selectedClient: LiveData<Pair<String?, String?>> = _selectedClient
 
@@ -106,7 +103,6 @@ class ReceptionFormViewModel : ViewModel() {
         if (images != null) {
             this.photos.addAll(images)
         }
-        _photosCount.value = this.photos.size
         _reviewed.value = reviewed
         Log.d(tag, "Initialized reception: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
     }
@@ -225,17 +221,6 @@ class ReceptionFormViewModel : ViewModel() {
         }
     }
 
-    fun addPhoto(photoUri: String) {
-        if (photos.size < 5) {
-            photos.add(photoUri)
-            _photosCount.value = photos.size
-            Log.d(tag, "Photo added: $photoUri, total: ${photos.size}")
-        } else {
-            _registerStatus.value = "Máximo 5 fotos permitidas"
-            Log.w(tag, "Max photos reached")
-        }
-    }
-
     private fun createReception(reception: ReceptionPost) {
         Log.d(tag, "Creating reception with data: " +
                 "date=${reception.date}, " +
@@ -304,9 +289,7 @@ class ReceptionFormViewModel : ViewModel() {
         _selectedDateTime.value = null
         _reviewed.value = null
         reasons.clear()
-        photos.clear()
         _reasonsList.value = emptyList()
-        _photosCount.value = 0
         Log.d(tag, "Selections cleared")
     }
 }

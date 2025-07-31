@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#2E2E2E">
+        app:cardBackgroundColor="#96A4A7">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                         android:layout_marginStart="20dp"
                         android:fontFamily="@font/roboto"
                         android:text="Editar Datos de Perfil"
-                        android:textColor="#F4F4F4"
+                        android:textColor="#000000"
                         android:textSize="24sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="50dp"
-                    app:cardBackgroundColor="#2E2E2E">
+                    app:cardBackgroundColor="#96A4A7">
 
 
                     <LinearLayout
@@ -69,7 +69,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="30dp"
                             android:text="Nombre (s)"
-                            android:textColor="#000000" />
+                            android:textColor="#D5D5D5" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputName"
@@ -93,7 +93,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Apellido (s)"
-                            android:textColor="#000000" />/>
+                            android:textColor="#FFFFFF" />/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputLastName"
@@ -117,7 +117,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="CI"
-                            android:textColor="#000000" />/>
+                            android:textColor="#FFFFFF" />/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputCI"
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Edad"
-                            android:textColor="#000000" />/>
+                            android:textColor="#FFFFFF" />/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputAge"
@@ -168,7 +168,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="Número de Teléfono Celular"
-                            android:textColor="#000000" />/>
+                            android:textColor="#FFFFFF" />/>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textInputNumberPhone"
@@ -205,14 +205,14 @@
                                 android:id="@+id/button_save"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="#E88B61"
+                                android:background="#485A68"
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:fontFamily="@font/roboto"
                                 android:gravity="center"
                                 android:text="GUARDAR"
                                 android:textAlignment="center"
-                                android:textColor="#000000"
+                                android:textColor="#FFFFFF"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
                         </androidx.cardview.widget.CardView>
@@ -227,7 +227,7 @@
                                 android:id="@+id/button_cancel"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="#E6B5BC"
+                                android:background="#CCD0CF"
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:fontFamily="@font/roboto"

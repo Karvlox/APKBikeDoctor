@@ -12,7 +12,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#2E2E2E" >
+        app:cardBackgroundColor="#96A4A7">
 
         <LinearLayout
             android:layout_width="match_parent"
