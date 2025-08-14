@@ -2,4 +2,11 @@
     <string name="app_name">BikeDoctor</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="total_forms">Total Reparaciones: %d</string>
+    <string name="complaints_chart_title">Quejas Repetidas</string>
+    <string name="aspects_chart_title">Aspectos Repetidos</string>
+    <string name="error_loading_metrics">Error al cargar métricas: %s</string>
+    <string name="delivery_status_title">Estado de Reparaciones</string>
+    <string name="reasons_phrases_title">Motivos por Frases</string>
+    <string name="reasons_words_title">Motivos por Palabras</string>
 </resources>

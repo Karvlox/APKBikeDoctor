@@ -13,13 +13,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://bikedoctor-production-110b.up.railway.app/"
+    private const val BASE_URL = "https://bikedoctor-production-2f1e.up.railway.app/"
     private const val CONNECT_TIMEOUT = 30L
     private const val READ_TIMEOUT = 30L
 
     //https://bikedoctor.onrender.com/
     //https://bikedoctor-production-b048.up.railway.app/
     //https://bikedoctor-production-110b.up.railway.app/
+    //https://bikedoctor-production-2f1e.up.railway.app/
 
     private var currentToken: String? = null
 
@@ -133,5 +134,14 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MessageNotificationAPI::class.java)
+    }
+
+    val feedbackApi: FeedbackApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(FeedbackApi::class.java)
     }
 }
