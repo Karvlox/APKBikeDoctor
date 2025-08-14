@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.learnAboutApp.LearnAboutApp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="#96A4A7">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/back_buttom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:src="@drawable/back_icon" />
+
+                <ImageView
+                    android:id="@+id/imageView18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bike_doctor_logo" />
+
+                <TextView
+                    android:id="@+id/textView32"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana Principal"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView33"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana Principal, que sirve como el centro de gestión de los servicios de BikeDoctor. Esta ventana ofrece opciones para agregar un cliente, agregar una motocicleta o crear una orden de servicio, facilitando el inicio de nuevas tareas."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Botón de Agregar Cliente: Este botón lleva a la Ventana de Agregar Cliente, donde se pueden ingresar y guardar los detalles de un nuevo cliente."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Botón de Agregar Motocicleta: Al seleccionar esta opción, los usuarios acceden a la Ventana de Agregar Motocicleta para registrar una nueva motocicleta bajo un cliente existente."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Botón de Crear Orden de Servicio: Este botón dirige a los usuarios a la Ventana de Agregar Servicio para iniciar una nueva solicitud de servicio para la motocicleta de un cliente."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana de Agregar Cliente"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView38"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="La Ventana de Agregar Cliente permite a los usuarios ingresar información detallada para registrar un nuevo cliente. Incluye campos para nombre, apellido, CI, edad, número de teléfono y género, con opciones para guardar o cancelar la acción."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView39"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:text=" * Campos de Nombre y Apellido: Ingresa el nombre completo y apellido del cliente para su identificación.
+                    \n* Campo de CI: Ingresa el CI del cliente para vincular su registro de manera oficial. \n* Campo de Edad: Agrega la edad del cliente para opciones de servicio personalizadas.
+                    \n* Campo de Número de Teléfono: Proporciona el número de contacto del cliente para notificaciones. \n* Campo de Género: Selecciona el género del cliente para personalizar las comunicaciones.
+                    \n* Botón de Registrar Cliente: Guarda la información del cliente y regresa a la Ventana Principal. \n* Botón de Cancelar: Descarta los datos ingresados y regresa a la Ventana Principal sin guardar."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView40"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana de Agregar Motocicleta"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView41"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="La Ventana de Agregar Motocicleta se utiliza para registrar una nueva motocicleta, requiriendo el CI del propietario (que debe estar registrado previamente) junto con detalles como marca, modelo, placa y color. Incluye opciones para guardar o cancelar."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView42"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Campo de CI del Propietario: Ingresa el CI de un cliente existente para asociar la motocicleta con él. \n* Campo de Marca: Ingresa la marca de la motocicleta (por ejemplo, Honda, Yamaha). \n* Campo de Modelo: Especifica el modelo de la motocicleta para un seuimiento preciso.
+                    \n* Campo de Placa: Agrega el número de placa de la motocicleta. Campo de Color: Ingresa el color de la motocicleta para una fácil identificación.
+                    \n* Botón de Registrar Motocicleta: Guarda los detalles de la motocicleta y regresa a la Ventana Principal. \n* Botón de Cancelar: Descarta los datos ingresados y regresa a la Ventana Principal."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView43"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana de Agregar Servicio"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView44"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="La Ventana de Agregar Servicio permite a los usuarios crear una nueva orden de servicio ingresando la fecha y hora, seleccionando un cliente y un motorista, y agregando motivos para el servicio. Se pueden añadir múltiples motivos, con opciones para guardar o cancelar."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView45"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Campo de Fecha y Hora: Establece la fecha y hora del servicio para la programación. \n* Selección de Cliente: Elige un cliente existente de la lista. \n* Selección de Motorista: Selecciona el motorista asignado para el servicio.
+                    \n* Campo de Motivos del Servicio: Agrega uno o más motivos usando el botón &quot;Agregar Motivo&quot;. \n* Botón de Guardar: Almacena los detalles del servicio y regresa a la Ventana Principal.
+                    \n* Botón de Cancelar: Descarta los datos ingresados y regresa a la Ventana Principal."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView46"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana de Tablero de Servicios"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView47"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="La Ventana de Tablero de Servicios muestra un tablero estilo Kanban con siete etapas: Recepción, Diagnóstico, Piezas, Aprobación de Costos, Reparación, Control y Entrega. Los usuarios pueden editar datos o avanzar los servicios a la siguiente etapa."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView48"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Etapa de Recepción: Visualiza y edita los detalles iniciales del servicio.
+                    \n* Etapa de Diagnóstico: Actualiza la información de diagnóstico y continúa.
+                    \n* Etapa de Piezas: Gestiona las piezas necesarias para la reparación.
+                    \n* Etapa de Aprobación de Costos: Revisa y aprueba los costos de reparación.
+                    \n* Etapa de Reparación: Realiza un seguimiento del proceso de reparación.
+                    \n* Etapa de Control: Asegura la calidad antes de la entrega.
+                    \n* Etapa de Entrega: Finaliza y completa el servicio."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView49"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="Ventana de Perfil"
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView50"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="La Ventana de Perfil permite a los usuarios ver y gestionar los detalles de su cuenta, revisar trabajos completados y pendientes, editar su perfil y consultar el historial de trabajos."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/textView51"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/roboto"
+                    android:text="* Sección de Detalles de la Cuenta: Visualiza nombre, CI, número de teléfono y rol.
+                    \n* Lista de Trabajos Completados: Consulta el historial de servicios finalizados.
+                    \n* Lista de Trabajos Pendientes: Revisa las tareas en curso o no finalizadas.
+                    \n* Botón de Editar Perfil: Actualiza la información personal.
+                    \n* Sección de Historial de Trabajos: Revisa todos los servicios pasados."
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

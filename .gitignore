@@ -1,0 +1,38 @@
+# Android Studio
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+*/build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+/local.properties
+
+# Kotlin
+*.class
+*.jar
+*.war
+*.ear
+
+# NDK / CMake
+.cxx/
+.externalNativeBuild/
+
+# Capturas de pantalla
+captures/
+
+# Configuración de Mac / Linux / Windows
+.DS_Store
+*.swp
+*.swo
+Thumbs.db
+
+# Archivos de lock que no deben subirse
+**/*.lock
+**/*.bin
+
+# Archivos temporales de logs
+*.log
+*.tmp

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.aboutUs.AboutUs">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="#96A4A7">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/back_buttom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:src="@drawable/back_icon" />
+
+            <ImageView
+                android:id="@+id/imageView14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/bike_doctor_logo" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:fontFamily="@font/roboto"
+                android:text="¡Bienvenido al Manual de Usuario de BikeDoctor! \n\nEsta guía está diseñada para ayudarte a utilizar la aplicación móvil BikeDoctor de manera efectiva y aprovechar al máximo sus funcionalidades. \n\nLa aplicación ha sido desarrollada específicamente para gestionar reparaciones de motocicletas de forma sencilla, mejorar la comunicación con los clientes mediante notificaciones automáticas por WhatsApp y cumplir con algunos aspectos de la norma ISO 10002 para una gestión eficaz de quejas. \n\nBikeDoctor, un nombre reconocido en el ámbito de reparaciones de motocicletas, busca optimizar sus operaciones diarias y la satisfacción del cliente con esta innovadora herramienta. \nLa aplicación ofrece una interfaz amigable para registrar y seguir procesos de reparación, un tablero estilo Kanban para una mejor gestión del flujo de trabajo y asegura que los clientes se mantengan informados con actualizaciones oportunas. \nAl seguir este manual, aprenderás a navegar por la aplicación, gestionar servicios y utilizar sus funciones para mejorar tu experiencia con los servicios de BikeDoctor. "
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

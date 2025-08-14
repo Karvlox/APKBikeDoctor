@@ -1,0 +1,328 @@
+package com.example.bikedoctor.ui.service
+
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.bikedoctor.R
+import com.example.bikedoctor.ui.client.ClientsListFragment
+import com.example.bikedoctor.ui.main.SessionViewModel
+import com.example.bikedoctor.ui.motorcycle.MotorcycleListFragment
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+
+class ReceptionFormFragment : Fragment() {
+
+    private val viewModel: ReceptionFormViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by activityViewModels()
+    private val tag = "ReceptionFormFragment"
+    private var currentToken: String? = null
+
+    private lateinit var dateTimeInputLayout: TextInputLayout
+    private lateinit var dateTimeEditText: TextInputEditText
+    private lateinit var reasonInputLayout: TextInputLayout
+    private lateinit var clientSelectText: TextView
+    private lateinit var motorcycleSelectText: TextView
+    private lateinit var reasonsRecyclerView: RecyclerView
+    private lateinit var titleTextView: TextView
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(tag, "Inflating fragment_reception_form layout")
+        val view: View
+        try {
+            view = inflater.inflate(R.layout.fragment_reception_form, container, false)
+        } catch (e: Exception) {
+            Log.e(tag, "Error inflating layout: ${e.message}", e)
+            Toast.makeText(context, "Error al inflar el layout: ${e.message}", Toast.LENGTH_LONG).show()
+            return null
+        }
+
+        try {
+            dateTimeInputLayout = view.findViewById(R.id.date_time_input_layout)
+                ?: throw IllegalStateException("date_time_input_layout no encontrado")
+            dateTimeEditText = dateTimeInputLayout.editText as TextInputEditText
+            reasonInputLayout = view.findViewById(R.id.reason_input_layout)
+                ?: throw IllegalStateException("reason_input_layout no encontrado")
+            clientSelectText = view.findViewById(R.id.textView11)
+                ?: throw IllegalStateException("textView11 no encontrado")
+            motorcycleSelectText = view.findViewById(R.id.textView13)
+                ?: throw IllegalStateException("textView13 no encontrado")
+            reasonsRecyclerView = view.findViewById(R.id.reasons_recycler_view)
+                ?: throw IllegalStateException("reasons_recycler_view no encontrado")
+            titleTextView = view.findViewById(R.id.textView3)
+                ?: throw IllegalStateException("textView3 no encontrado")
+        } catch (e: Exception) {
+            Log.e(tag, "Error initializing views: ${e.message}", e)
+            Toast.makeText(context, "Error al inicializar vistas: ${e.message}", Toast.LENGTH_LONG).show()
+            return view
+        }
+
+        sessionViewModel.token.observe(viewLifecycleOwner) { token ->
+            Log.d(tag, "Token observed: $token")
+            currentToken = token
+            viewModel.setToken(token)
+            if (token == null) {
+                Log.e(tag, "No token, cannot proceed")
+                Toast.makeText(requireContext(), "Sesión no iniciada", Toast.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+        }
+
+        arguments?.let { args ->
+            val receptionId = args.getString("reception_id")
+            val date = args.getString("reception_date")
+            val clientCI = args.getString("reception_clientCI")
+            val motorcycleLicensePlate = args.getString("reception_motorcycleLicensePlate")
+            val employeeCI = args.getString("reception_employeeCI")
+            val reasons = args.getStringArray("reception_reasons")?.toList()
+            val images = args.getStringArray("reception_images")?.toList()
+            val reviewed = args.getBoolean("reception_reviewed", false)
+
+            if (receptionId != null) {
+                titleTextView.text = "Editar Servicio"
+                viewModel.initializeReception(
+                    id = receptionId,
+                    date = date,
+                    clientCI = clientCI,
+                    clientName = "Cliente $clientCI", // TODO: Obtener nombre real del cliente
+                    motorcycleLicensePlate = motorcycleLicensePlate,
+                    motorcycleDetails = motorcycleLicensePlate, // TODO: Obtener detalles reales
+                    employeeCI = employeeCI,
+                    reasons = reasons,
+                    images = images,
+                    reviewed = reviewed
+                )
+            }
+        }
+
+        dateTimeEditText.isEnabled = true
+        dateTimeEditText.keyListener = null
+
+        dateTimeEditText.setOnClickListener { showDateTimePicker() }
+
+        reasonsRecyclerView.layoutManager = LinearLayoutManager(context)
+        val reasonsAdapter = ReasonsAdapter(
+            reasons = emptyList(),
+            onEdit = { index, reason ->
+                showEditReasonDialog(index, reason)
+            },
+            onDelete = { index ->
+                viewModel.deleteReason(index)
+            }
+        )
+        reasonsRecyclerView.adapter = reasonsAdapter
+
+        view.findViewById<ImageView>(R.id.imageView3)?.setOnClickListener {
+            viewModel.clearSelections()
+            parentFragmentManager.popBackStack()
+        }
+
+        view.findViewById<TextView>(R.id.button_cancel)?.setOnClickListener {
+            clearFields()
+            viewModel.clearSelections()
+            parentFragmentManager.popBackStack()
+        }
+
+        view.findViewById<TextView>(R.id.button_register_service)?.setOnClickListener {
+            val date = dateTimeEditText.text.toString().trim()
+            val clientCI = clientSelectText.tag?.toString() ?: ""
+            val motorcycleLicensePlate = motorcycleSelectText.tag?.toString() ?: ""
+            val reason = reasonInputLayout.editText?.text.toString().trim()
+            Log.d(tag, "Register button clicked: date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate, reason=$reason")
+            viewModel.validateAndRegister(date, clientCI, motorcycleLicensePlate, reason, currentToken)
+        }
+
+        view.findViewById<TextView>(R.id.textView16)?.setOnClickListener {
+            val reason = reasonInputLayout.editText?.text.toString().trim()
+            viewModel.addReason(reason)
+            reasonInputLayout.editText?.text?.clear()
+        }
+
+        clientSelectText.setOnClickListener {
+            navigateToClientsList()
+        }
+
+        view.findViewById<ImageView>(R.id.imageView5)?.setOnClickListener {
+            navigateToClientsList()
+        }
+
+        setFragmentResultListener("client_selection") { _, bundle ->
+            val clientCI = bundle.getString("client_id") ?: ""
+            val clientName = bundle.getString("client_name") ?: "Cliente Seleccionado"
+            Log.d(tag, "Received client selection: clientCI=$clientCI, clientName=$clientName")
+            viewModel.setClient(clientCI, clientName)
+        }
+
+        motorcycleSelectText.setOnClickListener {
+            navigateToMotorcyclesList()
+        }
+
+        view.findViewById<ImageView>(R.id.imageView7)?.setOnClickListener {
+            navigateToMotorcyclesList()
+        }
+
+        setFragmentResultListener("motorcycle_selection") { _, bundle ->
+            val motorcycleLicensePlate = bundle.getString("motorcycle_details") ?: ""
+            val motorcycleDetails = bundle.getString("motorcycle_id") ?: "Motocicleta Seleccionada"
+            Log.d(tag, "Received motorcycle selection: licensePlate=$motorcycleLicensePlate, details=$motorcycleDetails")
+            viewModel.setMotorcycle(motorcycleLicensePlate, motorcycleDetails)
+        }
+
+        viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
+            dateTimeInputLayout.error = error
+        }
+        viewModel.clientError.observe(viewLifecycleOwner) { error ->
+            if (error != null) Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.motorcycleError.observe(viewLifecycleOwner) { error ->
+            if (error != null) Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        }
+        viewModel.reasonError.observe(viewLifecycleOwner) { error ->
+            reasonInputLayout.error = error
+        }
+        viewModel.registerStatus.observe(viewLifecycleOwner) { status ->
+            Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
+            if (status.startsWith("Servicio registrado") || status.startsWith("Servicio actualizado")) {
+                clearFields()
+                parentFragmentManager.popBackStack()
+            }
+        }
+        viewModel.reasonsList.observe(viewLifecycleOwner) { reasons ->
+            reasonsAdapter.notifyDataSetChanged()
+            reasonsRecyclerView.adapter = ReasonsAdapter(
+                reasons = reasons,
+                onEdit = { index, reason ->
+                    showEditReasonDialog(index, reason)
+                },
+                onDelete = { index ->
+                    viewModel.deleteReason(index)
+                }
+            )
+        }
+
+        viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->
+            if (clientCI != null && clientName != null) {
+                clientSelectText.text = clientName
+                clientSelectText.tag = clientCI
+            } else {
+                clientSelectText.text = "SELECCIONAR"
+                clientSelectText.tag = null
+            }
+        }
+        viewModel.selectedMotorcycle.observe(viewLifecycleOwner) { (motorcycleLicensePlate, motorcycleDetails) ->
+            if (motorcycleLicensePlate != null && motorcycleDetails != null) {
+                motorcycleSelectText.text = motorcycleDetails
+                motorcycleSelectText.tag = motorcycleLicensePlate
+            } else {
+                motorcycleSelectText.text = "SELECCIONAR"
+                motorcycleSelectText.tag = null
+            }
+        }
+
+        viewModel.selectedDateTime.observe(viewLifecycleOwner) { dateTime ->
+            dateTimeEditText.setText(dateTime ?: "")
+        }
+
+        return view
+    }
+
+    private fun showEditReasonDialog(index: Int, currentReason: String) {
+        val editText = EditText(requireContext()).apply {
+            setText(currentReason)
+        }
+        AlertDialog.Builder(requireContext())
+            .setTitle("Editar Motivo")
+            .setView(editText)
+            .setPositiveButton("Guardar") { _, _ ->
+                val newReason = editText.text.toString().trim()
+                if (newReason.isNotEmpty()) {
+                    viewModel.editReason(index, newReason)
+                } else {
+                    Toast.makeText(context, "El motivo no puede estar vacío", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun navigateToClientsList() {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, ClientsListFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+    private fun navigateToMotorcyclesList() {
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, MotorcycleListFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+    private fun showDateTimePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+
+                val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                val minute = calendar.get(Calendar.MINUTE)
+                val timePickerDialog = TimePickerDialog(
+                    requireContext(),
+                    { _, selectedHour, selectedMinute ->
+                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                        calendar.set(Calendar.MINUTE, selectedMinute)
+
+                        val dateFormat = SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.US)
+                        val formattedDate = dateFormat.format(calendar.time)
+                        dateTimeEditText.setText(formattedDate)
+                        viewModel.setDateTime(formattedDate)
+                    },
+                    hour,
+                    minute,
+                    false
+                )
+                timePickerDialog.show()
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.show()
+    }
+
+    private fun clearFields() {
+        dateTimeEditText.text?.clear()
+        reasonInputLayout.editText?.text?.clear()
+        clientSelectText.text = "SELECCIONAR"
+        clientSelectText.tag = null
+        motorcycleSelectText.text = "SELECCIONAR"
+        motorcycleSelectText.tag = null
+        viewModel.setDateTime(null)
+    }
+}
