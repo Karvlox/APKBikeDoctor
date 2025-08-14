@@ -11,7 +11,7 @@
         android:id="@+id/bottomNavigationView5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#2A2A2A"
+        android:background="#485A68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="-10dp"
-                    app:srcCompat="@drawable/icon_logo" />
+                    app:srcCompat="@drawable/icon_logo2" />
 
                 <TextView
                     android:id="@+id/textView22"
@@ -65,7 +65,7 @@
                     android:src="@drawable/aboutus" />
 
                 <ImageView
-                        android:id="@+id/learnAboutApp"
+                    android:id="@+id/learnAboutApp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"

@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         SessionViewModelFactory(SessionRepository(applicationContext))
     }
     private var tokenObserver: Observer<String?>? = null
+    private var lastClickTime: Long = 0
+    private val debounceInterval = 500L // 500 ms
+    private var currentFragmentId: Int = R.id.home // Seguimiento del fragmento actual
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +45,12 @@ class MainActivity : AppCompatActivity() {
 
         // Configurar BottomNavigationView
         binding.bottomNavigationView2.setOnItemSelectedListener { menuItem ->
-            mainViewModel.onNavigationItemSelected(menuItem.itemId)
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime > debounceInterval && menuItem.itemId != currentFragmentId) {
+                lastClickTime = currentTime
+                currentFragmentId = menuItem.itemId
+                mainViewModel.onNavigationItemSelected(menuItem.itemId)
+            }
             true
         }
 

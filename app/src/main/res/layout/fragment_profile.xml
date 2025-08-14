@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F3F3"
+    android:background="#96A4A7"
     tools:context=".ui.profile.ProfileFragment">
 
     <LinearLayout
@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F3F3F3"
+                android:background="#96A4A7"
                 android:orientation="vertical">
 
                 <TextView
@@ -92,7 +92,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardBackgroundColor="#F3F3F3">
+            app:cardBackgroundColor="#96A4A7">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                         android:layout_marginStart="40dp"
                         android:layout_marginTop="40dp"
                         android:layout_marginEnd="20dp"
-                        app:cardBackgroundColor="#F3F3F3"
+                        app:cardBackgroundColor="#CCD0CF"
                         app:cardCornerRadius="20dp">
 
                         <LinearLayout
@@ -166,7 +166,7 @@
                             android:layout_width="200dp"
                             android:layout_height="80dp"
                             android:layout_marginTop="40dp"
-                            app:cardBackgroundColor="#E6B5BC"
+                            app:cardBackgroundColor="#8898B3"
                             app:cardCornerRadius="20dp">
 
                             <LinearLayout
@@ -209,7 +209,7 @@
                             android:layout_width="200dp"
                             android:layout_height="80dp"
                             android:layout_marginTop="20dp"
-                            app:cardBackgroundColor="#E88B61"
+                            app:cardBackgroundColor="#96A4A7"
                             app:cardCornerRadius="20dp">
 
                             <LinearLayout
@@ -257,7 +257,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="#2E2E2E" >
+                    app:cardBackgroundColor="#233543">
 
                     <TextView
                         android:id="@+id/historyLabel"

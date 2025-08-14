@@ -40,7 +40,6 @@ class ReceptionFormFragment : Fragment() {
     private lateinit var reasonInputLayout: TextInputLayout
     private lateinit var clientSelectText: TextView
     private lateinit var motorcycleSelectText: TextView
-    private lateinit var photosCountText: TextView
     private lateinit var reasonsRecyclerView: RecyclerView
     private lateinit var titleTextView: TextView
 
@@ -68,8 +67,6 @@ class ReceptionFormFragment : Fragment() {
                 ?: throw IllegalStateException("textView11 no encontrado")
             motorcycleSelectText = view.findViewById(R.id.textView13)
                 ?: throw IllegalStateException("textView13 no encontrado")
-            photosCountText = view.findViewById(R.id.textView19)
-                ?: throw IllegalStateException("textView19 no encontrado")
             reasonsRecyclerView = view.findViewById(R.id.reasons_recycler_view)
                 ?: throw IllegalStateException("reasons_recycler_view no encontrado")
             titleTextView = view.findViewById(R.id.textView3)
@@ -191,16 +188,6 @@ class ReceptionFormFragment : Fragment() {
             viewModel.setMotorcycle(motorcycleLicensePlate, motorcycleDetails)
         }
 
-        view.findViewById<ImageView>(R.id.imageView8)?.setOnClickListener {
-            // TODO: Implementar captura de foto con permisos
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
-        }
-
-        view.findViewById<ImageView>(R.id.imageView9)?.setOnClickListener {
-            // TODO: Implementar selección de foto con permisos
-            viewModel.addPhoto("photo_uri_${System.currentTimeMillis()}")
-        }
-
         viewModel.dateTimeError.observe(viewLifecycleOwner) { error ->
             dateTimeInputLayout.error = error
         }
@@ -231,9 +218,6 @@ class ReceptionFormFragment : Fragment() {
                     viewModel.deleteReason(index)
                 }
             )
-        }
-        viewModel.photosCount.observe(viewLifecycleOwner) { count ->
-            photosCountText.text = "Fotos Adjuntadas ($count)"
         }
 
         viewModel.selectedClient.observe(viewLifecycleOwner) { (clientCI, clientName) ->

@@ -48,9 +48,6 @@ class DiagnosisFormViewModel : ViewModel() {
     private val _diagnosticsList = MutableLiveData<List<Diagnostic>>()
     val diagnosticsList: LiveData<List<Diagnostic>> = _diagnosticsList
 
-    private val _photosCount = MutableLiveData<Int>()
-    val photosCount: LiveData<Int> = _photosCount
-
     private val _selectedClient = MutableLiveData<Pair<String?, String?>>()
     val selectedClient: LiveData<Pair<String?, String?>> = _selectedClient
 
@@ -113,7 +110,6 @@ class DiagnosisFormViewModel : ViewModel() {
         if (images != null) {
             this.photos.addAll(images)
         }
-        _photosCount.value = this.photos.size
         _reviewed.value = reviewed
         Log.d(tag, "Initialized diagnosis: id=$id, date=$date, clientCI=$clientCI, motorcycleLicensePlate=$motorcycleLicensePlate")
     }
@@ -279,17 +275,6 @@ class DiagnosisFormViewModel : ViewModel() {
         }
     }
 
-    fun addPhoto(photoUri: String) {
-        if (photos.size < 5) {
-            photos.add(photoUri)
-            _photosCount.value = photos.size
-            Log.d(tag, "Photo added: $photoUri, total: ${photos.size}")
-        } else {
-            _registerStatus.value = "Máximo 5 fotos permitidas"
-            Log.w(tag, "Max photos reached")
-        }
-    }
-
     private fun createDiagnosis(diagnosis: DiagnosisPost) {
         Log.d(tag, "Creating diagnosis: $diagnosis")
         repository.createDiagnosis(diagnosis).enqueue(object : Callback<DiagnosisPost> {
@@ -346,7 +331,6 @@ class DiagnosisFormViewModel : ViewModel() {
         diagnostics.clear()
         photos.clear()
         _diagnosticsList.value = emptyList()
-        _photosCount.value = 0
         Log.d(tag, "Selections cleared")
     }
 }

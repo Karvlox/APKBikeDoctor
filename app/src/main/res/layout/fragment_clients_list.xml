@@ -8,12 +8,14 @@
     android:layout_marginTop="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp"
+    android:background="#96A4A7"
+    android:backgroundTint="#96A4A7"
     tools:context=".ui.client.ClientsListFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="#2E2E2E"
+        app:cardBackgroundColor="#10202D"
         app:cardCornerRadius="15dp">
 
         <LinearLayout

@@ -61,4 +61,7 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("org.json:json:20231013")
     implementation ("com.auth0:java-jwt:4.4.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
 }
